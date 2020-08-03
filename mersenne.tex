@@ -929,36 +929,84 @@ Next we set $i_x\gets (rj_x)\texttt{>>}b-1$. We know from Lemma
 \ref{lem:most-uniform} (i) that this is a most uniform map from
 $[2^{b-1}]$ to $[r]$.  It maps a maximal number of elements from
 $[2^{b-1}]$ to $0$, including $0$ which had half probability for
-$j_x$. We conclude all $i\in[r]\setminus\{0\}$ have probability
-$\floor{2^{b-1}/r}2/(2^{b}-1)$ or $\ceil{2^{b-1}/r}2/(2^{b}-1)$ while
-$0$ has probability $(\ceil{2^{b-1}/r}2-1)/(2^{b}-1)$. 
+$j_x$.
+We conclude
+\begin{align}
+   \Pr[i_x=0] &= (\ceil{2^{b-1}/r}2-1)/(2^{b}-1)
+   \label{eq:prix0}
+   \\
+   \Pr[i_x\neq 0] &\in
+   \{\floor{2^{b-1}/r}2/(2^{b}-1), \ceil{2^{b-1}/r}2/(2^{b}-1)\}
+   \label{eq:prixneq0}
+   .
+\end{align}
+%all $i\in[r]\setminus\{0\}$ have probability
+%while
+%$0$ has probability $(\ceil{2^{b-1}/r}2-1)/(2^{b}-1)$. 
 We note
 that the probability for $0$ is in the middle of the two other
 bounds and often this yields a more uniform distribution on $[r]$ than
 the most uniform distribution we could get from the
-uniform distribuion on $[2^{b-1}]$.
+uniform distribution on $[2^{b-1}]$.
 
 With
 more careful calculations, we can get some nicer bounds
 that we shall later.
 \begin{lemma}\label{lem:ix-r-dist} For any distinct $x,y\in [u]$, 
 \begin{align}
-\Pr[i_x=0]&=(1+r/2^b)/r\label{eq:ix=0}\\
+\Pr[i_x=0]&\le(1+r/2^b)/r\label{eq:ix=0}\\
 \Pr[i_x=i_y]&\leq \left(1+(r/2^b)^2\right)/r.\label{eq:ix=iy}
 \end{align}
 \end{lemma}
 \begin{proof}
-The proof of \req{eq:ix=0} is a simple calculation. We
-already argued that $\Pr[i_x=0]=(\ceil{2^{b-1}/r}2-1)/(2^{b}-1)$, so
+The proof of \req{eq:ix=0} is a simple calculation.
+Using \req{eq:prix0} and the fact $\ceil{2^{b-1}/r}\le(2^{b-1}+r-1)/r$ we have
 \begin{align*}
-\Pr[i_x=0]&\leq (2(2^{b-1}+r-1)/r)-1)/(2^{b}-1)\\
+\Pr[i_x=0]&\le (2(2^{b-1}+r-1)/r)-1)/(2^{b}-1)\\
 &=((2^b+r-2)/r)/(2^b-1)\\
 &=\left(1+(r-1)/(2^b-1)\right)/r\\
-&=\left(1+r/2^b\right)/r.\\
+&\le\left(1+r/2^b\right)/r.
 \end{align*}
-Above the last inequality follows because $r<u<2^b$.
+The last inequality follows because $r<u<2^b$.
 
-The proof of \ref{eq:ix=iy} follows from {\color{red}Thomas}.
+% The proof of \ref{eq:ix=iy} follows from {\color{red}Thomas}.
+For \ref{eq:ix=iy},
+let $q=2^{b-1}$ and $p=1/(2q-1)$.
+We define $a\ge 0$ to be the smallest integer, such that $r\setminus q+a$.
+In particular this means 
+$\lceil q/r\rceil = (q+a)/r$ and
+$\lfloor q/r\rfloor = (q-r+a)/r$.
+
+We bound the sum
+$$
+   \Pr[i_x=i_y]
+   = \sum_{k=0}^{r-1} \Pr[i_x = k]^2
+$$
+by splitting into three cases:
+1) The case $i_x=0$, where $\Pr[i_x=0]=(2\ceil{q/r}-1)p$,
+2) the $r-a-1$ indices $j$ where $\Pr[i_x=j]=2\ceil{q/r}p$,
+and 3) the $a$ indices $j$ st. $\Pr[i_x=j]=2\floor{q/r}p$.
+\begin{align*}
+   \Pr[i_x=i_y]
+   &=
+   (2p\ceil{ q/r}-p)^2 + (r-a-1) (2p \lceil q/r\rceil)^2 + (r-a) (2p \lfloor q/r \rfloor)^2
+    \\&= ((4a+1)r+4(q+a)(q-a-1))p^2/r
+   \\&\le (1 + (r^2-r)/(2q-1)^2) / r.
+\end{align*}
+The last inequality comes from maximizing over $a$, which yields $a=(r-1)/2$.
+
+The result now follows from
+\begin{align}
+   (r^2-r)/(2q-1)^2
+   \le
+   (r-1/2)^2/(2q-1)^2
+   \le
+   (r/(2q))^2
+\end{align}
+which holds exactly when $r\le q$.
+
+
+
 \end{proof}
 Lemma \ref{lem:ix-r-dist} above is all we need to know about the
 marginal distribution of $i_x$. However, we also need a replacement
