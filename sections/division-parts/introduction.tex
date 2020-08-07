@@ -1,0 +1,20 @@
+%! TEX root = ../merdiv.tex
+
+\subsection{Introduction}
+
+Primes on the form $2^n-1$ are known as Mersenne primes, and are used all over Cryptography and Computer Science because they allow quicker algorithms than primes in general.
+This allows speeding up finite field arithmetic,
+since $c\bmod (2^n-1) = (c\bmod 2^n) + \lfloor k/n\rfloor$ if the value is smaller than $p=2^n-1$ (otherwise just subtract $p$.)
+
+In this paper we investigate division by such primes, as well as two generalized classes:
+\begin{description}
+   \item[Generalized Mersenne Primes]
+      also sometimes known as Solinas primes~\cite{Solinas2011}, are sparse numbers, that is $f(2^m)$ where $f(x)$ is a low-degree polynomial.
+      Examples are the primes in NIST's document "Recommended Elliptic Curves for Federal Government Use": $p_{192} = 2^{192} - 2^{64} - 1$ and $p_{384} = 2^{384}-2^{128}-2^{96}+2^{32}-1$.
+   \item[Pseudo-Mersenne Primes]
+      also sometimes known as Crandall primes~\cite{crandall1992method}, are numbers on the form $2^n - c$ for a small odd $c$.
+      It is sometimes required that $c < 2^{\lfloor n/2\rfloor}$~\cite{van2014encyclopedia}.
+\end{description}
+
+We also give a simple algorithm for taking the modulo, which works efficiently for all Pseudo-Mersenne Primes.
+

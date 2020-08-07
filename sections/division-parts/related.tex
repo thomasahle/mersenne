@@ -1,0 +1,66 @@
+%! TEX root = ../merdiv.tex
+
+\subsection{Related Work}
+
+Simple Power Analysis on Fast Modular Reduction with
+Generalized Mersenne Prime for Elliptic Curve Cryptosystems
+
+https://pdfs.semanticscholar.org/3f84/39b357a8331f1cc6f8de68a19223ff027f2c.pdf
+
+\begin{algorithm}
+   \caption{Fast reduction modulo $p_{192} = 2^{192} - 2^{64} - 1$}
+   \begin{algorithmic}
+      \State \textbf{input} $c \gets (c_5, c_4, c_3, c_2, c_1, c_0)$, where each $c_i$ is a 64-bit word, and $0 \le c < p^2_{192}$.
+      \State $s_0 = (c_2, c_1, c_0)$
+      \State $s_0 = (0, c_3, c_3)$
+      \State $s_0 = (c_4, c_4, 0)$
+      \State $s_0 = (c_5, c_5, c_5)$
+      \State \textbf{return} $s_0 + s_1 + s_2 + s_3 \mod p_{192}$.
+   \end{algorithmic}
+\end{algorithm}
+That's weird.
+
+In~\cite{granger2013generalised} the authors defined a different family of Generalised Mersenne numbers and showed various fast multiplication and reduction schemes.
+
+Other methods:
+ - Classical one using divisions
+ - Montgomery's method
+ - ! Barrett reduction
+
+Modified Crandall Algorithm:
+https://ieeexplore.ieee.org/stamp/stamp.jsp?arnumber=4016496
+
+Does modulo in parallel with division (which we have shown is unnecessary), but taking only the division parts the algorithm is
+\begin{algorithm}
+   \begin{algorithmic}[1]
+      \Procedure{Divide}{x, n, c}
+         \State $q_0 \gets \lfloor x/2^n\rfloor$
+         \State $r_0 \gets x \bmod 2^n$
+         \State $q \gets q_0$
+         \State $r \gets r_0$
+         \State $i \gets 0$
+         \While{$q_i>0$}
+            \State $t \gets q_i c$
+            \State $q_{i+1} \gets \lfloor t / 2^n\rfloor$
+            \State $r_{i+1} \gets t \bmod 2^n$
+            \State $q\gets q+q_{i+1}$
+            \State $r\gets r+r_{i+1}$
+            \State $i\gets i+1$
+         \EndWhile
+         \State $t \gets 2^n-c$
+         \While{$r\ge t$}
+            \State $r\gets r-t$
+            \State $q\gets q+1$
+         \EndWhile
+         \State\textbf{return} $q$
+      \EndProcedure
+   \end{algorithmic}
+\end{algorithm}
+
+No proof of correctness is given.
+The while loop condition is different.
+No guarantees on running time.
+The addition is different from ours.
+Doesn't add 1. Doesn't add $x$.
+Has that extra weird loop for fixing things in the end.
+So it actually has to do the $r$ computation?

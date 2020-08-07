@@ -1,0 +1,90 @@
+%! TEX root = ../merdiv.tex
+
+\documentclass[11pt]{article}
+\usepackage[margin=1.3in]{geometry}
+\usepackage[utf8]{inputenc}
+\usepackage[UKenglish]{babel}
+
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}{Lemma}
+\newtheorem{corollary}{Corollary}
+\newtheorem{conjecture}{Conjecture}
+\newtheorem{remark}{Remark}
+\newtheorem{definition}{Definition}
+\newtheorem{example}{Example}
+
+% Thomas packages
+
+\usepackage{placeins}
+\let\Oldsection\section
+\renewcommand{\section}{\FloatBarrier\Oldsection}
+\let\Oldsubsection\subsection
+\renewcommand{\subsection}{\FloatBarrier\Oldsubsection}
+\let\Oldsubsubsection\subsubsection
+\renewcommand{\subsubsection}{\FloatBarrier\Oldsubsubsection}
+
+\usepackage{algorithm}
+%\usepackage{algorithmic}
+\usepackage[noend]{algpseudocode}
+
+\usepackage{todonotes}
+\usepackage{enumitem}
+\usepackage{hyperref}
+\usepackage{cleveref}
+\usepackage{autonum}
+\DeclareMathAlphabet{\mathpzc}{OT1}{pzc}{m}{it}
+
+\DeclareMathOperator{\poly}{poly}
+\DeclareMathOperator{\sign}{sign}
+\DeclareMathOperator{\asvec}{vec}
+% Allow page break in align
+\allowdisplaybreaks
+
+\usepackage{xcolor}
+\usepackage{mdframed}
+
+
+% Jakob Macros
+\newcommand{\eps}{\varepsilon}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\N}{\mathbb{N}}
+
+\newcommand{\abs}[1]{\left\lvert #1\right\rvert}
+\newcommand{\set}[1]{\left\{ #1 \right\}}
+\newcommand{\setbuilder}[2]{\left\{ #1 \; \middle\vert \; #2 \right\}}
+\newcommand{\norm}[2]{\left\| #1 \right\|_{#2}}
+\newcommand{\innerprod}[2]{\left\langle #1, \; #2 \right\rangle}
+
+\newcommand{\floor}[1]{\lfloor #1 \rfloor}
+\newcommand{\ceil}[1]{\lceil #1 \rceil}
+
+\newcommand{\Prp}[1]{\Pr\!\left[#1 \right]}
+\newcommand{\Prpcond}[2]{\Pr\!\left[#1 \; \middle| \; #2 \right]}
+\newcommand{\Ep}[1]{\text{E}\!\left[#1 \right]}
+\newcommand{\Epcond}[2]{\text{E}\!\left[#1 \; \middle| \; #2 \right]}
+
+\newcommand{\br}[1]{\left( #1 \right)}
+
+\renewcommand{\(}{\left(}
+\renewcommand{\)}{\right)}
+
+\newcommand{\sjlmp}[2]{$(#1, #2)$-\hyperref[defn:strong-jl-moment]{Strong JL Moment Property}}
+
+\author{Thomas Dybdahl Ahle, Jakob Bæk Tejs Knudsen}
+%\authorrunning{Thomas Dybdahl Ahle, Jakob Bæk Tejs Knudsen}
+%\Copyright{Thomas Dybdahl Ahle, Jakob Bæk Tejs Knudsen}
+% : \author{name}{affil}{email}{orcid}{funding}
+%\acknowledgements{Anders Aamand}
+
+%TODO mandatory: Please choose ACM 2012 classifications from https://dl.acm.org/ccs/ccs_flat.cfm 
+%\ccsdesc[100]{Theory of computation~Sketching and sampling}
+
+% mandatory; please add comma-separated list of keywords
+%\keywords{Tensors, Sketching, Johnson Lindenstrauss}
+
