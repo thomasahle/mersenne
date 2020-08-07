@@ -1,0 +1,292 @@
+
+\section{Algorithms and analysis with arbitrary number of buckets}
+We now consider the case where we want to hash into
+a number of buckets. We will analyze the collision probability
+with most uniform maps introduced in Section \ref{sec:most-uniform},
+and later we will show how it can be used in connection with the
+two-for-one hashing from Section \ref{sec:two-for-one}.
+
+\subsection{Collision probability with most uniform distributions}
+We have a hash function $h:U\fct Q$, but we want hash values in $R$, so
+we need a map $\mu:Q\fct R$, and then use $\mu\circ h$ as
+our hash function from $U$ to $R$. We normally assume that the hash values 
+with $h$ are pairwise independent, that is, for any distinct $x$ and $y$,
+the hash values $h(x)$ and $h(y)$ are independent, but then 
+$\mu(h(x))$ and $\mu(h(y))$ are also independent. This means
+that the collision probability can be calculated
+as 
+\[\Pr[\mu(h(x))=\mu(h(y))]=\sum_{i\in R}\Pr[\mu(h(x))=\mu(h(y))=i]=\sum_{i\in R}\Pr[\mu(h(x)=i)]^2.\]
+This sum of squared probabilities attains is minimum value $1/|R|$
+exactly when $\mu(h(x))$ is uniform in $R$. 
+
+Let $q=|Q|$ and $r=|R|$. Suppose that $h$ is $2$-universal. Then
+$h(x)$ is uniform in $Q$, and then we get the lowest collision
+probability with $\mu\circ h$ if $\mu$ is most uniform as defined in
+Section \ref{sec:most-uniform}, that is, the number of elements from
+$Q$ mapping to any $i\in[r]$ is either $\floor{q/r}$ or
+$\ceil{q/r}$. To calculate the collision probability,
+Let $a\in[r]$ be such that $r$ divides $q+a$. Then the map $\mu$ maps
+$\ceil{q/r}=(q+a)/r$ balls to $r-a$ buckets and
+$\floor{q/r}=(q+a-r)/r$ balls to $a$ buckets. For a key $x\in [u]$, we
+thus have $r-a$ buckets hit with probability $(1+a/q)/r$ and
+$a$ buckets hit with probability $(1-(r-a)/q)/r$.
+The collision probability is then
+\begin{align}
+\Pr[\mu(h(x))=&\mu(h(y))]= (r-a)((1+a/q)/r)^2+a((1-(r-a)r/q)/r)^2\nonumber\\
+  &=\frac{(r-a)+(r-a)2a/q+(r-a)a^2/q^2+ a-a2(r-a)/p+a(r-a)^2/q^2}{r^2}\nonumber\\
+  &=\frac{r +r a (r-a)/q^2}{r^2}=(1+a(r-a)/q^2)/r\leq \left(1+(r/(2q))^2\right)/r.\label{eq:coll-a}
+  \end{align}
+Note that the above calculation generalizes the one for \req{eq:coll} which
+had $a=1$. We will think of $(r/(2q))^2$ as the general relative rounding
+cost when we do not have any information about how $r$ divides $q$.
+
+\subsection{Two-for-one hashing from uniform bits to arbitrary number of buckets}
+We will now briefly discuss how would get the two-for-one hash
+functions in count sketches with an arbitrary number $r$ of bins based
+on a single $4$-universal hash function $h:[u]\fct [2^b]$.  We want to
+construct the two hash functions $s:[u]\fct\{-1,+1\}$ and
+$i:[u]\fct[r]$. As usual the results with uniform $b$-bit strings will
+set the bar that we later compare with when from $h$ we get hash values that
+are only uniform in $[2^b-1]$.
+
+The construction of $s$ and $i$ is presented in 
+Algorithm \ref{alg:b-bit-arb-r}.
+\begin{algorithm}\label{alg:b-bit-arb-r}
+  \caption{For key $x\in [u]$, compute $i(x)=i_x\in[r]$ and
+    $s(x)=s_x\in\{-1,+1\}$.\rule{5ex}{0ex}
+    Uses 4-universal $h:[u]\fct [2^b]$.}
+  $h_x\gets h(x)$\hfill $\rhd\quad h_x$ has $b$ uniform bits\\
+  $j_x\gets h_x\&(2^{b-1}-1)$\hfill $\rhd\quad j_x$ gets $b-1$ least 
+   significant bits of $h_x$\\
+  $i_x\gets (rj_x)\texttt{>>}(b-1)$\hfill $\rhd\quad i_x$ is most uniform
+  in $[r]$\\
+$a_x\gets h_x\texttt{>>}(b-1)$\hfill $\rhd\quad a_x$ gets the most significant bit of $h_x$\\
+$s_x\gets 2b_x-1$\hfill $\rhd\quad s_x$ is uniform in $\{-1,+1\}$ and
+independent of $i_x$.\\
+\end{algorithm}  
+The difference relative to Algorithm \ref{alg:h-and-s} is the computation
+of $i_x$ where we now first pick out the $(b-1)$-bit string $j_x$ from
+$h_x$, and then apply the most uniform map $(rj_x)\texttt{>>}(b-1)$
+to get $i_x$. This does not affect $s_x$ which remains independent
+of $i_x$. 
+
+We now have to study the effect on our estimate error
+\[Y=X-F_2\sum_{x,y\in[u],x\neq y} s_x f_x[i_x=i_y]s_y f_y.\]
+The expectation is exactly as before. The only
+change is in the analysis of the variance where
+we before had each $i_x$ uniform in $[r]=[2^\ell]$, hence
+$\Pr[i_x=i_y]=1/r$. Now have values uniform in $[2^{b-1}]$ mapped
+most uniformly to $[r]$ for an arbitrary $r$. Then by \req{eq:coll-a},
+we get $\Pr[i_x=i_y]=\left(1+(r/(2q))^2\right)/r$ where $q=2^{b-1}$. 
+This increases
+the variance bound accordingly from $2F_2^2/r$ to
+\begin{equation}\label{eq:Var-b-bit-arb-r}
+\Var[X]=\Var[Y]\leq 2F_2^2\left(1+(r/2^b)^2\right)/r.
+\end{equation}
+
+\subsection{Two-for-one hashing from Mersenne primes to arbitrary number of buckets}
+We will now show how wan get the two-for-one hash functions in count
+sketches with an arbitrary number $r$ of bins based on a single
+$4$-universal hash function $h:[u]\fct [2^b-1]$.  Again we want to
+construct the two hash functions $s:[u]\fct\{-1,+1\}$ and
+$i:[u]\fct[r]$.  The construction will be the same as we had in
+Algorithm \ref{alg:b-bit-arb-r} when $h$ returned uniform values in
+$[2^b]$ with the change that we set $h_x\gets h(x)+1$, so that it
+becomes uniform in $[2^b]\setminus\{0\}$. It is also convinient to
+swap the sign of the signbit $s_x$ setting $s_x\gets 2a_x+1$ instead
+of $s_x\gets 1-2a_x$. The basic reason is that we have swapped the
+role of \texttt{0} and \texttt{1} in $a_x$.  The resulting algorithm
+is presented as Algorithm \ref{alg:Mersenne-arb-r}.
+\begin{algorithm}\label{alg:Mersenne-arb-r}
+  \caption{For key $x\in [u]$, compute $i(x)=i_x\in[r]$ and
+    $s(x)=s_x\in\{-1,+1\}$.\rule{5ex}{0ex}
+    Uses 4-universal $h:[u]\fct [p]$ for Mersenne prime $p=2^b-1\geq u$.}
+  $h_x\gets h(x)+1$\hfill $\rhd\quad h_x$ uses $b$ bits uniformly except $h_x\neq 0$\\
+  $j_x\gets h_x\&(2^{b-1}-1)$\hfill $\rhd\quad j_x$ gets $b-1$ least 
+   significant bits of $h_x$\\
+  $i_x\gets (rj_x)\texttt{>>}b-1$\hfill $\rhd\quad i_x$ is quite uniform
+  in $[r]$\\
+$a_x\gets h_x\texttt{>>}(b-1)$\hfill $\rhd\quad a_x$ gets the most significant bit of $h_x$\\
+$s_x\gets 1-2b_x$\hfill $\rhd\quad s_x$ is quite uniform in $\{-1,+1\}$ and
+quite independent of $i_x$.\\
+\end{algorithm}  
+The rest of Algorithm \ref{alg:Mersenne-arb-r} is exactly like 
+Algorithm \ref{alg:b-bit-arb-r}, and we will now discuss the new
+distributions of the resulting variables. We had
+$h_x$ uniform in $[2^b]\setminus\{0\}$, and then we set
+$j_x \gets h_x\&(2^{b-1}-1)$. Then $j_x\in[2^{b-1}]$ with 
+$\Pr[j_x=0]=1/(2^{b}-1)$ while  $\Pr[j_x=j]=2/(2^{b}-1)$ for all $j>0$.
+
+Next we set $i_x\gets (rj_x)\texttt{>>}b-1$. We know from Lemma
+\ref{lem:most-uniform} (i) that this is a most uniform map from
+$[2^{b-1}]$ to $[r]$.  It maps a maximal number of elements from
+$[2^{b-1}]$ to $0$, including $0$ which had half probability for
+$j_x$.
+We conclude
+\begin{align}
+   \Pr[i_x=0] &= (\ceil{2^{b-1}/r}2-1)/(2^{b}-1)
+   \label{eq:prix0}
+   \\
+   \Pr[i_x\neq 0] &\in
+   \{\floor{2^{b-1}/r}2/(2^{b}-1), \ceil{2^{b-1}/r}2/(2^{b}-1)\}
+   \label{eq:prixneq0}
+   .
+\end{align}
+%all $i\in[r]\setminus\{0\}$ have probability
+%while
+%$0$ has probability $(\ceil{2^{b-1}/r}2-1)/(2^{b}-1)$. 
+We note
+that the probability for $0$ is in the middle of the two other
+bounds and often this yields a more uniform distribution on $[r]$ than
+the most uniform distribution we could get from the
+uniform distribution on $[2^{b-1}]$.
+
+With
+more careful calculations, we can get some nicer bounds
+that we shall later.
+\begin{lemma}\label{lem:ix-r-dist} For any distinct $x,y\in [u]$, 
+\begin{align}
+\Pr[i_x=0]&\le(1+r/2^b)/r\label{eq:ix=0}\\
+\Pr[i_x=i_y]&\leq \left(1+(r/2^b)^2\right)/r.\label{eq:ix=iy}
+\end{align}
+\end{lemma}
+\begin{proof}
+The proof of \req{eq:ix=0} is a simple calculation.
+Using \req{eq:prix0} and the fact $\ceil{2^{b-1}/r}\le(2^{b-1}+r-1)/r$ we have
+\begin{align*}
+\Pr[i_x=0]&\le (2(2^{b-1}+r-1)/r)-1)/(2^{b}-1)\\
+&=((2^b+r-2)/r)/(2^b-1)\\
+&=\left(1+(r-1)/(2^b-1)\right)/r\\
+&\le\left(1+r/2^b\right)/r.
+\end{align*}
+The last inequality follows because $r<u<2^b$.
+
+% The proof of \ref{eq:ix=iy} follows from {\color{red}Thomas}.
+For \ref{eq:ix=iy},
+let $q=2^{b-1}$ and $p=1/(2q-1)$.
+We define $a\ge 0$ to be the smallest integer, such that $r\setminus q+a$.
+In particular this means 
+$\lceil q/r\rceil = (q+a)/r$ and
+$\lfloor q/r\rfloor = (q-r+a)/r$.
+
+We bound the sum
+$$
+   \Pr[i_x=i_y]
+   = \sum_{k=0}^{r-1} \Pr[i_x = k]^2
+$$
+by splitting into three cases:
+1) The case $i_x=0$, where $\Pr[i_x=0]=(2\ceil{q/r}-1)p$,
+2) the $r-a-1$ indices $j$ where $\Pr[i_x=j]=2\ceil{q/r}p$,
+and 3) the $a$ indices $j$ st. $\Pr[i_x=j]=2\floor{q/r}p$.
+\begin{align*}
+   \Pr[i_x=i_y]
+   &=
+   (2p\ceil{ q/r}-p)^2 + (r-a-1) (2p \lceil q/r\rceil)^2 + (r-a) (2p \lfloor q/r \rfloor)^2
+    \\&= ((4a+1)r+4(q+a)(q-a-1))p^2/r
+   \\&\le (1 + (r^2-r)/(2q-1)^2) / r.
+\end{align*}
+The last inequality comes from maximizing over $a$, which yields $a=(r-1)/2$.
+
+The result now follows from
+\begin{align}
+   (r^2-r)/(2q-1)^2
+   \le
+   (r-1/2)^2/(2q-1)^2
+   \le
+   (r/(2q))^2
+\end{align}
+which holds exactly when $r\le q$.
+
+
+
+\end{proof}
+Lemma \ref{lem:ix-r-dist} above is all we need to know about the
+marginal distribution of $i_x$. However, we also need a replacement
+for Lemma \ref{lem:remove-si} for handling the signbit $s_x$.
+\begin{lemma}\label{lem:remove-si-r-dist} Consider distinct keys
+$x_1,\ldots,x_j$, $j\leq k$ and an expression $B=s_{x_1}A$ where $A$
+depends on $i_{x_1},\ldots,i_{x_j}$ and $s_{x_2},\ldots,s_{x_j}$ but not
+$s_{x_1}$. 
+Then
+\begin{equation}\label{eq:remove-si-r-dist}
+\E[s_xA]=\E[A\suchthat i_x=0]/p.
+\end{equation}
+\end{lemma}
+\begin{proof}
+The proof follows the same idea as that for Lemma \ref{lem:remove-si}.
+First we have
+\[\E[B]=\E_{h_{x_1}\gets U([2^b]\setminus\{0\})}[B]=\E_{h_{x_1}\gets U[2^b]}[B]2^b/p-\E_{h_{x_1}=0}[B]/p.\]
+With $h_{x_1}\gets U[2^b]$, the bit $a_{x_1}$ is uniform and 
+independent of $j_{x_1}$, so $s_{x_1}\in\{-1,+1\}$ is uniform and 
+independent of $i_{x_1}$, and therefore 
+\[\E_{h_{x_1}\gets U[2^b]}[s_{x_1}A]=0.\]
+Moreover, $h_{x_1}=0$ implies $j_x={x_1}$, $i_{x_1}=0$, $a_{x_1}=0$,
+and $s_{x_1}=-1$,
+so 
+\[\E[s_{x_1}A]=-\E_{h_{x_1}=0}[s_{x_1}A]/p=\E_{i_{x_1}=0}[A].\]
+\end{proof}
+We now consider our $F_2$ extimator
+\[X=\sum_{i\in[r]}\left( \sum_{x\in[u]}s_x f_x[i_x=i]\right)^2\!
+=F_2+Y\mbox{ where }Y=\sum_{x,y\in[u],x\neq y}
+s_x f_x[i_x=i_y]s_y f_y.\]
+Using Lemma \ref{lem:remove-si-r-dist} instead of Lemma
+\ref{lem:remove-si-r-dist} we get an almost identical calculation 
+of the expection $\E[Y]$ as
+in Section \ref{sec:two-for-one} and with the same
+conclusion that 
+\begin{equation}\label{eq:E-Mersenne-arb-r}
+\E[Y]=(F_1^2-F_2)/p^2\leq (n-1)F_2/p^2.
+\end{equation}
+Therfore we still have the same bound \req{eq:E-F2-p} as in Theorem \ref{thm:h-and-s-p}.
+
+Concerning the variance, we have some more changes to the 
+calculations in Section \ref{sec:two-for-one}.
+We still start with
+\[\Var[X]=\Var[Y]\leq \E[Y^2]=
+\sum_{x,y,x',y'\in[u],x\neq y,x'\neq y'}\E[(s_x f_x[i_x=i_y]s_y f_y)
+  (s_{x'}f_{x'}[i_{x'}=i_{y'}]s_{y'} f_{y'})].\] 
+For terms with 4 distinct keys, we still get the same expectation
+as in Section \ref{sec:two-for-one}, so their
+total contribution to the variance is still the $F_2^2 n^2/p^4$ from
+\req{eq:distinct}
+
+However, for the terms with two unique keys and one pair of identical
+keys, the factor $\E[i_x=r-1]<1/r$ gets replaced with $\E[i_x=0]$
+which by \req{eq:ix=0} in Lemma \ref{lem:ix-r-dist} is bound by
+$(1+r/2^b)/r$. As a result, for the total contribution of these terms,
+we have to multiply the $4 F_2^2 n/(rp^2)$ from \req{eq:one-pair} by
+$(1+r/2^b)$, so they now sum up to
+\begin{equation}\label{eq:one-pair'}
+4 (1+r/2^b) F_2^2 n/(rp^2)
+\end{equation}
+Finally, for the terms with two pairs of identical keys, $\Pr[i_x=i_y]$ was bounded
+by $(1+1/p)/r$, which is replaced by the bound $\left(1+(r/2^b)^2\right)/r$, so
+so 
+\begin{align}
+2\sum_{x,y\in[u],x\neq y}&(f_x^2f_y^2)\Pr[i_x=i_y]\nonumber\\
+&=2\sum_{x,y\in[u],x\neq y}(f_x^2f_y^2)(1+(r/2^b)^2)/k\nonumber\\
+&=2(F_2^2-F_4)(1+(r/2^b)^2)/k\nonumber\\
+&\leq 2(1-1/n)F_2^2(1+(r/2^b)^2)/k\label{eq:two-pairs'}
+\end{align}
+Adding it all up, we have proved that 
+\[\Var[Y]\leq F_2^2 n^2/p^4+2(1-1/n)F_2^2(1+(r/2^b)^2)/r+4(1+r/2^b)F_2^2 n/(rp^2).\]
+We want the argue that we get the same variance bound as we had in 
+\req{eq:Var-b-bit-arb-r} with uniform $b$-bit hash values; namely that
+\begin{equation}\label{eq:Var-Mersenne-arb-r}
+\Var[Y]\leq 2\left(1+(r/2^b)^2\right)F_2^2/r.
+\end{equation}
+which follows if 
+\[ru^3/p^4+4(1+r/2^b)n^2/p^2\leq 2.\]
+Recall that $2\leq k<u\leq (p+1)/2$. Since $u$ is a power of two,
+$u\geq 4$. We conclude $n/p\leq u/p\leq 4/7$, $r/p\leq 3/7$, and
+$p+1\geq 8$. Therefore the left-hand side is bounded by
+$(3/7)(4/7)^3+4(1+2/8)(4/7)^2<1.8<2$.  This completes the proof of
+\req{eq:Var-Mersenne-arb-r}. The basic conclusion is that both with
+$r$ is a power of two and when $r$ is arbitrary, we get the same
+variance bounds with Mersenne primes as we did with uniform $b$-bit
+strings. The only difference is the small error in expectation from
+\req{eq:E-Mersenne-arb-r}. Relative to the correct value $F_2$, the
+relative error in the expectation is by a factor of at most
+$n/p^2$ which is insignificant when $p$ is large.
+
+
