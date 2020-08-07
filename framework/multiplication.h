@@ -10,7 +10,6 @@
 #ifndef _MULTIPLICATION_H_
 #define _MULTIPLICATION_H_
 
-#include <bits/stdc++.h>
 #include <x86intrin.h>
 
 #ifdef DEBUG

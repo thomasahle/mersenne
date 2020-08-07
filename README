@@ -1,0 +1,4 @@
+Before running code, remember to make a dist/ folder.
+
+Compiling on Mac:
+(clang|gcc) carryless.cpp -std=c++11 -march=native -lc++ -O3
