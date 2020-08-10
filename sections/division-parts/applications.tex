@@ -1,28 +1,3 @@
 %! TEX root = ../../mersenne.tex
 
 \subsubsection{Applications}
-
-\paragraph{$k$-wise hashing without modulus}
-
-A very common algorithm is to define
-$h(x) = \sum_{i=0}^k a_i x^i \mod p$
-for some prime $p$.
-
-This is efficient if $p$ supports fast modulus.
-However now the range of $h$ is $[p]$, which may not be what we are looking for.
-Hence it is common to take $h(x)\mod m$ for some $m<p$.
-However $m$ is a general number, and can't be expected to support fast modulus.
-
-An alternative is the following:
-\begin{align}
-   \left\lfloor\frac{h(x)m}{p}\right\rfloor.
-\end{align}
-This only requires division with $p$, which we have shown can be done fast.
-
-An alternative is to compute $q = \lfloor2^n/p\rfloor$ and take
-\begin{align}
-\left\lfloor
-   \frac{h(x)mq}2^n
-\right\rfloor
-\end{align}
-but that requires using larger words, and has some other drawbacks\todo{Which ones?}
