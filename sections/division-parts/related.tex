@@ -64,3 +64,67 @@ The addition is different from ours.
 Doesn't add 1. Doesn't add $x$.
 Has that extra weird loop for fixing things in the end.
 So it actually has to do the $r$ computation?
+
+
+Words:
+ GM, PM reduction: Module af Generalized or Pseudo-Mersennes.
+
+The most important case is ``Modular Multiplication'', in which we are given two $w$-word numbers, $x,y$ and want to compute $xy\mod p$ which is again a $w$-word number.
+
+Montgomery method:
+\begin{align}
+   (aR\mod N)(bR\mod N) \mod N = (abR)R \mod N
+\end{align}
+We then need to remove the factor of $R$ by multiplying with its inverse $\mod N$.
+
+
+
+Unfortunately there are only 45 of them known.
+The most useful one perhaps being.
+
+Heuristically there are $O(\log x)$ Mersenne primes up to $x$.
+
+
+Trivia:
+Euler proved that an even number $n$ is perfect if and only if it is on the form $n=2^{q-1}M_q$, where $M_q=2^q-1$ is prime.
+(Usually we know a number is perfect if its divisors sum to the number itself, e.g. $6=1+2+3$ or $28=1+2+4+7+14$.)
+
+Four of the recommended primes in NIST's document "Recommended Elliptic Curves for Federal Government Use" are Solinas primes:
+
+
+%[[Curve448]] uses the Solinas prime <math>2^{448} - 2^{224} - 1</math>
+
+The classical Mersenne mod algorithm.
+Write $n = a2^p + b$, then
+\begin{align}
+   n \mod M_p = \begin{cases}
+      a + b & \text{if } a+b<M_p\\
+      a + b + 1 - 2^p & \text{otherwise}.
+   \end{cases}
+\end{align}
+
+Thus reduction modulo a Mersenne prime requires an
+integer addition, as opposed to an integer division for
+modular reduction in the general case. There are two
+drawbacks to this method of modular reduction:
+\begin{itemize}
+   \item Finding the integers a and b is easiest when p is a multiple of word size of the machine, since then there is
+no actual shifting of bits needed to align a and b for
+the modular addition. But word sizes are in practice
+powers of two, whereas p must be an odd prime.
+   \item The Mersenne primes are so rare, with none between
+      $M_{127}$ and $M_{521}$ hat usually there will be none of the desired magnitude.
+\end{itemize}
+For these reasons~\cite{van2014encyclopedia}, cryptographers tend not to use Mersenne primes, preferring similar moduli such as pseudo-Mersenne primes and generalized Mersenne primes.
+
+\paragraph{Pseudo-Mersenne primes}
+On the form $p = 2^n-k$.
+If $x < p^2$, write $x = a 2^{2n} + b 2^m + c$,
+where $a\in\{0,1\}$.
+(Note, if $k > 0$, we always have $a=0$.)
+Then $n \mod p = ak^2+bk+c$.
+Repeating this a few times gives the calculation.
+
+
+\paragraph{Generalised Mersenne primes}
+Solinas algorithm

@@ -486,7 +486,7 @@ values from Section \ref{sec:two-for-one}.
 
 
 
-\subsection{Even faster division and modulo with Mersenne Primes}
+\subsection{Even faster division and modulo with (Pseudo) Mersenne Primes}
 %
 \begin{algorithm}\label{alg:div-simple}
    \caption{For Mersenne prime $p=2^b-1$ and $x\leq 2^{2b}$, computes
@@ -516,37 +516,38 @@ with Algorithm \ref{alg:div-simple} above.
 
 In fact our Algorithm \ref{alg:div-simple} does much more than just division and modulo computation with Mersenne primes.
 The full algorithm in Section \ref{sec:division} gives a fast, branch-less algorithm for division and modulo by any \emph{generalized} Mersenne Prime.
-
+There are in general two kinds of such primes:
 %Primes on the form $2^n-1$ are known as Mersenne primes, and are used all over Cryptography and Computer Science because they allow quicker algorithms than primes in general.
 %This allows speeding up finite field arithmetic,
 %since $c\bmod (2^n-1) = (c\bmod 2^n) + \lfloor k/n\rfloor$ if the value is smaller than $p=2^n-1$ (otherwise just subtract $p$.)
 
 \begin{description}
-   \item[Generalized Mersenne Primes]
-      also sometimes known as Solinas primes~\cite{Solinas2011}, are sparse numbers, that is $f(2^m)$ where $f(x)$ is a low-degree polynomial.
-      Examples are the primes in NIST's document "Recommended Elliptic Curves for Federal Government Use": $p_{192} = 2^{192} - 2^{64} - 1$ and $p_{384} = 2^{384}-2^{128}-2^{96}+2^{32}-1$.
    \item[Pseudo-Mersenne Primes]
+      are primes on the form $2^n-c$, where is usually required that $c < 2^{\lfloor n/2\rfloor}$~\cite{van2014encyclopedia}.
       Crandal patented a method for working with Pseudo-Mersenne Primes in 1992~\cite{crandall1992method},
       why those primes are also sometimes called ``Crandal-primes''.
-      The method was formalized and extended by Jaewook Chung and Anwar Hasan in 2003.
+      The method was formalized and extended by Jaewook Chung and Anwar Hasan in 2003~\cite{chung2003more}.
       Our method, while simpler, has both stronger guarantees and better practical performance.
-   We provide a comparison with the Crandal-Chung-Hansan method in Section 4.
-
-      also sometimes known as Crandall primes, are numbers on the form $2^n - c$ for a small odd $c$.
-      It is sometimes required that $c < 2^{\lfloor n/2\rfloor}$~\cite{van2014encyclopedia}.
+      We provide a comparison with the Crandal-Chung-Hansan method in Section 4.
+      %also sometimes known as Crandall primes, are numbers on the form $2^n - c$ for a small odd $c$.
+   \item[Generalized Mersenne Primes]
+      also sometimes known as Solinas primes~\cite{Solinas2011}, are sparse numbers, that is $f(2^m)$ where $f(x)$ is a low-degree polynomial.
+      Examples are the primes in NIST's document ``Recommended Elliptic Curves for Federal Government Use'':
+         $p_{192} = 2^{192} - 2^{64} - 1$
+      and
+         $p_{384} = 2^{384}-2^{128}-2^{96}+2^{32}-1$.
+      We simply note that Solinas primes are also Pseudo-Mersenne Primes, which allow a particularly fast multiplication with $c$.
+      Hence our algorithms are also efficient for Generalised Mersenne primes.
 \end{description}
 
-We also give a simple algorithm for taking the modulo, which works efficiently for all Pseudo-Mersenne Primes.
-
-The proposed algorithm takes integers $n>c>0$ and $x$, and returns
-$\left\lfloor\frac{x}{2^n-c}\right\rfloor$.
-The algorithm performs two additions, a shift, and a multiplication with $c$ for each memory word occupied by $x$.
-Thus, in the case of Generalized Mersenne Primes with sparsity $k$, we can use a total of $3+k$ simple operations.
-\begin{algorithm}
-   %\caption{}\label{euclid}
+Our generalized algorithm is shown in Algorithm \ref{alg:division-generalized}.
+\begin{algorithm}\label{alg:division-generalized}
+   \caption{Generalized Division by Mersenne Primes.
+      For $m$ such that $x \le (2^n/c)^m$ calculates
+      $v = \floor{\frac{x}{2^n-c}}$.
+   }\label{euclid}
    \begin{algorithmic}[1]
       \Procedure{Divide}{x, n, c}
-         \State \textbf{let} $m$ \text{such that} $x \le (2^n/c)^m$.
          \State $v \gets 0$.
          %\For{$i\gets 1$ \textbf{to} $m$}
          \For{ $m$ times}
@@ -560,20 +561,17 @@ Thus, in the case of Generalized Mersenne Primes with sparsity $k$, we can use a
 \end{algorithm}
 The full proof of this is given in Theorem \ref{thm:simple-div} in Section \ref{sec:division}.
 
-
-In particular, if $c<2^{\floor {n/2}}$, as required by the Encyclopedia of Cryptography and Security~\cite{van2014encyclopedia}, we can let $m=2$ and the algorithm runs in just two steps.
-
-   For $c=1$ we can be slightly more specific, and support $x < q^n$.
-   In particular, for $c=1$ and $x < q^2$ we have
+In the Crandal case $x\le 2^n$ and $c\le 2^{\floor n/2}$, as described by the Encyclopedia of Cryptography and Security~\cite{van2014encyclopedia}, we can let $m=2$ and the algorithm runs in just two steps for a total of six operations:
    $$
    \left\lfloor\frac{x}{2^n-c}\right\rfloor
-   = \floor{\frac{\left(\lfloor\frac{(x+1)c}{q}\rfloor+x+1\right)c}{q}}
+   = \left\lfloor{\frac{\left(\lfloor\frac{(x+1)c}{q}\rfloor+x+1\right)c}{q}\right\rfloor
    = [(x+1)*c \rs n]*c+x+1 \rs n
-   .
-   $$
-   $$
-   = [x+1 \rs n]+x+1 \rs n
-   $$
+   .$$
+
+%The proposed algorithm takes integers $n>c>0$ and $x$, and returns
+%$\left\lfloor\frac{x}{2^n-c}\right\rfloor$.
+%The algorithm performs two additions, a shift, and a multiplication with $c$ for each memory word occupied by $x$.
+%Thus, in the case of Generalized Mersenne Primes with sparsity $k$, we can use a total of $3+k$ simple operations.
 
 
 %Note that for many Pseudo Mersenne Primes, multiplication by $c$ can be replaced by a single shift, making the algorithm completely additions and shifts.
@@ -589,8 +587,9 @@ To compute modulo we use the fact that
 \end{align}
 which is only two additions, a shift, and a multiplication with $c$ on top of the division algorithm.
 As $\floor{\frac{x}{p}} p \le x$ there is no danger of overflow.
+In the case $x\le 2^{2b}$ and $c=1$, we get the simplified Algorithm \ref{alg:div-simple} described above: $ \left\lfloor\frac{x}{2^n-1}\right\rfloor = [x+1 \rs n]+x+1 \rs n$.
 
-In fact our algorithm does something stronger, namely gives an efficient division algorithm for any number on the form $q-c$ where $q$ supports fast division.
+%In fact our algorithm does something stronger, namely gives an efficient division algorithm for any number on the form $q-c$ where $q$ supports fast division.
 The intuition for the algorithm is the expansion
 \begin{align}
    \frac{x}{q-c}
@@ -602,7 +601,7 @@ however curiously we need to add a $+1$ to get efficient convergence.
 
 
 
-\paragraph{$k$-wise hashing without modulus}
+\subsubsection{$k$-wise hashing without modulus}
 
 A very common algorithm is to define
 $h(x) = \sum_{i=0}^k a_i x^i \mod p$
