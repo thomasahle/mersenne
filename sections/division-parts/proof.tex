@@ -1,4 +1,4 @@
-%! TEX root = ../merdiv.tex
+%! TEX root = ../../mersenne.tex
 
 \subsection{Algorithm}
 
@@ -11,13 +11,13 @@ Thus, in the case of Generalized Mersenne Primes with sparsity $k$, we can use a
    \begin{algorithmic}[1]
       \Procedure{Divide}{x, n, c}
          \State \textbf{let} $m$ \text{such that} $x \le (2^n/c)^m$.
-         \State $v \gets 0$
+         \State $v \gets 0$.
          %\For{$i\gets 1$ \textbf{to} $m$}
          \For{ $m$ times}
             \State $v \gets (v + 1)c+x$ \textbf{shift-right} $n$.
          \EndFor
          %\EndFor
-         \State\textbf{return} $v$
+         \State \Return $v$
       \EndProcedure
    \end{algorithmic}
 \end{algorithm}

@@ -1,3 +1,4 @@
+%! TEX root = ../mersenne.tex
 \documentclass[12pt]{article}  
 %\renewcommand\baselinestretch{0.95}
 \usepackage{amssymb}
@@ -9,8 +10,9 @@
 \usepackage{epstopdf}
 \usepackage{todonotes}
 \usepackage{hyperref}
-\usepackage{algorithmic}
-\usepackage[ruled,vlined,commentsnumbered,titlenotnumbered]{algorithm2e}
+\usepackage{algorithm}
+\usepackage[noend]{algpseudocode}
+%\usepackage[ruled,vlined,commentsnumbered,titlenotnumbered]{algorithm2e}
 \newcommand{\suchthat}{\mathrel{}\mathclose{}\ifnum\currentgrouptype=16\middle\fi\vert\mathopen{}\mathrel{}}
 \newcommand{\xor}{\oplus}
 \newcommand{\ls}{\texttt{<<}}
@@ -63,4 +65,6 @@
 \newcommand{\er}[1]{\textcolor{blue}{#1}}
 \newcommand{\erdel}[1]{\textcolor{LightGreen}{#1}}
 
-
+% Drawing
+\newcommand{\rshiftt}{ \texttt{>\!>} }
+\newcommand{\andtt}{ \texttt{\&} }

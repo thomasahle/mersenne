@@ -1,3 +1,4 @@
+%! TEX root = ../mersenne.tex
 \section{Introduction}
 Polynomial hashing using Mersenne primes is well-known for being faster
 than polynomial hashing using arbitrary primes. Here we argue that
@@ -29,7 +30,7 @@ A random hash function $h:U\fct R$ is $k$-universal if for any $j\leq k$
 distinct keys $x_0,\ldots,x_{j-1}$, the vector
 $(h(x_0),\ldots,h(x_{j-1}))$ is uniformly distributed in $R^j$. This
 is equivalent to saying that each $h(x_i)$ is uniform in $R$ and that
-all the $h(x_i)$ are indepent of each other.
+all the $h(x_i)$ are independent of each other.
 \end{definition}
 We generally use the notation $[s]=\{0,\ldots,s-1\}$.
 The classic example of $k$-universal
@@ -68,8 +69,8 @@ is that
 y\equiv y\bmod 2^{b}+\floor{y/2^b}\ppmod {p}.
 \end{equation}
 This leads to efficient computations because 
-\[y\bmod 2^{b}=y\texttt{\&}p\quad\textnormal{and}\quad\floor{y/2^b}=y\texttt{>>}b.\]
-Here the bit-wise {\sc and} (\texttt{\&}) and the right-shift (\texttt{>>}) are
+\[y\bmod 2^{b}=y\texttt{\&}p\quad\textnormal{and}\quad\floor{y/2^b}=y\texttt{>\!>}b.\]
+Here the bit-wise {\sc and} (\andtt) and the right-shift (\rshiftt) are
 both very fast operations. For
 an extra fast implementation, we further assume that $p=2^b-1\geq 2u-1$.
 This is automatically satisfied in the typical case where $u$ is a power
@@ -78,20 +79,27 @@ computation of a degree $(k-1)$-polynomial using Horner's rule. Note that
 the reduction $y\gets (y\texttt\&p)+(y\texttt{>>}b)$ is applied after
 every multiplication so that the numbers involved never get too big (multiplication of large numbers is expensive).
 \begin{algorithm}\label{alg:Mersenne}
-  \caption{For $x\in [u]$, prime $p=2^b-1\geq 2u-1$, and
-    $\vec a=(a_0,\ldots,a_{k-1})\in[p]^k$, compute $h_{\vec a}(x)=\left(\sum_{i\in[q]}a_i x^i\right)\bmod p$}
-$y\gets a_{k-1}$\;
-  \For{$i=q-2,\ldots,0$}{
-    \ \\[-4ex]
-    \hfill $\rhd\quad y<2p$\\
-$y\gets yx+a_i$\hfill $\rhd\quad y<2p(u-1)+(p-1)<(2u-1)p\leq p^2$\\
-$y\gets (y\texttt\&p)+(y\texttt{>>}b)$ \hfill $\rhd\quad y<p+p^2/2^b<2p$}
-%  $y\gets y+1$ \hfill $\rhd\quad 0<y\leq 2p$, \ $(y\texttt{>>}b)\leq 1$, and
-%  $y\geq 2^b\implies y\texttt\&p=y-2^b<p$\\
-%$y\gets (y\texttt\&p)+(y\texttt{>>}b)$ \hfill $\rhd\quad 0<y\leq p$\\
-%$y\gets y-1$\hfill $\rhd\quad y\in[p]$\\
-\lIf{$y\geq p$}{$y\gets y-p$}
-{\bf return} $y$
+   \caption{
+      For $x\in [u]$, prime $p=2^b-1\geq 2u-1$,
+      and $\vec a=(a_0,\ldots,a_{k-1})\in[p]^k$,
+      compute $h_{\vec a}(x)=\left(\sum_{i\in[q]}a_i x^i\right)\bmod p$
+   }
+   \begin{algorithmic}[1]
+       \State $y\gets a_{k-1}$
+       \For{$i=q-2,\ldots,0$}
+           \Comment{$\quad y<2p$}
+
+           \State $y\gets yx+a_i$
+           \Comment{$\quad y<2p(u-1)+(p-1)<(2u-1)p\leq p^2$}
+
+           \State $y\gets (y\texttt\&p)+(y\texttt{>>}b)$
+           \Comment{$\quad y<p+p^2/2^b<2p$}
+       \EndFor
+       \If{$y\geq p$}
+          \State $y\gets y-p$
+       \EndIf
+       \State \Return $y$
+   \end{algorithmic}
 \end{algorithm}
 The above completes our description of how Mersenne primes are
 normally used for fast computation of $k$-universal hash functions.
