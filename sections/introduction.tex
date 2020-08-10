@@ -26,11 +26,11 @@ even if $n$ is close to $p$.
 The classic definition of $k$-universal (or $k$-independent) hashing
 goes back to Carter and Wegman \cite{wegman81kwise}.
 \begin{definition}
-A random hash function $h:U\to R$ is $k$-universal if for any $j\leq k$
-distinct keys $x_0,\ldots,x_{j-1}$, the vector
-$(h(x_0),\ldots,h(x_{j-1}))$ is uniformly distributed in $R^j$. This
-is equivalent to saying that each $h(x_i)$ is uniform in $R$ and that
-all the $h(x_i)$ are independent of each other.
+   A random hash function $h:U\to R$ is $k$-universal if for any $j\leq k$
+   distinct keys $x_0,\ldots,x_{j-1}$, the vector
+   $(h(x_0),\ldots,h(x_{j-1}))$ is uniformly distributed in $R^j$. This
+   is equivalent to saying that each $h(x_i)$ is uniform in $R$ and that
+   all the $h(x_i)$ are independent of each other.
 \end{definition}
 We generally use the notation $[s]=\{0,\ldots,s-1\}$.
 The classic example of $k$-universal
@@ -66,7 +66,7 @@ Mersenne prime $p=2^b-1$, e.g., $p=2^{61}-1$ for hashing 32-bit keys or
 $p=2^{89}-1$ for hashing 64-bit keys. The point in using such a Mersenne prime
 is that
 \begin{equation}\label{eq:Mersenne}
-y\equiv y\bmod 2^{b}+\floor{y/2^b}\ppmod {p}.
+   y\equiv y\bmod 2^{b}+\floor{y/2^b}\ppmod {p}.
 \end{equation}
 This leads to efficient computations because 
 \[y\bmod 2^{b}=y\andtt p\quad\textnormal{and}\quad\floor{y/2^b}=y\rs b.\]
@@ -85,20 +85,20 @@ every multiplication so that the numbers involved never get too big (multiplicat
       compute $h_{\vec a}(x)=\left(\sum_{i\in[q]}a_i x^i\right)\bmod p$
    }
    \begin{algorithmic}[1]
-       \State $y\gets a_{k-1}$
-       \For{$i=q-2,\ldots,0$}
-           \Comment{$\quad y<2p$}
+      \State $y\gets a_{k-1}$
+      \For{$i=q-2,\ldots,0$}
+      \Comment{$\quad y<2p$}
 
-           \State $y\gets yx+a_i$
-           \Comment{$\quad y<2p(u-1)+(p-1)<(2u-1)p\leq p^2$}
+      \State $y\gets yx+a_i$
+      \Comment{$\quad y<2p(u-1)+(p-1)<(2u-1)p\leq p^2$}
 
-           \State $y\gets (y\andtt p)+(y\rs b)$
-           \Comment{$\quad y<p+p^2/2^b<2p$}
-       \EndFor
-       \If{$y\geq p$}
-          \State $y\gets y-p$
-       \EndIf
-       \State \Return $y$
+      \State $y\gets (y\andtt p)+(y\rs b)$
+      \Comment{$\quad y<p+p^2/2^b<2p$}
+      \EndFor
+      \If{$y\geq p$}
+      \State $y\gets y-p$
+      \EndIf
+      \State \Return $y$
    \end{algorithmic}
 \end{algorithm}
 The above completes our description of how Mersenne primes are
@@ -140,13 +140,13 @@ missing $p=2^b-1$. Now $p$ is the all \texttt{1}s, and
 $p\andtt (r-1)=r-1$. Therefore, for any 
 any $i<r-1$,
 \begin{equation}\label{eq:coll-ell<r-1}
-\Pr[h^r(x)=i]=\lceil p/r\rceil/p=((p+1)/r)/p
-=(1+1/p)/r\textnormal,
+   \Pr[h^r(x)=i]=\lceil p/r\rceil/p=((p+1)/r)/p
+   =(1+1/p)/r\textnormal,
 \end{equation}
 while 
 \begin{equation}\label{eq:coll-ell=r-1}
- \Pr[h^r(x)=r-1]=\lfloor p/r\rfloor/p=((p+1-r)/r)/p
-=(1-(r-1)/p)/r.
+   \Pr[h^r(x)=r-1]=\lfloor p/r\rfloor/p=((p+1-r)/r)/p
+   =(1-(r-1)/p)/r.
 \end{equation}
 Thus $\Pr[h^r(x)=i]\leq (1+1/p)/r$ for all $i\in[r]$. This upper-bound
 only has a relative error of $1/p$ from the uniform $1/r$. For
@@ -158,10 +158,13 @@ Combining \req{eq:coll-ell<r-1} and \req{eq:coll-ell=r-1} with
 pairwise independence, for any distinct keys $x,y\in [u]$, we get
 collision probability
 \begin{align}
-  \Pr[h^r(x)=h^r(y)]&=\sum_{i\in[r]}\Pr[h^r(x)=h^r(y)=i]=\sum_{i\in[r]}\Pr[h^r(x)=i]^2\nonumber\\
-                   &=(r-1)((1+1/p)/r)^2+((1-(r-1)r/p)/r)^2\nonumber\\[.5ex]
-  &=\frac{r +(r^2-r)/p^2}{r^2}=(1+(r-1)/p^2)/r<(1+r/p^2)/r.\label{eq:coll}
-  \end{align}
+   \Pr[h^r(x)=h^r(y)]
+      &=(r-1)((1+1/p)/r)^2+((1-(r-1)r/p)/r)^2\nonumber
+      \\[.5ex]&=
+      \frac{r +(r^2-r)/p^2}{r^2}
+      =(1+(r-1)/p^2)/r
+      <(1+r/p^2)/r.\label{eq:coll}
+\end{align}
 We note that relative error $r/p^2$ is small as long as $p$ is
 large.
 
@@ -226,20 +229,20 @@ $F_m=\sum_{x\in [u]}f_y^m=\|f\|_m^m$. The goal here is to
 estimate the second moment $F_2=\sum_{x\in [u]}f_x^2$ which is the square of the Euclidean norm $\|f\|_2$. 
 
 \begin{algorithm}
-  \caption{\label{alg:count-sketch} Count Sketch. Uses a
-vector/array $C$ of $r$ integers and two independent
-4-universal hash functions $i:[u]\to[r]$ and $s:[u]\to\{-1,1\}$.
-.}
-\begin{description}
-\item[Initialize] For $i\in[t]$, set $C[i]\gets 0$.
-\item[Process$(x,\Delta)$] $C[i(x)]\gets C[i(x)]+s(x) \Delta$. 
-\item[Output] $X=\sum_{i\in[t]} C[i]^2$.
-\end{description}
+   \caption{\label{alg:count-sketch} Count Sketch. Uses a
+      vector/array $C$ of $r$ integers and two independent
+      4-universal hash functions $i:[u]\to[r]$ and $s:[u]\to\{-1,1\}$.
+   .}
+   \begin{description}
+      \item[Initialize] For $i\in[t]$, set $C[i]\gets 0$.
+      \item[Process$(x,\Delta)$] $C[i(x)]\gets C[i(x)]+s(x) \Delta$. 
+      \item[Output] $X=\sum_{i\in[t]} C[i]^2$.
+   \end{description}
 \end{algorithm}
 The standard analysis \cite{charikar04count-sketch} shows that 
 \begin{align}
-\E[X]&=F_2\label{eq:E-F2}\\
-\Var[X]&=2(F_2-F_4)/r<2F_2/r\label{eq:V-F2}
+   \E[X]&=F_2\label{eq:E-F2}\\
+   \Var[X]&=2(F_2-F_4)/r<2F_2/r\label{eq:V-F2}
 \end{align}
 By Chebyshev's inequality, this implies
 \[\Pr[|X-F_2|\geq \eps F_2]\leq \Var[X]/(\eps F_2)^2<
@@ -270,7 +273,7 @@ $A$ depends on $i(x_1),\ldots,i(x_j),s(x_2),\ldots,s(x_j)$, but
 not on $s(x_1)$, then
 \[\E[s(x_1)A]=0.\]
 This follows because $\E[s(x_1)]=0$ by uniformity of $s(x_1)$ and because $s(x_1)$ is independent of $A$.
-  
+
 
 Assuming that $t=2^\ell$ is a power of two, we can easily construct
 $i:[u]\to[t]$ and $s:[u]\to\{-1,1\}$ using a single $4$-universal
@@ -280,25 +283,25 @@ $\ell$ least significant bits of $h(x)$ for $i(x)$ and the most
 significant bit of $h(x)$ for a bit $a(x)\in[2]$, and finally set
 $s(x)=1-2a(x)$. The construction is summarized in Algorithm \ref{alg:h-and-s}
 \begin{algorithm}\label{alg:h-and-s}
-  \caption{For key $x\in [u]$, compute $i(x)=i_x\in[2^\ell]$ and
-    $s(x)=s_x\in\{-1,+1\}$,\rule{5ex}{0ex}
-    using $h:[u]\to [2^b]$ where $b>\ell$.}
-  $h_x\gets h(x)$\hfill $\rhd\quad h_x$ uses $b$ bits\\
-  $i_x\gets h_x \andtt (2^\ell-1)$\hfill $\rhd\quad i_x$ gets $\ell$ least significant
-    bits of $h_x$\\
-$a_x\gets h_x\rs (b-1)$\hfill $\rhd\quad a_x$ gets the most significant bit of $h_x$\\
-$s_x\gets 1-2a_x$ \hfill $\rhd\quad a_x\in[2]$ is converted to a sign $s_x\in\{-1,+1\}$
+   \caption{For key $x\in [u]$, compute $i(x)=i_x\in[2^\ell]$ and
+      $s(x)=s_x\in\{-1,+1\}$,\rule{5ex}{0ex}
+   using $h:[u]\to [2^b]$ where $b>\ell$.}
+   $h_x\gets h(x)$\hfill $\rhd\quad h_x$ uses $b$ bits\\
+   $i_x\gets h_x \andtt (2^\ell-1)$\hfill $\rhd\quad i_x$ gets $\ell$ least significant
+   bits of $h_x$\\
+   $a_x\gets h_x\rs (b-1)$\hfill $\rhd\quad a_x$ gets the most significant bit of $h_x$\\
+   $s_x\gets 1-2a_x$ \hfill $\rhd\quad a_x\in[2]$ is converted to a sign $s_x\in\{-1,+1\}$
 \end{algorithm}
 \begin{lemma}\label{lem:b-bit-hashing} Suppose $h:[u]\to[2^b]$ is $k$-universal. Let
-  $i:[u]\to[2^\ell]$ and
-  $s:[u]\to\{-1,1\}$ be constructed from $h$ as described in Algorithm \ref{alg:h-and-s}. Then $h$ and $s$ are both $k$-universal. Moreover, for
-  any $j\leq k$ distinct keys $x_1,\ldots,x_j$, the $2j$ hash
-  values $i(x_1),\ldots,i(x_j),s(x_1),\ldots,s(x_j)$ are independent.
-  In particular, if $A$ depends on
-  $i(x_1),\ldots,i(x_j),s(x_2),\ldots,s(x_j)$, but not on $s(x_1)$, then
-\begin{equation}\label{eq:E-0}
-  \E[s(x_1)A]=0
-\end{equation}
+   $i:[u]\to[2^\ell]$ and
+   $s:[u]\to\{-1,1\}$ be constructed from $h$ as described in Algorithm \ref{alg:h-and-s}. Then $h$ and $s$ are both $k$-universal. Moreover, for
+   any $j\leq k$ distinct keys $x_1,\ldots,x_j$, the $2j$ hash
+   values $i(x_1),\ldots,i(x_j),s(x_1),\ldots,s(x_j)$ are independent.
+   In particular, if $A$ depends on
+   $i(x_1),\ldots,i(x_j),s(x_2),\ldots,s(x_j)$, but not on $s(x_1)$, then
+   \begin{equation}\label{eq:E-0}
+      \E[s(x_1)A]=0
+   \end{equation}
 \end{lemma}
 Note that Algorithm \ref{alg:h-and-s} is well defined as long as 
 $h$ returns a $b$-bit integer. However, Lemma \ref{lem:b-bit-hashing} requires
@@ -351,57 +354,57 @@ $[2^b-1]$. We will consider having $h(x_1)$ uniformly distributed in
 $[2^b]$, denoted $h(x_1)\gets U[2^b]$, but then we later have to
 subtract the ``fake'' case where $h(x_1)=p=2^b-1$.  Making the
 distribution of $h(x_1)$ explicit, we get
-  \begin{align}
-  \E_{h(x_1)\gets U[p]}[B]&=\sum_{y\in[p]}\E_{h(x_1)=y}[B]/p
-  =\sum_{y\in[2^b]}\E_{h(x_1)=y}[B]/p-\E_{h(x_1)=p}[B]/p\nonumber\\
-  &=\E_{h(x_1)\gets U[2^b]}[B](p+1)/p-\E_{h(x_1)=p}[B]/p.\label{eq:play-with-dist}
+\begin{align}
+   \E_{h(x_1)\gets U[p]}[B]&=\sum_{y\in[p]}\E_{h(x_1)=y}[B]/p
+   =\sum_{y\in[2^b]}\E_{h(x_1)=y}[B]/p-\E_{h(x_1)=p}[B]/p\nonumber\\
+                           &=\E_{h(x_1)\gets U[2^b]}[B](p+1)/p-\E_{h(x_1)=p}[B]/p.\label{eq:play-with-dist}
 \end{align}
 Let us now apply this idea our situation where $i:[u]\to[2^\ell]$ and
 $s:[u]\to\{-1,1\}$ are constructed from $h$ as described in Algorithm
 \ref{alg:h-and-s}. We will prove
 \begin{lemma}\label{lem:remove-si}  Consider distinct keys $x_1,\ldots,x_j$, $j\leq k$ and an expression $B=s(x_1)A$ where $A$
-depends on $i(x_1),\ldots,i(x_j)$ and $s(x_2),\ldots,s(x_j)$ but not
-$s(x_1)$. Then
-\begin{equation}\label{eq:remove-si}
-  \E[s(x_1)A]=\E[A\mid i(x_1)=2^\ell-1]/p.
-\end{equation}
+   depends on $i(x_1),\ldots,i(x_j)$ and $s(x_2),\ldots,s(x_j)$ but not
+   $s(x_1)$. Then
+   \begin{equation}\label{eq:remove-si}
+      \E[s(x_1)A]=\E[A\mid i(x_1)=2^\ell-1]/p.
+   \end{equation}
 \end{lemma}
 \begin{proof}
-When $h(x_1)\gets U[2^b]$, then $s(x_1)$ is uniform
-in $\{-1,+1\}$ and independent of $i(x_1)$. The remaining
-$(i(x_i),s(x_i))$, $i>1$, are independent of $s(x_1)$ because they
-are functions of $h(x_i)$ which is independent of $h(x_1)$, so
-we conclude that 
-\[\E_{h(x)\gets U[p+1]}[s(x_1)A]=0\]
-Finally, when $h(x_1)=p$, we get $s(x_1)=-1$ and $i(x_1)=2^\ell-1$, 
-so applying \req{eq:play-with-dist}, we conclude
-that 
-\[\E[s(x_1)A]=\E_{i(x)=2^\ell-1}[A]/p.\]
+   When $h(x_1)\gets U[2^b]$, then $s(x_1)$ is uniform
+   in $\{-1,+1\}$ and independent of $i(x_1)$. The remaining
+   $(i(x_i),s(x_i))$, $i>1$, are independent of $s(x_1)$ because they
+   are functions of $h(x_i)$ which is independent of $h(x_1)$, so
+   we conclude that 
+   \[\E_{h(x)\gets U[p+1]}[s(x_1)A]=0\]
+   Finally, when $h(x_1)=p$, we get $s(x_1)=-1$ and $i(x_1)=2^\ell-1$, 
+   so applying \req{eq:play-with-dist}, we conclude
+   that 
+   \[\E[s(x_1)A]=\E_{i(x)=2^\ell-1}[A]/p.\]
 \end{proof}
 Above \req{eq:remove-si} is our replacement for \req{eq:E-0}, that is,
 when the hash values from $h$ are uniform in $[2^b-1]$ instead of
 in $[2^b]$, then $\E[s(x_1)B]$ is reduced by $\E_{i(x)=2^\ell-1}[B]/p$.
 For large $p$, this is a small additive error. Using this in a careful
 analysis, we will show that our fast second moment estimation 
-based on Mersenne primes performes almost perfectly:
+based on Mersenne primes performs almost perfectly:
 
 \begin{theorem}\label{thm:h-and-s-p}
-Let $r>1$ and $u>r$ be powers of two and let $p=2^b-1>u$ be a
-Mersenne prime.
-Suppose with have a $k$-universal hash function $h:[u]\to[2^b-1]$, e.g.,
-generated using Algorithm \ref{alg:Mersenne}. Suppose
-$i:[u]\to[r]$ and
-$s:[u]\to\{-1,1\}$ are constructed from $h$ as described in
-Algorithm \ref{alg:h-and-s}. Using this $i$ and $s$ 
-in the Count Sketch Algorithm \ref{alg:count-sketch}, the second moment 
-estimate $X=\sum_{i\in[k]} C_i^2$ satsifies:
-\begin{align}
-\E[X]=&F_2+(F_1^2-F_2)/p^2 < (1+n/p^2)\,F_2\textnormal,\label{eq:E-F2-p}\\
-\Var[X]&< 2(F_2^2-F_4)/r+F_2^2 (2.33+4 n/r)/p^2<2F_2^2/r.\label{eq:V-F2-p}
-\end{align}
+   Let $r>1$ and $u>r$ be powers of two and let $p=2^b-1>u$ be a
+   Mersenne prime.
+   Suppose with have a $k$-universal hash function $h:[u]\to[2^b-1]$, e.g.,
+   generated using Algorithm \ref{alg:Mersenne}. Suppose
+   $i:[u]\to[r]$ and
+   $s:[u]\to\{-1,1\}$ are constructed from $h$ as described in
+   Algorithm \ref{alg:h-and-s}. Using this $i$ and $s$ 
+   in the Count Sketch Algorithm \ref{alg:count-sketch}, the second moment 
+   estimate $X=\sum_{i\in[k]} C_i^2$ satisfies:
+   \begin{align}
+      \E[X]=&F_2+(F_1^2-F_2)/p^2 < (1+n/p^2)\,F_2\textnormal,\label{eq:E-F2-p}\\
+      \Var[X]&< 2(F_2^2-F_4)/r+F_2^2 (2.33+4 n/r)/p^2<2F_2^2/r.\label{eq:V-F2-p}
+   \end{align}
 \end{theorem}
 The difference from \req{eq:E-F2} and \req{eq:V-F2} 
-is negligiable when $p$ is large. Theorem \ref{thm:h-and-s-p} will be
+is negligible when $p$ is large. Theorem \ref{thm:h-and-s-p} will be
 proved in Section \ref{sec:analysis-two-for-one}.
 
 
@@ -413,12 +416,12 @@ map $\mu:Q\to R$, and use $\mu\circ h$ as a hash function from
 $U$ to $R$.
 
 Let $q=|Q|$ and $r=|R|$. We want the map $\mu$ to be \emph{most
-  uniform} in the sense that for bucket $i\in R$, the number of
+uniform} in the sense that for bucket $i\in R$, the number of
 elements from $Q$ mapping to $i$ is either $\floor{q/r}$ or
 $\ceil{q/r}$. Then the uniformity of hash values with $h$ implies for
 any key $x$ and bucket $i\in R$
 \[\floor{q/r}/q\leq \Pr[\mu\circ
-  h(x)=i]\leq \ceil{q/r}/q.\]
+h(x)=i]\leq \ceil{q/r}/q.\]
 Below we typically have $Q=[q]$ and $R=[r]$. A standard example of a most uniform map $\mu:[q]\to[r]$ 
 is $\mu(x)=x\bmod r$ which the one used above when we defined 
 $h^r:[u]\to[r]$, but as we mentioned before, the modulo operation is 
@@ -435,43 +438,43 @@ Now, our interest is the case where $q$ is a Mersenne prime $p=2^b-1$. We want
 an efficient and most uniform map $\mu:[2^b-1]$ into any given $[r]$.
 Our simple solution is to define
 \begin{equation}\label{eq:most-uniform}
-\mu(x)=\floor{(x+1)r/2^b}=((x+1)r)\rs b.
+   \mu(x)=\floor{(x+1)r/2^b}=((x+1)r)\rs b.
 \end{equation}
 Lemma \ref{lem:most-uniform} (iii) below 
 states that \req{eq:most-uniform} indeed
 gives a most uniform map. 
 \begin{lemma}\label{lem:most-uniform} Let $r$ and $b$ the positive integers
-$2^b-1$. 
-\begin{itemize}
-\item[(i)] $x\mapsto (xr)\rs\,b$ is a most
-uniform map from $[2^b]$ to $[r]$.
-\item[(ii)] $x\mapsto (xr)\rs\,b$ is a most
-uniform map from $[2^b]\setminus\{0\}=\{1,\ldots,2^b-1\}$ to $[r]$.
-\item[(iii)] $x\mapsto ((x+1)r)\rs \, b$ is a most
-uniform map from $[2^b-1]$ to $[r]$.
-\end{itemize}
+   $2^b-1$. 
+   \begin{itemize}
+      \item[(i)] $x\mapsto (xr)\rs\,b$ is a most
+         uniform map from $[2^b]$ to $[r]$.
+      \item[(ii)] $x\mapsto (xr)\rs\,b$ is a most
+         uniform map from $[2^b]\setminus\{0\}=\{1,\ldots,2^b-1\}$ to $[r]$.
+      \item[(iii)] $x\mapsto ((x+1)r)\rs \, b$ is a most
+         uniform map from $[2^b-1]$ to $[r]$.
+   \end{itemize}
 \end{lemma}
 \begin{proof}
-Trivially (ii) implies (iii). 
-The statement (i) is folklore and easy to prove, so we know that every
-$i\in[r]$ gets hit by $\floor {2^b/r}$ or $\ceil{2^b/r}$ elements from
-$[2^b]$. It is also clear that $\ceil{2^b/r}$ elements, including $0$,
-maps to $0$. To prove (ii), we remove $0$ from $[2^b]$, 
-implying that only
-$\ceil{2^b/r}-1$ elements map to $0$. For all positive integers $q$
-and $r$, $\ceil{(q+1)/r}-1=\floor{q/r}$, and we use this here with 
-$q=2^b-1$. It follows that all buckets from $[r]$ gets $\floor{q/r}$
-or $\floor{q/r}+1$ elements from $Q=\{1,\ldots,q\}$. If $r$ does
-not divide $q$ then $\floor{q/r}+1=\ceil{q/r}$, as desired. However,
-if $r$ divides $q$, then $\floor{q/r}=q/r$, and this
-is the least number of elements from $Q$ hitting any bucket in $[r]$. Then 
-no bucket from $[r]$ can get hit by more than $q/r=\ceil{q/r}$ 
-elements from $Q$. This completes the proof of (ii), and hence of (iii).
+   Trivially (ii) implies (iii). 
+   The statement (i) is folklore and easy to prove, so we know that every
+   $i\in[r]$ gets hit by $\floor {2^b/r}$ or $\ceil{2^b/r}$ elements from
+   $[2^b]$. It is also clear that $\ceil{2^b/r}$ elements, including $0$,
+   maps to $0$. To prove (ii), we remove $0$ from $[2^b]$, 
+   implying that only
+   $\ceil{2^b/r}-1$ elements map to $0$. For all positive integers $q$
+   and $r$, $\ceil{(q+1)/r}-1=\floor{q/r}$, and we use this here with 
+   $q=2^b-1$. It follows that all buckets from $[r]$ gets $\floor{q/r}$
+   or $\floor{q/r}+1$ elements from $Q=\{1,\ldots,q\}$. If $r$ does
+   not divide $q$ then $\floor{q/r}+1=\ceil{q/r}$, as desired. However,
+   if $r$ divides $q$, then $\floor{q/r}=q/r$, and this
+   is the least number of elements from $Q$ hitting any bucket in $[r]$. Then 
+   no bucket from $[r]$ can get hit by more than $q/r=\ceil{q/r}$ 
+   elements from $Q$. This completes the proof of (ii), and hence of (iii).
 \end{proof}
 We note that our trick does not work when $q=2^b-a$ for $a\geq 2$, that is,
 using $x\mapsto ((x+a)r)\rs  b$, for in this general case, 
 the number of elements hashing to $0$ is $\ceil {2^b/r}-a$, or $0$ if
- $a\geq \floor {2^b/r}$. Our new uniform map from \req{eq:most-uniform}
+$a\geq \floor {2^b/r}$. Our new uniform map from \req{eq:most-uniform}
 is thus very specific to Mersenne prime fields.
 
 We shall see in Section \ref{sec:count-sketch-r} that our new uniform map
@@ -486,8 +489,8 @@ We even suggest a speedup the computation of $\bmod p$ for Mersenne primes
 $p=2^b-1$. The issue in Algorithm \ref{alg:Mersenne} is that
 if-statement can be slow because of branch prediction. 
 \begin{algorithm}
-  \caption{For Mersenne prime $p=2^b-1$ and $x\leq p^2$, computes
-    $y=x\bmod p$ and $x=\floor{x/p}$}
+   \caption{For Mersenne prime $p=2^b-1$ and $x\leq p^2$, computes
+   $y=x\bmod p$ and $x=\floor{x/p}$}
 \end{algorithm}
 From the standard Algorithm \ref{alg:Mersenne} this means that we can
 replaces the last two statements
