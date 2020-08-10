@@ -54,9 +54,10 @@ however curiously we need to add a $+1$ to get efficient convergence.
    then
    \begin{align}
       \left\lfloor\frac{x}{q-c}\right\rfloor = v_n,
+      \quad
+      \text{where } $v_0 = 0$ \text{ and }
+      v_{i+1} = \left\lfloor\frac{(v_i+1)c+x}{q}\right\rfloor.
    \end{align}
-   where $v_0 = 0$ and
-   $v_{i+1} = \left\lfloor\frac{(v_i+1)c+x}{q}\right\rfloor$.
 \end{theorem}
 \begin{proof}
    Write $x = m(q-c)+h$ for non-negative integers $m$ and $h$ with $h<q-c$.
@@ -75,30 +76,31 @@ however curiously we need to add a $+1$ to get efficient convergence.
    For a start $E_0=m\ge 0$ and $E_0 = \lfloor x/(q-c)\rfloor \le (q/c)^{n-1} \le u_n$.
 
    For the induction step we plug in our expressions for $x$ and $v_i$:
-   \begin{align}
+   \begin{align*}
       v_{i+1}
       &= \left\lfloor \frac{(m-E_i+1)c+m(q-c)+h}{q}\right\rfloor
-    =
+    \\&=
     m
     +
     \left\lfloor \frac{(- E_i+1)c +h}{q}\right\rfloor
-    =
+    \\&=
     m
     - \left\lceil \frac{(E_i-1)c - h}{q}\right\rceil.
-   \end{align}
+   \end{align*}
    Now by the induction hypothesis,
-   \begin{align}
+   \begin{align*}
       E_{i+1}
-      = \left\lceil \frac{(E_i-1)c - h}{q}\right\rceil
-      \le\left\lceil (u_{n-i}-1)\frac{c}{q}\right\rceil
-      = \left\lceil \left\lfloor \frac{q}{c}u_{n-i-1} \right\rfloor \frac{c}{q}\right\rceil
-      \le \left\lceil u_{n-i-1}\right\rceil
-      = u_{n-i-1}.
-   \end{align}
+      &= \left\lceil \frac{(E_i-1)c - h}{q}\right\rceil
+    \\&\le\left\lceil (u_{n-i}-1)\frac{c}{q}\right\rceil
+    \\&= \left\lceil \left\lfloor \frac{q}{c}u_{n-i-1} \right\rfloor \frac{c}{q}\right\rceil
+    \\&\le \left\lceil u_{n-i-1}\right\rceil
+    \\&= u_{n-i-1}.
+   \end{align*}
    and similarly since $E_i \ge 0$ and $h\le q-c-1$,
    we have
-   $\left\lceil \frac{E_ic - h - c}{q}\right\rceil \ge
-   \left\lceil \frac{- q + 1}{q}\right\rceil = 0$, which completes the proof.
+   $$\left\lceil \frac{E_ic - h - c}{q}\right\rceil \ge
+   \left\lceil \frac{- q + 1}{q}\right\rceil = 0,$$
+   which completes the proof.
 \end{proof}
 \begin{corollary}
    For $c=1$ we can be slightly more specific, and support $x < q^n$.
