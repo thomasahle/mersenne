@@ -26,7 +26,7 @@ even if $n$ is close to $p$.
 The classic definition of $k$-universal (or $k$-independent) hashing
 goes back to Carter and Wegman \cite{wegman81kwise}.
 \begin{definition}
-A random hash function $h:U\fct R$ is $k$-universal if for any $j\leq k$
+A random hash function $h:U\to R$ is $k$-universal if for any $j\leq k$
 distinct keys $x_0,\ldots,x_{j-1}$, the vector
 $(h(x_0),\ldots,h(x_{j-1}))$ is uniformly distributed in $R^j$. This
 is equivalent to saying that each $h(x_i)$ is uniform in $R$ and that
@@ -37,11 +37,11 @@ The classic example of $k$-universal
 hash function is uniformly random degree-$(k-1)$ polynomial over a prime field
 $\Z_p$, that is, we pick a uniformly random vector
 $\vec a=(a_0,\ldots,a_{k-1})\in \Z_p^k$ of $k$ coefficients, and define
-$h_{\vec a}:[p]\fct[p]$, by 
+$h_{\vec a}:[p]\to[p]$, by 
 \[h_{\vec a}(x)=\left(\sum_{x\in[k]}a_i x^i\right)\bmod p.\]
 
 Often we are given a key domain $[u]$ and a range of hash values $[r]$. Assuming $p\geq \max\{u,r\}$, we define
-$h^r_{\vec a}:[u]\fct[r]$, by
+$h^r_{\vec a}:[u]\to[r]$, by
 \[h^r_{\vec a}(x)=h_{\vec a}(x)\bmod r.\]
 With this definition, the hash values of $k$ distinct keys 
 remain independent, but they are not exactly uniform. More
@@ -56,8 +56,8 @@ The main problem with the above approach is speed because computing
 the mod-function is slow on most computers. Often it
 is OK if we for the hash range $[r]$ pick $r=2^\ell$ as a power of two.
 Then $r-1$ consists of $\ell$ \texttt1s, and then 
-\[y\bmod r=y\,\texttt\&\,(r-1)\]
-where \texttt\& denotes bit-wise {\sc and}. Bit-wise operations are
+\[y\bmod r=y\,\andtt \,(r-1)\]
+where $\andtt$ denotes bit-wise {\sc and}. Bit-wise operations are
 extremely fast, so now $\bmod\,r$ is not an issue.
 
 For general primes, computing $\bmod\,p$ is slow, but an old idea,
@@ -69,14 +69,14 @@ is that
 y\equiv y\bmod 2^{b}+\floor{y/2^b}\ppmod {p}.
 \end{equation}
 This leads to efficient computations because 
-\[y\bmod 2^{b}=y\texttt{\&}p\quad\textnormal{and}\quad\floor{y/2^b}=y\texttt{>\!>}b.\]
-Here the bit-wise {\sc and} (\andtt) and the right-shift (\rshiftt) are
+\[y\bmod 2^{b}=y\andtt p\quad\textnormal{and}\quad\floor{y/2^b}=y\rs b.\]
+Here the bit-wise {\sc and} ($\andtt$) and the right-shift ($\rs$) are
 both very fast operations. For
 an extra fast implementation, we further assume that $p=2^b-1\geq 2u-1$.
 This is automatically satisfied in the typical case where $u$ is a power
 of two, e.g., $2^{32}$ or $2^{64}$. This is all used in Algorithm \ref{alg:Mersenne} to make a very fast
 computation of a degree $(k-1)$-polynomial using Horner's rule. Note that
-the reduction $y\gets (y\texttt\&p)+(y\texttt{>>}b)$ is applied after
+the reduction $y\gets (y\andtt p)+(y \rs b)$ is applied after
 every multiplication so that the numbers involved never get too big (multiplication of large numbers is expensive).
 \begin{algorithm}\label{alg:Mersenne}
    \caption{
@@ -92,7 +92,7 @@ every multiplication so that the numbers involved never get too big (multiplicat
            \State $y\gets yx+a_i$
            \Comment{$\quad y<2p(u-1)+(p-1)<(2u-1)p\leq p^2$}
 
-           \State $y\gets (y\texttt\&p)+(y\texttt{>>}b)$
+           \State $y\gets (y\andtt p)+(y\rs b)$
            \Comment{$\quad y<p+p^2/2^b<2p$}
        \EndFor
        \If{$y\geq p$}
@@ -126,10 +126,10 @@ that we are hashing keys to buckets. Avoiding a degenerate case, we
 assume $r>1$. In particular this implies that $r$ does not divide our
 prime $p$.
 
-We assume a $k$-universal hash function $h:[u]\fct[p]$, e.g.,
+We assume a $k$-universal hash function $h:[u]\to[p]$, e.g.,
 the one from Algorithm \ref{alg:Mersenne}. To get a hash values in $[r]$,
-we defined $h^r:[u]\fct[r]$ by
-\[h^r(x)=h(x)\bmod r=h(x)\texttt \& (r-1).\]
+we defined $h^r:[u]\to[r]$ by
+\[h^r(x)=h(x)\bmod r=h(x)\andtt (r-1).\]
 As discussed previously, the hash values of up to $k$ distinct keys remain
 independent with $h^r$. The issue is that hash values from 
 $h^r$ are not quite uniform in $[r]$.
@@ -137,7 +137,7 @@ $h^r$ are not quite uniform in $[r]$.
 Recall that for any key $x$, we have $h(x)$ uniformly distributed in $[2^b-1]$.
 This is the uniform distribution on $b$-bit strings except that we are
 missing $p=2^b-1$. Now $p$ is the all \texttt{1}s, and 
-$p\texttt \& (r-1)=r-1$. Therefore, for any 
+$p\andtt (r-1)=r-1$. Therefore, for any 
 any $i<r-1$,
 \begin{equation}\label{eq:coll-ell<r-1}
 \Pr[h^r(x)=i]=\lceil p/r\rceil/p=((p+1)/r)/p
@@ -168,11 +168,11 @@ large.
 \paragraph{Selecting arbitrary bits from the hash value}
 Interestingly, the above analysis holds no matter which $\ell$ bits we
 use when mapping the hash values from $[2^b-1]$ to $[2^\ell]$.  Let
-$\mu:[2^b]\fct[2^\ell]$ be any map defined by selecting $\ell$ bits
+$\mu:[2^b]\to[2^\ell]$ be any map defined by selecting $\ell$ bits
 from a $b$-bit string. Above we used
-$\mu(y)=y\bmod 2^\ell=y\texttt\& (2^\ell-1)$,
+$\mu(y)=y\bmod 2^\ell=y\andtt  (2^\ell-1)$,
 selecting the $\ell$ least significant bits, but we could
-also use $\mu(y)=\floor{y/2^{b-\ell}}=y\texttt{>>}(b-\ell)$ selecting
+also use $\mu(y)=\floor{y/2^{b-\ell}}=y\rs (b-\ell)$ selecting
 the $\ell$ most significant bits. The basic point is that a uniform
 distribution on $[2^b]$ maps to a uniform distribution on
 $[2^\ell]$. We are only missing the all \texttt1s value $p=2^b-1$ which maps to $2^\ell-1$
@@ -202,7 +202,7 @@ functions when $k>2$. However, later we will argue that polynomial
 hashing using a Mersenne prime $2^b-1$ delivers a better-than-expected
 approximation.
 
-Let $h:U\fct [2^b]$ be $k$-universal. By definition this
+Let $h:U\to [2^b]$ be $k$-universal. By definition this
 means that if we have $j\leq k$ distinct keys $x_1,\ldots,x_j$, then
 $(h(x_1),\ldots,h(x_j))$ is uniform in $[2^b]^j\equiv [2]^{bj}$,
 so this means that \emph{all} the bits in $h(x_1),\ldots,h(x_j)$ are
@@ -228,11 +228,11 @@ estimate the second moment $F_2=\sum_{x\in [u]}f_x^2$ which is the square of the
 \begin{algorithm}
   \caption{\label{alg:count-sketch} Count Sketch. Uses a
 vector/array $C$ of $r$ integers and two independent
-4-universal hash functions $i:[u]\fct[r]$ and $s:[u]\fct\{-1,1\}$.
+4-universal hash functions $i:[u]\to[r]$ and $s:[u]\to\{-1,1\}$.
 .}
 \begin{description}
-\item[Initialize] For $i\in[t]$, set $C[i]\asgn 0$.
-\item[Process$(x,\Delta)$] $C[i(x)]\asgn C[i(x)]+s(x) \Delta$. 
+\item[Initialize] For $i\in[t]$, set $C[i]\gets 0$.
+\item[Process$(x,\Delta)$] $C[i(x)]\gets C[i(x)]+s(x) \Delta$. 
 \item[Output] $X=\sum_{i\in[t]} C[i]^2$.
 \end{description}
 \end{algorithm}
@@ -255,13 +255,13 @@ $\exp(-r/12)$.
 \subsubsection{Two-for-one hash functions with $b$-bit hash values}
 As the count sketch is described above,
 it uses two independent 4-universal hash functions
-$i:[u]\fct[r]$ and $s:[u]\fct\{-1,1\}$, but 4-universal hash functions
+$i:[u]\to[r]$ and $s:[u]\to\{-1,1\}$, but 4-universal hash functions
 are generally slow to compute, so, aiming to save roughly a factor 2
 in speed, a tempting idea is to compute them both using a single hash
 function.
 
 The analysis behind \req{eq:E-F2} and \req{eq:V-F2} does not quite
-require $i:[u]\fct[r]$ and $s:[u]\fct\{-1,1\}$ to be indepedent.
+require $i:[u]\to[r]$ and $s:[u]\to\{-1,1\}$ to be indepedent.
 It suffices that the hash values are uniform and that for any
 given set of $j\leq 4$ distinct keys $x_1,\ldots,x_j$, the $2j$ hash
 values $i(x_1),\ldots,i(x_j),s(x_1),\ldots,s(x_j)$ are independent.
@@ -273,8 +273,8 @@ This follows because $\E[s(x_1)]=0$ by uniformity of $s(x_1)$ and because $s(x_1
   
 
 Assuming that $t=2^\ell$ is a power of two, we can easily construct
-$i:[u]\fct[t]$ and $s:[u]\fct\{-1,1\}$ using a single $4$-universal
-hash function $h:[u]\fct[2^b]$ where $b>\ell$. Recall that all the bits in
+$i:[u]\to[t]$ and $s:[u]\to\{-1,1\}$ using a single $4$-universal
+hash function $h:[u]\to[2^b]$ where $b>\ell$. Recall that all the bits in
 $h(x_1),\ldots,h(x_4)$ are independent. We can therefore use the
 $\ell$ least significant bits of $h(x)$ for $i(x)$ and the most
 significant bit of $h(x)$ for a bit $a(x)\in[2]$, and finally set
@@ -282,16 +282,16 @@ $s(x)=1-2a(x)$. The construction is summarized in Algorithm \ref{alg:h-and-s}
 \begin{algorithm}\label{alg:h-and-s}
   \caption{For key $x\in [u]$, compute $i(x)=i_x\in[2^\ell]$ and
     $s(x)=s_x\in\{-1,+1\}$,\rule{5ex}{0ex}
-    using $h:[u]\fct [2^b]$ where $b>\ell$.}
+    using $h:[u]\to [2^b]$ where $b>\ell$.}
   $h_x\gets h(x)$\hfill $\rhd\quad h_x$ uses $b$ bits\\
-  $i_x\gets h_x\&(2^\ell-1)$\hfill $\rhd\quad i_x$ gets $\ell$ least significant
+  $i_x\gets h_x \andtt (2^\ell-1)$\hfill $\rhd\quad i_x$ gets $\ell$ least significant
     bits of $h_x$\\
-$a_x\gets h_x\texttt{>>}(b-1)$\hfill $\rhd\quad a_x$ gets the most significant bit of $h_x$\\
+$a_x\gets h_x\rs (b-1)$\hfill $\rhd\quad a_x$ gets the most significant bit of $h_x$\\
 $s_x\gets 1-2a_x$ \hfill $\rhd\quad a_x\in[2]$ is converted to a sign $s_x\in\{-1,+1\}$
 \end{algorithm}
-\begin{lemma}\label{lem:b-bit-hashing} Suppose $h:[u]\fct[2^b]$ is $k$-universal. Let
-  $i:[u]\fct[2^\ell]$ and
-  $s:[u]\fct\{-1,1\}$ be constructed from $h$ as described in Algorithm \ref{alg:h-and-s}. Then $h$ and $s$ are both $k$-universal. Moreover, for
+\begin{lemma}\label{lem:b-bit-hashing} Suppose $h:[u]\to[2^b]$ is $k$-universal. Let
+  $i:[u]\to[2^\ell]$ and
+  $s:[u]\to\{-1,1\}$ be constructed from $h$ as described in Algorithm \ref{alg:h-and-s}. Then $h$ and $s$ are both $k$-universal. Moreover, for
   any $j\leq k$ distinct keys $x_1,\ldots,x_j$, the $2j$ hash
   values $i(x_1),\ldots,i(x_j),s(x_1),\ldots,s(x_j)$ are independent.
   In particular, if $A$ depends on
@@ -312,13 +312,13 @@ mapping uniformly into $b$-bit strings. The issue was that the lack of
 efficient implementations with standard portable code if
 $k>2$. However, when $2^b-1$ is a Mersenne prime $p\geq u$, then we do
 have have the efficient computation from Algorithm \ref{alg:Mersenne}
-of a $k$-universal hash function $h:[u]\fct[2^b-1]$. The hash values
+of a $k$-universal hash function $h:[u]\to[2^b-1]$. The hash values
 are $b$-bit integers, and they are uniformly distributed, except that
 we are missing the all \texttt{1}s value $p=2^b-1$. We want to
 understand how this missing value affects us if we try to split the
 hash values as in Algorithm \ref{alg:h-and-s}. Thus, we assume a
-$k$-universal hash function $h:[u]\fct[2^b-1]$ from which we construct
-$i:[u]\fct[2^\ell]$ and $s:[u]\fct\{-1,1\}$ as
+$k$-universal hash function $h:[u]\to[2^b-1]$ from which we construct
+$i:[u]\to[2^\ell]$ and $s:[u]\to\{-1,1\}$ as
 described in Algorithm \ref{alg:h-and-s}. As usual, we assume $2^\ell>1$.
 Since $i_x$ and $s_x$ are
 both obtained by selection of bits from $h_x$, we know from Section
@@ -332,8 +332,8 @@ hash functions for the price of one. The point is that our efficient
 computation in Algorithm \ref{alg:Mersenne} requires that we use a
 Mersenne prime $2^b-1$ such that $u\leq 2^{b-1}$, and this is even if
 our final target is to produce just a single bit for the sign function
-$s:[u]\fct\{-1,1\}$. We also know that $2^\ell<u$, for otherwise we
-get perfect results implementing $i:[u]\fct[2^\ell]$ as the identifty
+$s:[u]\to\{-1,1\}$. We also know that $2^\ell<u$, for otherwise we
+get perfect results implementing $i:[u]\to[2^\ell]$ as the identifty
 function (perfect because it is collision free).  Thus we can assume
 $\ell<b$, hence that $h$ provides enough bits for both $s$ and $i$.
 
@@ -356,8 +356,8 @@ distribution of $h(x_1)$ explicit, we get
   =\sum_{y\in[2^b]}\E_{h(x_1)=y}[B]/p-\E_{h(x_1)=p}[B]/p\nonumber\\
   &=\E_{h(x_1)\gets U[2^b]}[B](p+1)/p-\E_{h(x_1)=p}[B]/p.\label{eq:play-with-dist}
 \end{align}
-Let us now apply this idea our situation where $i:[u]\fct[2^\ell]$ and
-$s:[u]\fct\{-1,1\}$ are constructed from $h$ as described in Algorithm
+Let us now apply this idea our situation where $i:[u]\to[2^\ell]$ and
+$s:[u]\to\{-1,1\}$ are constructed from $h$ as described in Algorithm
 \ref{alg:h-and-s}. We will prove
 \begin{lemma}\label{lem:remove-si}  Consider distinct keys $x_1,\ldots,x_j$, $j\leq k$ and an expression $B=s(x_1)A$ where $A$
 depends on $i(x_1),\ldots,i(x_j)$ and $s(x_2),\ldots,s(x_j)$ but not
@@ -388,10 +388,10 @@ based on Mersenne primes performes almost perfectly:
 \begin{theorem}\label{thm:h-and-s-p}
 Let $r>1$ and $u>r$ be powers of two and let $p=2^b-1>u$ be a
 Mersenne prime.
-Suppose with have a $k$-universal hash function $h:[u]\fct[2^b-1]$, e.g.,
+Suppose with have a $k$-universal hash function $h:[u]\to[2^b-1]$, e.g.,
 generated using Algorithm \ref{alg:Mersenne}. Suppose
-$i:[u]\fct[r]$ and
-$s:[u]\fct\{-1,1\}$ are constructed from $h$ as described in
+$i:[u]\to[r]$ and
+$s:[u]\to\{-1,1\}$ are constructed from $h$ as described in
 Algorithm \ref{alg:h-and-s}. Using this $i$ and $s$ 
 in the Count Sketch Algorithm \ref{alg:count-sketch}, the second moment 
 estimate $X=\sum_{i\in[k]} C_i^2$ satsifies:
@@ -408,8 +408,8 @@ proved in Section \ref{sec:analysis-two-for-one}.
 \subsection{Arbitrary number of buckets}\label{sec:most-uniform}
 We now consider the general case where we want to hash into a set of
 buckets $R$ whose size is not a power of two. Suppose we have a
-$2$-universal hash function $h:U\fct Q$. We will compose $h$ with a
-map $\mu:Q\fct R$, and use $\mu\circ h$ as a hash function from
+$2$-universal hash function $h:U\to Q$. We will compose $h$ with a
+map $\mu:Q\to R$, and use $\mu\circ h$ as a hash function from
 $U$ to $R$.
 
 Let $q=|Q|$ and $r=|R|$. We want the map $\mu$ to be \emph{most
@@ -419,23 +419,23 @@ $\ceil{q/r}$. Then the uniformity of hash values with $h$ implies for
 any key $x$ and bucket $i\in R$
 \[\floor{q/r}/q\leq \Pr[\mu\circ
   h(x)=i]\leq \ceil{q/r}/q.\]
-Below we typically have $Q=[q]$ and $R=[r]$. A standard example of a most uniform map $\mu:[q]\fct[r]$ 
+Below we typically have $Q=[q]$ and $R=[r]$. A standard example of a most uniform map $\mu:[q]\to[r]$ 
 is $\mu(x)=x\bmod r$ which the one used above when we defined 
-$h^r:[u]\fct[r]$, but as we mentioned before, the modulo operation is 
+$h^r:[u]\to[r]$, but as we mentioned before, the modulo operation is 
 quite slow unless $r$ is a power of two.
 
-Another example of a most uniform map $\mu:[q]\fct[r]$ 
+Another example of a most uniform map $\mu:[q]\to[r]$ 
 is $\mu(x)=\floor{xr/q}$,
 which is also quite slow in general, but if $q=2^b$ is a power of two,
-it can be implemented as $\mu(x)=(xr)\texttt{>>}\,b$ where 
-$\texttt{>>}$ denotes right-shift. This would be yet another advantage 
+it can be implemented as $\mu(x)=(xr)\rs\,b$ where 
+$\rs$ denotes right-shift. This would be yet another advantage 
 of of having $k$-universal hashing into $[2^b]$.
 
 Now, our interest is the case where $q$ is a Mersenne prime $p=2^b-1$. We want
 an efficient and most uniform map $\mu:[2^b-1]$ into any given $[r]$.
 Our simple solution is to define
 \begin{equation}\label{eq:most-uniform}
-\mu(x)=\floor{(x+1)r/2^b}=((x+1)r)\texttt{>>} b.
+\mu(x)=\floor{(x+1)r/2^b}=((x+1)r)\rs b.
 \end{equation}
 Lemma \ref{lem:most-uniform} (iii) below 
 states that \req{eq:most-uniform} indeed
@@ -443,11 +443,11 @@ gives a most uniform map.
 \begin{lemma}\label{lem:most-uniform} Let $r$ and $b$ the positive integers
 $2^b-1$. 
 \begin{itemize}
-\item[(i)] $x\mapsto (xr)\texttt{>>}\,b$ is a most
+\item[(i)] $x\mapsto (xr)\rs\,b$ is a most
 uniform map from $[2^b]$ to $[r]$.
-\item[(ii)] $x\mapsto (xr)\texttt{>>}\,b$ is a most
+\item[(ii)] $x\mapsto (xr)\rs\,b$ is a most
 uniform map from $[2^b]\setminus\{0\}=\{1,\ldots,2^b-1\}$ to $[r]$.
-\item[(iii)] $x\mapsto ((x+1)r)\texttt{>>}\, b$ is a most
+\item[(iii)] $x\mapsto ((x+1)r)\rs \, b$ is a most
 uniform map from $[2^b-1]$ to $[r]$.
 \end{itemize}
 \end{lemma}
@@ -469,13 +469,13 @@ no bucket from $[r]$ can get hit by more than $q/r=\ceil{q/r}$
 elements from $Q$. This completes the proof of (ii), and hence of (iii).
 \end{proof}
 We note that our trick does not work when $q=2^b-a$ for $a\geq 2$, that is,
-using $x\mapsto ((x+a)r)\texttt{>>} b$, for in this general case, 
+using $x\mapsto ((x+a)r)\rs  b$, for in this general case, 
 the number of elements hashing to $0$ is $\ceil {2^b/r}-a$, or $0$ if
  $a\geq \floor {2^b/r}$. Our new uniform map from \req{eq:most-uniform}
 is thus very specific to Mersenne prime fields.
 
 We shall see in Section \ref{sec:count-sketch-r} that our new uniform map
-works very well in conjunction with the the idea of splitting of hash values 
+works very well in conjunction with the idea of splitting of hash values 
 values from Section \ref{sec:two-for-one}.
 
 
@@ -491,7 +491,7 @@ if-statement can be slow because of branch prediction.
 \end{algorithm}
 From the standard Algorithm \ref{alg:Mersenne} this means that we can
 replaces the last two statements
-$y\gets (y\texttt\&p)+(y\texttt{>>}b)$;
+$y\gets (y\andtt p)+(y\rs b)$;
 if $y\geq p$ then {$y\gets y-p$}
 
 

@@ -11,7 +11,7 @@ Now let us set up the relevant variables for the basic count sketch.
 For each key $x\in [u]$, we have a value $f_x\in \Z$, and the
 goal was to estimate the second moment $F_2=\sum_{x\in u}f^2$.
 
-We had two functions $i:[u]\fct[r]$ and $s:[u]\fct\{-1,+1\}$. 
+We had two functions $i:[u]\to[r]$ and $s:[u]\to\{-1,+1\}$. 
 For notational convinience, we define $i_x=i(x)$ and $s_x=s(x)$.
 
 For each $i\in [r]$, we have a counter 
@@ -35,8 +35,8 @@ We thus want to provide bounds on the error $Y$.
 
 \subsection{Analysis in the classic case}
 First, as a warm-up for later comparison, we analyze the simple classic case
-where $i:[u]\fct[2^\ell]$ and
-$s:[u]\fct\{-1,1\}$ are independent 4-universal hash
+where $i:[u]\to[2^\ell]$ and
+$s:[u]\to\{-1,1\}$ are independent 4-universal hash
 functions. In this case, we first argue that 
 \begin{equation}\label{eq:mean}
 \E[Y]=0.
@@ -87,19 +87,19 @@ did not need $s$ and $i$ to be completely independent. All we needed
 was that for any $j\leq 4$ distinct keys $x_1,\ldots,x_j$, the hash
 values $s(x_1),\ldots,s(x_j)$ and $i(x_1),\ldots,i(x_j)$ are all
 independent and uniform in the desired domain. This was why we could
-use a single $k$-universal hash function $h:[u]\fct[2^b]$ with
-$b>\ell$, and use it to construct $s:[u]\fct\{-1,+1\}$ and
-$i:[u]\fct[2^\ell]$ as described in Algorithm \ref{alg:h-and-s}
+use a single $k$-universal hash function $h:[u]\to[2^b]$ with
+$b>\ell$, and use it to construct $s:[u]\to\{-1,+1\}$ and
+$i:[u]\to[2^\ell]$ as described in Algorithm \ref{alg:h-and-s}
 (c.f. Lemma \ref{lem:b-bit-hashing}).
 
 
 
 
 \subsection{The real analysis of two-for-one using Mersenne primes}
-We now consider the case where the functions $s:[u]\fct\{-1,+1\}$ and
-$i:[u]\fct[2^\ell]$ are constructed as described in Algorithm
+We now consider the case where the functions $s:[u]\to\{-1,+1\}$ and
+$i:[u]\to[2^\ell]$ are constructed as described in Algorithm
 \ref{alg:h-and-s} from a single $k$-universal hash function
-$h:[u]\fct[2^b-1]$. Here $h$ could be implemented efficiently as
+$h:[u]\to[2^b-1]$. Here $h$ could be implemented efficiently as
 in Algorithm \ref{alg:Mersenne}. As noted earlier, the function
 $i$ is the same as $h^r$ with $r=2^\ell$ in Section \ref{sec:power-of-two},
 so it satisfies \req{eq:coll-ell<r-1}--\req{eq:coll}. Also, we

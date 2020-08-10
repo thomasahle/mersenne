@@ -8,8 +8,8 @@ and later we will show how it can be used in connection with the
 two-for-one hashing from Section \ref{sec:two-for-one}.
 
 \subsection{Collision probability with most uniform distributions}
-We have a hash function $h:U\fct Q$, but we want hash values in $R$, so
-we need a map $\mu:Q\fct R$, and then use $\mu\circ h$ as
+We have a hash function $h:U\to Q$, but we want hash values in $R$, so
+we need a map $\mu:Q\to R$, and then use $\mu\circ h$ as
 our hash function from $U$ to $R$. We normally assume that the hash values 
 with $h$ are pairwise independent, that is, for any distinct $x$ and $y$,
 the hash values $h(x)$ and $h(y)$ are independent, but then 
@@ -44,9 +44,9 @@ cost when we do not have any information about how $r$ divides $q$.
 \subsection{Two-for-one hashing from uniform bits to arbitrary number of buckets}
 We will now briefly discuss how would get the two-for-one hash
 functions in count sketches with an arbitrary number $r$ of bins based
-on a single $4$-universal hash function $h:[u]\fct [2^b]$.  We want to
-construct the two hash functions $s:[u]\fct\{-1,+1\}$ and
-$i:[u]\fct[r]$. As usual the results with uniform $b$-bit strings will
+on a single $4$-universal hash function $h:[u]\to [2^b]$.  We want to
+construct the two hash functions $s:[u]\to\{-1,+1\}$ and
+$i:[u]\to[r]$. As usual the results with uniform $b$-bit strings will
 set the bar that we later compare with when from $h$ we get hash values that
 are only uniform in $[2^b-1]$.
 
@@ -55,7 +55,7 @@ Algorithm \ref{alg:b-bit-arb-r}.
 \begin{algorithm}\label{alg:b-bit-arb-r}
   \caption{For key $x\in [u]$, compute $i(x)=i_x\in[r]$ and
     $s(x)=s_x\in\{-1,+1\}$.\rule{5ex}{0ex}
-    Uses 4-universal $h:[u]\fct [2^b]$.}
+    Uses 4-universal $h:[u]\to [2^b]$.}
   $h_x\gets h(x)$\hfill $\rhd\quad h_x$ has $b$ uniform bits\\
   $j_x\gets h_x\&(2^{b-1}-1)$\hfill $\rhd\quad j_x$ gets $b-1$ least 
    significant bits of $h_x$\\
@@ -88,9 +88,9 @@ the variance bound accordingly from $2F_2^2/r$ to
 \subsection{Two-for-one hashing from Mersenne primes to arbitrary number of buckets}
 We will now show how wan get the two-for-one hash functions in count
 sketches with an arbitrary number $r$ of bins based on a single
-$4$-universal hash function $h:[u]\fct [2^b-1]$.  Again we want to
-construct the two hash functions $s:[u]\fct\{-1,+1\}$ and
-$i:[u]\fct[r]$.  The construction will be the same as we had in
+$4$-universal hash function $h:[u]\to [2^b-1]$.  Again we want to
+construct the two hash functions $s:[u]\to\{-1,+1\}$ and
+$i:[u]\to[r]$.  The construction will be the same as we had in
 Algorithm \ref{alg:b-bit-arb-r} when $h$ returned uniform values in
 $[2^b]$ with the change that we set $h_x\gets h(x)+1$, so that it
 becomes uniform in $[2^b]\setminus\{0\}$. It is also convinient to
@@ -101,7 +101,7 @@ is presented as Algorithm \ref{alg:Mersenne-arb-r}.
 \begin{algorithm}\label{alg:Mersenne-arb-r}
   \caption{For key $x\in [u]$, compute $i(x)=i_x\in[r]$ and
     $s(x)=s_x\in\{-1,+1\}$.\rule{5ex}{0ex}
-    Uses 4-universal $h:[u]\fct [p]$ for Mersenne prime $p=2^b-1\geq u$.}
+    Uses 4-universal $h:[u]\to [p]$ for Mersenne prime $p=2^b-1\geq u$.}
   $h_x\gets h(x)+1$\hfill $\rhd\quad h_x$ uses $b$ bits uniformly except $h_x\neq 0$\\
   $j_x\gets h_x\&(2^{b-1}-1)$\hfill $\rhd\quad j_x$ gets $b-1$ least 
    significant bits of $h_x$\\

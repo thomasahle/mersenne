@@ -43,9 +43,9 @@ estimation.
 
 We are now going to show we can implement second moment estimation when
 we want an arbitrary number $r$ of counters. The starting point
-is a 4-universal hash function $h:[u]\fct[2^b-1]$, and we want to
-use it to construct both a random sign function $s:[u]\fct\{-1,1\}$ and 
-a random bucketing function $i:[u]\fct[r]$. When $r$ was a power-of-two, 
+is a 4-universal hash function $h:[u]\to[2^b-1]$, and we want to
+use it to construct both a random sign function $s:[u]\to\{-1,1\}$ and 
+a random bucketing function $i:[u]\to[r]$. When $r$ was a power-of-two, 
 we such a construction in Algorithm \ref{alg:h-and-s}, but now we
 assume that $r$ is not a power of two. We want to employ what we
 have learned about most uniform maps, but it has to be done a bit
@@ -53,7 +53,7 @@ carefully. The result is presented in Algorithm \ref{alg:h-and-s-k}.
 \begin{algorithm}\label{alg:h-and-s-k}
   \caption{For key $x\in [u]$, compute $i(x)=i_x\in[r]$ and
     $s(x)=s_x\in\{-1,+1\}$.\rule{5ex}{0ex}
-    Uses 4-universal $h:[u]\fct [p]$ for Mersenne prime $p=2^b-1\geq u$.}
+    Uses 4-universal $h:[u]\to [p]$ for Mersenne prime $p=2^b-1\geq u$.}
   $h_x\gets h(x)+1$\hfill $\rhd\quad h_x$ uses $b$ bits uniformly except $h_x\neq 0$\\
   $j_x\gets h_x\&(2^{b-1}-1)$\hfill $\rhd\quad j_x$ gets $b-1$ least 
    significant bits of $h_x$\\
@@ -147,14 +147,14 @@ The construction of $s$ abd $i$ is presented in Algorithm \ref{alg:i-and-s-from-
 \subsection{Using fewer hash bits to spread the keys}
 Recall from Section \ref{sec:two-for-one} that we sometimes want to
 get several hash values out of the same $k$-universal hash function
-$h:[u]\fct[2^b-1]$. Our goal is to get a hash value $i(x)\in [r]$ for
+$h:[u]\to[2^b-1]$. Our goal is to get a hash value $i(x)\in [r]$ for
 some arbitrary $r$, but we only want to use $c<b$ bits from the
 $b$-bit hash value. An example of such a code using the $c$ least
 significant bits is presented in Algorithm \ref{alg:i-use-c-from h}.
 \begin{algorithm}\label{alg:i-use-c-from h}
   \caption{For key $x\in [u]$, compute $i(x)=i_x\in[r]$.
     Uses $c$
-    least significant bits of hash values from 4-universal $h:[u]\fct
+    least significant bits of hash values from 4-universal $h:[u]\to
     [2^b-1]$.}  
    $h_x\gets h(x)+1$\hfill $\rhd\quad h_x$ uses $b$ bits
   uniformly except $h_x\neq 0$\\ 
@@ -215,9 +215,9 @@ if $i_x$ was uniform on $[2^c]\setminus\{0\}$. By Jensen's inequality
 \subsection{Two-for-one hash functions with an arbitrary number of balls}
 We are now going to show we can implement second moment estimation when
 we want an arbitrary number $r$ of counters. The starting point
-is a 4-universal hash function $h:[u]\fct[2^b-1]$, and we want to
-use it to construct both a random sign function $s:[u]\fct\{-1,1\}$ and 
-a random bucketing function $i:[u]\fct[r]$. When $r$ was a power-of-two, 
+is a 4-universal hash function $h:[u]\to[2^b-1]$, and we want to
+use it to construct both a random sign function $s:[u]\to\{-1,1\}$ and 
+a random bucketing function $i:[u]\to[r]$. When $r$ was a power-of-two, 
 we such a construction in Algorithm \ref{alg:h-and-s}, but now we
 assume that $r$ is not a power of two. We want to employ what we
 have learned about most uniform maps, but it has to be done a bit
@@ -225,7 +225,7 @@ carefully. The result is presented in Algorithm \ref{alg:h-and-s-k}.
 \begin{algorithm}\label{alg:h-and-s-k}
   \caption{For key $x\in [u]$, compute $i(x)=i_x\in[r]$ and
     $s(x)=s_x\in\{-1,+1\}$.\rule{5ex}{0ex}
-    Uses 4-universal $h:[u]\fct [p]$ for Mersenne prime $p=2^b-1\geq u$.}
+    Uses 4-universal $h:[u]\to [p]$ for Mersenne prime $p=2^b-1\geq u$.}
   $h_x\gets h(x)+1$\hfill $\rhd\quad h_x$ uses $b$ bits uniformly except $h_x\neq 0$\\
   $j_x\gets h_x\&(2^{b-1}-1)$\hfill $\rhd\quad j_x$ gets $b-1$ least 
    significant bits of $h_x$\\
@@ -313,7 +313,7 @@ We now have $k< u$ be arbitrary and pick Mersenne prime $p=2^b-1\geq 10 u$.
 \begin{algorithm}\label{alg:h-and-s-k}
   \caption{For key $x\in [u]$, compute $h(x)=i_x\in[k]$ and
     $s(x)=s_x\in\{-1,+1\}$.\rule{5ex}{0ex}
-    Uses 4-universal $g:[u]\fct [p]$ for Mersenne prime $p=2^b-1\geq u$..}
+    Uses 4-universal $g:[u]\to [p]$ for Mersenne prime $p=2^b-1\geq u$..}
   $g_x\gets g(x)$\hfill $\rhd\quad g_x$ uses $b$ bits\\
   $f_x\gets g_x\&(2^{b-1}-1)$\hfill $\rhd\quad f_x$ gets $b-1$ least significant
     bits of $g_x$\\
