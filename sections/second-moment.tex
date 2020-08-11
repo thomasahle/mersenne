@@ -1,4 +1,5 @@
 
+%! TEX root = ../mersenne.tex
 
 
 \section{Analysis of second moment estimation using  Mersenne primes}\label{sec:analysis-two-for-one}
@@ -10,7 +11,7 @@ Now let us set up the relevant variables for the basic count sketch.
 For each key $x\in [u]$, we have a value $f_x\in \Z$, and the
 goal was to estimate the second moment $F_2=\sum_{x\in u}f^2$.
 
-We had two functions $i:[u]\fct[r]$ and $s:[u]\fct\{-1,+1\}$. 
+We had two functions $i:[u]\to[r]$ and $s:[u]\to\{-1,+1\}$. 
 For notational convenience, we define $i_x=i(x)$ and $s_x=s(x)$.
 
 For each $i\in [r]$, we have a counter 
@@ -33,18 +34,18 @@ X&=\sum_{i\in[r]}\left( \sum_{x\in[u]}s_x f_x[i_x=i]\right)^2\\
 \end{align*}
 Thus 
 \begin{equation}\label{eq:decomp}
-X=F_2+Y\mbox{ where }Y=\sum_{x,y\in[u],x\neq y}
-s_x f_x[i_x=i_y]s_y f_y.
+   X=F_2+Y\mbox{ where }Y=\sum_{x,y\in[u],x\neq y}
+   s_x f_x[i_x=i_y]s_y f_y.
 \end{equation}
 We thus want to provide bounds on the error $Y$.
 
 \subsection{Analysis in the classic case}
 First, as a warm-up for later comparison, we analyze the simple classic case
-where $i:[u]\fct[2^\ell]$ and
-$s:[u]\fct\{-1,1\}$ are independent 4-universal hash
+where $i:[u]\to[2^\ell]$ and
+$s:[u]\to\{-1,1\}$ are independent 4-universal hash
 functions. In this case, we first argue that 
 \begin{equation}\label{eq:mean}
-\E[Y]=0.
+   \E[Y]=0.
 \end{equation}
 To prove \req{eq:mean}, we argue that each term of
 $Y$ from \req{eq:decomp} has 0 expected value. With $x\neq y$, by 2-universality (implied by 4-universality) and independence of $s$ and $h$, we have that $s_x$ is independent of $s_y$, $i_x$, and $i_y$.
@@ -57,9 +58,9 @@ Next we want to bound the variance of $X$ which is the same as
 that of $Y$ since $F_2$ is a constant. Since
 $\E[Y]=0$, we have
 \begin{align*}
-\Var[X]&=\Var[Y]=\E[Y^2]=\E[(\sum_{x,y\in[u],x\neq y}s_x f_x[i_x=i_y]s_y f_y)^2]\\
-&=\sum_{x,y,x',y'\in[u],x\neq y,x'\neq y'}\E[(s_x f_x[i_x=i_y]s_y f_y)
-(s_{x'}f_{x'}[i_{x'}=i_{y'}]s_{y'} f_{y'})].
+   \Var[X]&=\Var[Y]=\E[Y^2]=\E[(\sum_{x,y\in[u],x\neq y}s_x f_x[i_x=i_y]s_y f_y)^2]\\
+          &=\sum_{x,y,x',y'\in[u],x\neq y,x'\neq y'}\E[(s_x f_x[i_x=i_y]s_y f_y)
+          (s_{x'}f_{x'}[i_{x'}=i_{y'}]s_{y'} f_{y'})].
 \end{align*}
 Consider one of the terms $\E[(s_x f_x[i_x=i_y]s_y f_y)
 (s_{x'}f_{x'}[i_{x'}=i_{y'}]s_{y'} f_{y'})]$. We have $x\neq y,x'\neq y'$. 
@@ -71,40 +72,40 @@ we get
 \begin{align*}
 &\E[(s_x f_x[i_x=i_y]s_y f_y)
 (s_{x'}f_{x'}[i_{x'}=i_{y'}]s_{y'} f_{y'})] \\
-=&\E[s_x]\E[(f_x[i_x=i_y]s_y f_y) 
-(s_{x'}f_{x'}[i_{x'}=i_{y'}]s_{y'} f_{y'})]=0.
+   =&\E[s_x]\E[(f_x[i_x=i_y]s_y f_y) 
+   (s_{x'}f_{x'}[i_{x'}=i_{y'}]s_{y'} f_{y'})]=0.
 \end{align*}
 Thus we can restict our attention to terms with no unique keys. 
 Since $x\neq y$ and $x'\neq y'$, we conclude that 
 $(x,y)=(x',y')$ or $(x,y)=(y',x')$. Therefore
 \begin{align*}
-\Var[X]&=\sum_{x,y,x',y'\in[u],x\neq y,x'\neq y'}\E[(s_x f_x[i_x=i_y]s_y f_y)
-(s_{x'}f_{x'}[i_{x'}=i_{y'}]s_{y'} f_{y'})]\\
-       &=2\sum_{x,y\in[u],x\neq y,(x',y')=(x,y)}\E[(s_x f_x[i_x=i_y]s_y f_y)
-(s_{x'}f_{x'}[i_{x'}=i_{y'}]s_{y'} f_{y'})]\\
-&=2\sum_{x,y\in[u],x\neq y}\E[(s_x f_x[i_x=i_y]s_y f_y)^2]\\
-&=2\sum_{x,y\in[u],x\neq y}\E[(f_x^2f_y^2[i_x=i_y])]\\
-&=2\sum_{x,y\in[u],x\neq y}(f_x^2f_y^2)/r\\
-&=2(F_2^2-F_4)/r.
+   \Var[X]&=\sum_{x,y,x',y'\in[u],x\neq y,x'\neq y'}\E[(s_x f_x[i_x=i_y]s_y f_y)
+   (s_{x'}f_{x'}[i_{x'}=i_{y'}]s_{y'} f_{y'})]\\
+          &=2\sum_{x,y\in[u],x\neq y,(x',y')=(x,y)}\E[(s_x f_x[i_x=i_y]s_y f_y)
+          (s_{x'}f_{x'}[i_{x'}=i_{y'}]s_{y'} f_{y'})]\\
+          &=2\sum_{x,y\in[u],x\neq y}\E[(s_x f_x[i_x=i_y]s_y f_y)^2]\\
+          &=2\sum_{x,y\in[u],x\neq y}\E[(f_x^2f_y^2[i_x=i_y])]\\
+          &=2\sum_{x,y\in[u],x\neq y}(f_x^2f_y^2)/r\\
+          &=2(F_2^2-F_4)/r.
 \end{align*}
 This completes the proof of \req{eq:V-F2}. In the above analysis, we
 did not need $s$ and $i$ to be completely independent. All we needed
 was that for any $j\leq 4$ distinct keys $x_1,\ldots,x_j$, the hash
 values $s(x_1),\ldots,s(x_j)$ and $i(x_1),\ldots,i(x_j)$ are all
 independent and uniform in the desired domain. This was why we could
-use a single $k$-universal hash function $h:[u]\fct[2^b]$ with
-$b>\ell$, and use it to construct $s:[u]\fct\{-1,+1\}$ and
-$i:[u]\fct[2^\ell]$ as described in Algorithm \ref{alg:h-and-s}
+use a single $k$-universal hash function $h:[u]\to[2^b]$ with
+$b>\ell$, and use it to construct $s:[u]\to\{-1,+1\}$ and
+$i:[u]\to[2^\ell]$ as described in Algorithm \ref{alg:h-and-s}
 (c.f. Lemma \ref{lem:b-bit-hashing}).
 
 
 
 
 \subsection{The real analysis of two-for-one using Mersenne primes}
-We now consider the case where the functions $s:[u]\fct\{-1,+1\}$ and
-$i:[u]\fct[2^\ell]$ are constructed as described in Algorithm
+We now consider the case where the functions $s:[u]\to\{-1,+1\}$ and
+$i:[u]\to[2^\ell]$ are constructed as described in Algorithm
 \ref{alg:h-and-s} from a single $k$-universal hash function
-$h:[u]\fct[2^b-1]$. Here $h$ could be implemented efficiently as
+$h:[u]\to[2^b-1]$. Here $h$ could be implemented efficiently as
 in Algorithm \ref{alg:Mersenne}. As noted earlier, the function
 $i$ is the same as $h^r$ with $r=2^\ell$ in Section \ref{sec:power-of-two},
 so it satisfies \req{eq:coll-ell<r-1}--\req{eq:coll}. Also, we
@@ -127,16 +128,17 @@ To bound $\E[Y]$ we study the expectancy of an arbitrary term, that is,
 for some $x,y\in[u],x\neq y$, we study $\E[ s_x f_x[i_x=i_y]s_y f_y]$.
 Using Lemma \ref{lem:remove-si}, we get 
 \begin{align}
-\E[s_x f_x[i_x=i_y]s_y f_y]&=\E[f_x[i_x=i_y]s_y f_y\suchthat i_x=r-1]/p.\nonumber\\
-&=\E[s_y f_x[r-1=i_y]f_y]/p.\nonumber\\
-&=\E[f_x[r-1=i_y]f_y\suchthat i_y=r-1]/p^2.\nonumber\\
-&=\E[f_xf_y]/p^2=f_x f_y/p^2.\label{eq:E}
+   \E[s_x f_x[i_x=i_y]s_y f_y]
+   &=\E[f_x[i_x=i_y]s_y f_y\suchthat i_x=r-1]/p.\nonumber\\
+   &=\E[s_y f_x[r-1=i_y]f_y]/p.\nonumber\\
+   &=\E[f_x[r-1=i_y]f_y\suchthat i_y=r-1]/p^2.\nonumber\\
+   &=\E[f_xf_y]/p^2=f_x f_y/p^2.\label{eq:E}
 \end{align}
 Thus
 \[\E[Y]=\sum_{x,y\in[u],x\neq y} f_xf_y/p^2=(F_1^2-F_2)/p^2.\]
 Trivially is the equality from \req{eq:E-F2-p}. For the upper bound, we note that 
 \begin{equation}\label{eq:F1F2}
-F_1^2\leq nF_2 
+   F_1^2\leq nF_2 
 \end{equation}
 This follows because the ``variance'' over the $|f_x|$ is
 $F_2-F_1^2/n=\sum_{x\in[u], f_x\neq 0}(f_x-F_1/n)^2\geq 0$.
@@ -147,8 +149,8 @@ This completes the proof of \req{eq:E-F2-p}.
 \paragraph{Variance}
 Same method is applied to the analysis of the variance, which is
 \[\Var[X]=\Var[Y]\leq \E[Y^2]=
-\sum_{x,y,x',y'\in[u],x\neq y,x'\neq y'}\E[(s_x f_x[i_x=i_y]s_y f_y)
-  (s_{x'}f_{x'}[i_{x'}=i_{y'}]s_{y'} f_{y'})].\] 
+   \sum_{x,y,x',y'\in[u],x\neq y,x'\neq y'}\E[(s_x f_x[i_x=i_y]s_y f_y)
+(s_{x'}f_{x'}[i_{x'}=i_{y'}]s_{y'} f_{y'})].\] 
 Consider any term in the
 sum. Suppose some key, say $x$, is unique in the sense that
 $x\not\in\{y,x',y'\}$. Then we can apply Lemma \ref{lem:remove-si}.
@@ -156,43 +158,43 @@ Given that $x\neq y$
 and $x'\neq y'$, we have either $2$ or $4$ such unique keys. If all
 4 keys are distinct, as in \req{eq:E}, we get
 \begin{align*}
-\E[(s_x f_x[i_x=i_y]s_y f_y)&
-(s_{x'}f_{x'}[i_{x'}=i_{y'}]s_{y'} f_{y'})]\\
-&=\E[(s_x f_x[i_x=i_y]s_y f_y])]\E[(s_{x'}f_{x'}[i_{x'}=i_{y'}]s_{y'} f_{y'})]\\
-&=(f_x f_y/p^2)(f_{x'} f_{y'}/p^2)=f_x f_yf_{x'} f_{y'}/p^4.
+   \E[(s_x f_x[i_x=i_y]s_y f_y)&
+   (s_{x'}f_{x'}[i_{x'}=i_{y'}]s_{y'} f_{y'})]\\
+                               &=\E[(s_x f_x[i_x=i_y]s_y f_y])]\E[(s_{x'}f_{x'}[i_{x'}=i_{y'}]s_{y'} f_{y'})]\\
+                               &=(f_x f_y/p^2)(f_{x'} f_{y'}/p^2)=f_x f_yf_{x'} f_{y'}/p^4.
 \end{align*}
 The expected sum over all such terms is thus bounded
 as 
 \begin{align}
-\sum_{{\rm distinct}\, x,y,x',y'\in[u]}&
-\E[(s_x f_x[i_x=i_y]s_y f_y)
-(s_{x'}f_{x'}[i_{x'}=i_{y'}]s_{y'} f_{y'})]\nonumber\\
-&=\sum_{{\rm distinct}\,x,y,x',y'\in[u]}
-f_xf_yf_{x'}f_{y'}/p^4<F_1^4/p^4\leq F_2^2 n^2/p^4.\label{eq:distinct}
+   \sum_{{\rm distinct}\, x,y,x',y'\in[u]}&
+   \E[(s_x f_x[i_x=i_y]s_y f_y)
+   (s_{x'}f_{x'}[i_{x'}=i_{y'}]s_{y'} f_{y'})]\nonumber\\
+                                          &=\sum_{{\rm distinct}\,x,y,x',y'\in[u]}
+                                          f_xf_yf_{x'}f_{y'}/p^4<F_1^4/p^4\leq F_2^2 n^2/p^4.\label{eq:distinct}
 \end{align}
 The last inequalities 
 used \req{eq:F1F2}. We also have to consider all the cases with two unique keys, e.g., $x$ 
 and $x'$ unique while $y=y'$. Then using Lemma \ref{lem:remove-si} and \req{eq:coll-ell=r-1}, we get
 \begin{align*}
-\E[(s_x f_x[i_x=i_y]s_y f_y)&(s_{x'}f_{x'}[i_{x'}=i_{y'}]s_{y'} f_{y'})]\\
-&=f_xf_{x'}f_y^2\E[s_xs_{x'} [i_x=i_{x'}=i_y]]\\
-&=f_xf_{x'}f_y^2\E[s_{x'} [r-1=i_{x'}=i_y]]/p\\
-&=f_xf_{x'}f_y^2\E[r-1=i_y]/p^2\\
-    &<f_xf_{x'}f_y^2/(rp^2).
+   \E[(s_x f_x[i_x=i_y]s_y f_y)&(s_{x'}f_{x'}[i_{x'}=i_{y'}]s_{y'} f_{y'})]\\
+                               &=f_xf_{x'}f_y^2\E[s_xs_{x'} [i_x=i_{x'}=i_y]]\\
+                               &=f_xf_{x'}f_y^2\E[s_{x'} [r-1=i_{x'}=i_y]]/p\\
+                               &=f_xf_{x'}f_y^2\E[r-1=i_y]/p^2\\
+                               &<f_xf_{x'}f_y^2/(rp^2).
 \end{align*}    
 Summing over all terms with $x$ and $x'$ unique while $y=y'$, and
 using \req{eq:F1F2} and $u\leq p$, we get 
 \begin{align*}
-  \sum_{{\rm distinct}\,x,x',y} f_xf_{x'}f_y^2 /(rp^2)&<
-    F_1^2F_2/(rp^2)\leq F_2^2 n/(rp^2).
+   \sum_{{\rm distinct}\,x,x',y} f_xf_{x'}f_y^2 /(rp^2)&<
+   F_1^2F_2/(rp^2)\leq F_2^2 n/(rp^2).
 \end{align*}
 There are four ways we can pick the two unique keys $a\in \{x,y\}$
 and $b\in \{x',y'\}$, so we conclude that
 \begin{equation}\label{eq:one-pair}
-\sum_{\begin{array}{c}x,y,x',y'\in[u], x\neq y, x'\neq y',\\
-{\rm two\ keys\ are\ unique}\end{array}}
-\E[(s_x f_x[i_x=i_y]s_y f_y)
-(s_{x'}f_{x'}[i_{x'}=i_{y'}]s_{y'} f_{y'})]\leq 4 F_2^2 n/(rp^2)
+   \sum_{\begin{array}{c}x,y,x',y'\in[u], x\neq y, x'\neq y',\\
+   {\rm two\ keys\ are\ unique}\end{array}}
+   \E[(s_x f_x[i_x=i_y]s_y f_y)
+   (s_{x'}f_{x'}[i_{x'}=i_{y'}]s_{y'} f_{y'})]\leq 4 F_2^2 n/(rp^2)
 \end{equation}
 Finally, we need to reconsider the terms with two pairs, that
 is where $(x,y)=(x',y')$ or $(x,y)=(y',x')$. In
@@ -201,35 +203,36 @@ this case, $(s_x f_x[i_x=i_y]s_y f_y)
 By \req{eq:coll-ell<r-1} and \req{eq:coll-ell=r-1},  we 
 get 
 \begin{align}
-\sum_{\begin{array}{c}x,y,x',y'\in[u], x\neq y, x'\neq y',\\
-(x,y)=(x',y')\,\vee\,(x,y)=(y',x')\end{array}}&
-\E[(s_x f_x[i_x=i_y]s_y f_y)
-(s_{x'}f_{x'}[i_{x'}=i_{y'}]s_{y'} f_{y'})]\nonumber\\
-&=2\sum_{x,y\in[u],x\neq y}(f_x^2f_y^2)\Pr[i_x=i_y]\nonumber\\
-&=2\sum_{x,y\in[u],x\neq y}(f_x^2f_y^2)(1+r/p^2)/r\nonumber\\
-&=2(F_2^2-F_4)(1+r/p^2)/r\label{eq:two-pairs}
-\end{align}
-Adding up add \req{eq:distinct}, \req{eq:one-pair}, and
-\req{eq:two-pairs}, we get 
-\[\Var[Y]\leq 2(F_2^2-F_4)/r+F_2^2 (n^2/p^4+2/p^2+4 n/(rp^2)).\]
-We have defined our parameters to satisfy $2\leq r\leq u/2\leq (p+1)/4$
-where $r$, $u$, and $p+1$ are all powers of two. Also $n\leq u$, so it 
-follows that
-\begin{equation}
-n/p\leq u/n\geq\geq 7/4\textnormal{ and }p/r\geq 7/2.\label{eq:ratios}
-\end{equation}
-In particular, $(n/p)^2\leq(4/7)^2<0.33$, so we conclude
-that
-\begin{equation}\label{eq:var-good1}
-\Var[Y]<2(F_2^2-F_4)/r+F_2^2 (2.33+4 n/r)/p^2.
-\end{equation}
-Next we note that $F_4\geq F_2^2/n$ follows from \req{eq:F1F2} applied
-to vector of squared values $(f_0^2,\ldots,f_{u-1}^2)$. Combined
-with \req{eq:var-good1} and \req{eq:ratios}, we get
-\begin{align*}
-\Var[Y]&<2(F_2^2-F_4)/r+F_2^2 (2.33+4 n/r)/p^2\\
-&\leq 2F_2^2/r+F_2^2(-2+2.33nr/p^2+4 n^2/p^2)\\
-&<2F_2^2/r.
-\end{align*}
-This completes the proof of \req{eq:V-F2-p}  and hence
-of Theorem \ref{thm:h-and-s-p}.
+   \sum_{\begin{array}{c}x,y,x',y'\in[u], x\neq y, x'\neq y',\\
+   (x,y)=(x',y')\,\vee\,(x,y)=(y',x')\end{array}}
+   &
+   \E[(s_x f_x[i_x=i_y]s_y f_y)
+   (s_{x'}f_{x'}[i_{x'}=i_{y'}]s_{y'} f_{y'})]\nonumber\\
+   &=2\sum_{x,y\in[u],x\neq y}(f_x^2f_y^2)\Pr[i_x=i_y]\nonumber\\
+   &=2\sum_{x,y\in[u],x\neq y}(f_x^2f_y^2)(1+r/p^2)/r\nonumber\\
+   &=2(F_2^2-F_4)(1+r/p^2)/r\label{eq:two-pairs}
+      \end{align}
+      Adding up add \req{eq:distinct}, \req{eq:one-pair}, and
+      \req{eq:two-pairs}, we get 
+      \[\Var[Y]\leq 2(F_2^2-F_4)/r+F_2^2 (n^2/p^4+2/p^2+4 n/(rp^2)).\]
+      We have defined our parameters to satisfy $2\leq r\leq u/2\leq (p+1)/4$
+      where $r$, $u$, and $p+1$ are all powers of two. Also $n\leq u$, so it 
+      follows that
+      \begin{equation}
+         n/p\leq u/n\geq\geq 7/4\textnormal{ and }p/r\geq 7/2.\label{eq:ratios}
+      \end{equation}
+      In particular, $(n/p)^2\leq(4/7)^2<0.33$, so we conclude
+      that
+      \begin{equation}\label{eq:var-good1}
+         \Var[Y]<2(F_2^2-F_4)/r+F_2^2 (2.33+4 n/r)/p^2.
+      \end{equation}
+      Next we note that $F_4\geq F_2^2/n$ follows from \req{eq:F1F2} applied
+      to vector of squared values $(f_0^2,\ldots,f_{u-1}^2)$. Combined
+      with \req{eq:var-good1} and \req{eq:ratios}, we get
+      \begin{align*}
+         \Var[Y]&<2(F_2^2-F_4)/r+F_2^2 (2.33+4 n/r)/p^2\\
+                &\leq 2F_2^2/r+F_2^2(-2+2.33nr/p^2+4 n^2/p^2)\\
+                &<2F_2^2/r.
+      \end{align*}
+      This completes the proof of \req{eq:V-F2-p}  and hence
+      of Theorem \ref{thm:h-and-s-p}.

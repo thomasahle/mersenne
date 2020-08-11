@@ -1,7 +1,10 @@
 \documentclass[11pt]{article}  
 %\renewcommand\baselinestretch{0.95}
-\usepackage{amssymb}
 \usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+
 \usepackage{times}
 \usepackage{fullpage}
 \usepackage{epsfig}
@@ -9,35 +12,25 @@
 \usepackage{epstopdf}
 \usepackage{todonotes}
 \usepackage{hyperref}
-\usepackage{algorithmic}
 \usepackage{cleveref}
-\usepackage[ruled,vlined,commentsnumbered,titlenotnumbered]{algorithm2e}
+\usepackage{algorithm}
+\usepackage[noend]{algpseudocode}
+%\usepackage[ruled,vlined,commentsnumbered,titlenotnumbered]{algorithm2e}
 \newcommand{\suchthat}{\mathrel{}\mathclose{}\ifnum\currentgrouptype=16\middle\fi\vert\mathopen{}\mathrel{}}
-\newcommand{\xor}{\oplus}
-\newcommand{\ls}{\texttt{<<}}
-\newcommand{\rs}{\texttt{>>}\,}
-\newcommand{\msb}{{\sf msb}}
 %\newcommand{\E}{{\sf E}}
+
 \DeclareMathOperator*{\E}{\sf{E}}
 \newcommand{\Var}{{\sf Var}}
-\newcommand{\ttl}{{\tt 1}}
-\newcommand{\tto}{{\tt 0}}
-\newcommand{\estr}{\backslash 0}
 
-\newcommand{\drop}[1]{}
 \newcommand{\ppmod}{\rule{-1.5ex}{0ex}\pmod}
-\newcommand{\lpf}{\textnormal{lin-prob-fill}}
-\newcommand{\length}{\textnormal{length}}
-\newcommand{\case}[1]{\underline{{#1}:}}
 \newcommand{\floor}[1]{\lfloor {#1} \rfloor}
+\newcommand{\ceil}[1]{\lceil {#1}\rceil}
 \newcommand{\Prp}[1]{\Pr\left[{#1} \right]}
 \newcommand{\Ep}[1]{{\sf E}\left[{#1} \right]}
 \newcommand{\req}[1]{(\ref{#1})}
-\newcommand{\ceiling}[1]{\lceil {#1} \rceil}
-\newcommand{\bigfloor}[1]{\left\lfloor {#1} \right\rfloor}
-\newcommand{\bigceiling}[1]{\left\lceil {#1} \right\rceil}
-\newtheorem {invariant} {Invariant}
-\renewcommand\theinvariant{\Roman{invariant}}
+\newcommand\eps\varepsilon
+\newcommand\Z{\mathbb Z}
+
 \newtheorem {lemma} {Lemma}[section]
 \newtheorem {fact} [lemma] {Fact}
 \newtheorem {assumption} {Assumption}
@@ -47,17 +40,6 @@
 \newtheorem {observation}[lemma] {Observation}
 \newtheorem {question}{Question}[section]
 \newtheorem {exercise}[question]{Exercise}
-\newcommand{\qed}{\rule{1ex}{1ex}}
-\newenvironment{proof}[1][]{\paragraph*{Proof{#1}}}{\hfill \qed\smallskip\\}
-\newcommand\cH{{\mathcal H}}
-\newcommand\eps\varepsilon
-\newcommand\fct\rightarrow
-\newcommand\asgn\leftarrow
-\newcommand\baralpha{(1-\alpha)}
-\newcommand\ceil[1]{\lceil {#1}\rceil}
-\newcommand\hshift{h_a^{\gg}}
-\newcommand\ol\overline
-\newcommand\Z{\mathbb Z}
 
 \newcommand{\unif}{\mathcal{U}}
 
@@ -68,4 +50,9 @@
 \newcommand{\er}[1]{\textcolor{blue}{#1}}
 \newcommand{\erdel}[1]{\textcolor{LightGreen}{#1}}
 
-
+% Drawing
+\newcommand{\andtt}{ \mathbin{\texttt{\&}} }
+\newcommand{\xor}{\oplus}
+\newcommand{\ls}{ \mathbin{\texttt{<\!<}} }
+\newcommand{\rs}{ \mathbin{\texttt{>\!>}} }
+\newcommand{\msb}{{\sf msb}}

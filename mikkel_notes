@@ -1,0 +1,412 @@
+
+We are now going to show we can implement second moment estimation when
+we want an arbitrary number $r$ of counters. The starting point
+is a 4-universal hash function $h:[u]\to[2^b-1]$, and we want to
+use it to construct both a random sign function $s:[u]\to\{-1,1\}$ and 
+a random bucketing function $i:[u]\to[r]$. When $r$ was a power-of-two, 
+we such a construction in Algorithm \ref{alg:h-and-s}, but now we
+assume that $r$ is not a power of two. We want to employ what we
+have learned about most uniform maps, but it has to be done a bit
+carefully. The result is presented in Algorithm \ref{alg:h-and-s-k}.
+\begin{algorithm}\label{alg:h-and-s-k}
+  \caption{For key $x\in [u]$, compute $i(x)=i_x\in[r]$ and
+    $s(x)=s_x\in\{-1,+1\}$.\rule{5ex}{0ex}
+    Uses 4-universal $h:[u]\to [p]$ for Mersenne prime $p=2^b-1\geq u$.}
+  $h_x\gets h(x)+1$\hfill $\rhd\quad h_x$ uses $b$ bits uniformly except $h_x\neq 0$\\
+  $j_x\gets h_x\&(2^{b-1}-1)$\hfill $\rhd\quad j_x$ gets $b-1$ least 
+   significant bits of $h_x$\\
+  $i_x\gets (rj_x)\texttt{>>}b-1$\hfill $\rhd\quad i_x$ is quite uniform
+  in $[r]$\\
+$a_x\gets h_x\texttt{>>}(b-1)$\hfill $\rhd\quad a_x$ gets the most significant bit of $h_x$\\
+$s_x\gets 2b_x-1$\hfill $\rhd\quad s_x$ is quite uniform in $\{-1,+1\}$ and
+quite independent of $i_x$.\\
+\end{algorithm}  
+
+We now explain and analyze Algorithm \ref{alg:h-and-s-k}. First we set
+$h_x=h(x)+1$.  The result is $b$-bit string that is uniform except
+that we are missing 0, the all \texttt0s. For contract, in Algorithm
+\ref{alg:h-and-s}, $h_x$ was uniform except for the all
+\texttt1s. 
+
+Now $j_x$ gets the $b-1$ least significant bits of
+$h_x$. We have two elements from $[2^b-1]$ mapping to each element in
+$[2^{b-1}]$, except that only one element maps to $0$, so $0$ has only
+half the probability. We note that this distribution is a weighted
+average between the distribution that is uniform on $[2^{b-1}]$ and
+the distribution that is uniform on $[2^{b-1}]\setminus\{0\}$.
+
+Next we set $i_x\gets (rj_x)\texttt{>>}b-1$. This is the map that
+to $[r]$ that we know from Lemma \ref{lem:most-uniform} (i)-(ii) 
+is most uniform on both $[2^{b-1}]$ and $[2^{b-1}]\setminus\{0\}$.
+The resulting distribution is therefore again a weighted average
+between if $i_x$ was uniform on $[2^{b-1}]$ and
+if $i_x$ was uniform on $[2^{b-1}]\setminus\{0\}$. By Jensen's inequality
+
+
+
+
+
+We now consider the situation where balls in $[q]$ have unit weight while ball $q$
+has weight $\eps\in[0,1]$. This corresponds to the case where we have a uniform
+distribution in $[p]$ where $p=2^c-1$. This is a uniform $c$-bit string, except
+that the all 1s $p$ is excluded. Now set $r=2^b-1$, and use $y=(x\texttt{\&} r)$.
+This corresponds to ball $r$ getting weight $\eps=1-2^{b-c}$. We then do
+our final mapping $z=(y+1)\texttt{>>} b$, which places ball $r$ in bin $0$.
+
+Let $a\in\{1,\ldots,k\}$ be such that $k$ divides $q+a$. Then $a$ ``light'' buckets
+get $\ell=(q+a-k)/k$ unit balls each while $k-a$ ``heavy'' buckets 
+get $\ell+1=(q+a)/k$ unit balls each. We have here allowed $k$ to divide $r$.
+Now, the special ball $r$ lands in bucket 0, which is was one of
+the light buckets which gets total weight $\ell+\eps$. 
+
+If the weight the balls landing in a bin $i$ is $w_i$, then the probability
+of landing in it is $w_i/(r+\eps)$. We now want to
+analyse the collision probability, which is $\sum_{i\in k} w_i^2/(r+\eps)$.
+We already know the answer if $\eps$ is $0$ or $1$. The former corresponds
+to case of a uniform distribution in $r$, and the latter to a uniform
+distribution in $r+1$. For any $\eps$, we can get our distribution as
+a weighted average of these two. We want ball $r$ to get probability $\eps/(r+\eps)$.
+Ball $r$ gets zero probability from the uniform distribution on $[r]$, and it gets
+probability $1/(r+1)$ from the uniform distribution of on $[r+1]$, so we
+must use the later with weight $\alpha$ such that 
+\[\alpha/(r+1)=\eps/(r+\eps)\iff \alpha=\eps\frac{r+1}{r+\eps}.\]
+This weighted average gives us the right distribution on balls, hence the
+right distribution on bins. We want the sum of squares for this average distribution,
+and by Jensen's inequality, this is less than or equal to the corresponding
+weigthed average of the sum of squares. Thus we
+get that the collision probability with the $\eps$-weighted ball $r$ is
+bounded by 
+\begin{align*}
+(1-\alpha)(1+&a(k-a)/r^2)/k+\alpha (1+(a-1)(k-(a-1))/(r+1)^2)/k\\
+&=(1+(1-\alpha)(a(k-a)/r^2)+\alpha (1+(a-1)(k-(a-1))/(r+1)^2))/k.
+\end{align*}
+However, all we care about here is that it is bounded by the maximum 
+of the two extremes, which are both most uniform distributions
+and both are bounded by $(1+(k/(2r))^2)/k$, that is,
+\begin{equation}\label{eq:collision-r}
+\Pr[i_x=i_y]=(1+(k/(2r))^2)/k.
+\end{equation}
+Best use of $r$ is to use $c=b-1$ so that all bits except the sign bit is used.
+Then $r=(p+1)/2-1=(p-1)/2$, so we get
+\begin{equation}\label{eq:collision-p}
+\Pr[i_x=i_y]=(1+(k/((p-1))^2)/k.
+\end{equation}
+
+
+
+
+
+
+The construction of $s$ abd $i$ is presented in Algorithm \ref{alg:i-and-s-from-b-bit}.
+
+
+
+
+\subsection{Using fewer hash bits to spread the keys}
+Recall from Section \ref{sec:two-for-one} that we sometimes want to
+get several hash values out of the same $k$-universal hash function
+$h:[u]\to[2^b-1]$. Our goal is to get a hash value $i(x)\in [r]$ for
+some arbitrary $r$, but we only want to use $c<b$ bits from the
+$b$-bit hash value. An example of such a code using the $c$ least
+significant bits is presented in Algorithm \ref{alg:i-use-c-from h}.
+\begin{algorithm}\label{alg:i-use-c-from h}
+  \caption{For key $x\in [u]$, compute $i(x)=i_x\in[r]$.
+    Uses $c$
+    least significant bits of hash values from 4-universal $h:[u]\to
+    [2^b-1]$.}  
+   $h_x\gets h(x)+1$\hfill $\rhd\quad h_x$ uses $b$ bits
+  uniformly except $h_x\neq 0$\\ 
+  $j_x\gets h_x\&(2^c-1)$\hfill
+  $\rhd\quad j_x$ gets $c$ least significant bits of
+  $h_x$\\ $i_x\gets (rj_x)\texttt{>>}\,c$\hfill $\rhd\quad i_x$ is
+  quite uniform in $[r]$.
+\end{algorithm}  
+To compute $i(x)$ from $h(x)$, we first set 
+$h_x\gets h(x)+1$. The result is $b$-bit string that is uniform except
+that we are missing 0. Next we can select any $c$ bits from $h_x$
+for $j_x$, e.g., we could set $j_x\gets h_x\texttt\&(2^c-1)$ for
+the $c$ least significant bits, but we could also have chosen
+$j_x\gets h_x\texttt{>>}(b-c)$ for the $c$ most signifant bits.
+Regardless of which bits we chose $j_x$ is uniform in $[2^c]$
+except that $0$ has smaller probability. More precisely, 
+$0$ has probability $(2^{b-c}-1)/(2^c-1)$ while the all
+other values in $[2^c]$ have probability $2^{b-c}/(2^c-1)$.
+It will be more convinient to think of it relatively; that
+the probability of $0$ is $(1-\eps)$ times smaller than that of 
+the rest. Concretely $\eps=2^{c-b}$, but we will think of $\eps$ as
+any value in $[0,1]$. If $\eps=0$, then $j_x$ is
+uniformly distributed in $[2^c]$ and if
+$\eps=1$, then $j_x$ is uniformly distributed in $2^c\setminus\{0\}$.
+All other values of $\eps$ give us some weighted average between
+these two extremes.
+
+Finally, we set $i_x\gets (rj_x)\texttt{>>}c$ defining $i(x)=i_x$.
+\begin{lemma} For any $x\in[u]$ and $i\in[r]$, 
+$\Pr[h(x)=i] \in[\floor{(2^c-\eps)/r}/(2^c-\eps), \ceil{(2^c-\eps)/r}/(2^c-\eps)]$. Moreover, 
+$\Pr[i(x)=0]=(\ceil{2^c/r}-\eps)/(2^c-\eps)\leq \ceil{2^c/r}/2^c$. Moreover, for 
+Moreover, for any distinct $x,y\in [u]$, $\Pr[i(x)=i(y)]\leq \left(1+(r/(2(2^c-1)))^2\right)/r$.
+\end{lemma}
+Above $\ceil{2^c/r}/2^c\leq\left(1+(r-1)/2^c\right)/r$
+
+
+This is the map 
+to $[r]$ that we know from Lemma \ref{lem:most-uniform} (i)-(ii) 
+is most uniform on both $[2^c]$ and $[2^c]\setminus\{0\}$. We
+can therefore apply \req{eq:coll-a} in these two 
+extremes. It follows that if $j_x$ was uniform in 
+$[2^c]$, then the sum of squared probabilities on $i_x$ is
+at most $(1+(r/(2\cdot 2^c))^2)/r$, and if $j_x$ was uniform in 
+$[2^c]\setminus\{0\}$, then the sum of squared probabilities on $i_x$ is
+at most $(1+(r/(2\cdot (2^c-1)))^2)/r$.
+
+Therefore, if $j_x$ was uniform in $[2^c]$ then by  \ref{lem:most-uniform} (i),
+
+
+
+The resulting distribution is therefore again a weighted average
+between if $i_x$ was uniform on $[2^c]$ and
+if $i_x$ was uniform on $[2^c]\setminus\{0\}$. By Jensen's inequality
+
+
+
+
+\subsection{Two-for-one hash functions with an arbitrary number of balls}
+We are now going to show we can implement second moment estimation when
+we want an arbitrary number $r$ of counters. The starting point
+is a 4-universal hash function $h:[u]\to[2^b-1]$, and we want to
+use it to construct both a random sign function $s:[u]\to\{-1,1\}$ and 
+a random bucketing function $i:[u]\to[r]$. When $r$ was a power-of-two, 
+we such a construction in Algorithm \ref{alg:h-and-s}, but now we
+assume that $r$ is not a power of two. We want to employ what we
+have learned about most uniform maps, but it has to be done a bit
+carefully. The result is presented in Algorithm \ref{alg:h-and-s-k}.
+\begin{algorithm}\label{alg:h-and-s-k}
+  \caption{For key $x\in [u]$, compute $i(x)=i_x\in[r]$ and
+    $s(x)=s_x\in\{-1,+1\}$.\rule{5ex}{0ex}
+    Uses 4-universal $h:[u]\to [p]$ for Mersenne prime $p=2^b-1\geq u$.}
+  $h_x\gets h(x)+1$\hfill $\rhd\quad h_x$ uses $b$ bits uniformly except $h_x\neq 0$\\
+  $j_x\gets h_x\&(2^{b-1}-1)$\hfill $\rhd\quad j_x$ gets $b-1$ least 
+   significant bits of $h_x$\\
+  $i_x\gets (rj_x)\texttt{>>}b-1$\hfill $\rhd\quad i_x$ is quite uniform
+  in $[r]$\\
+$a_x\gets h_x\texttt{>>}(b-1)$\hfill $\rhd\quad a_x$ gets the most significant bit of $h_x$\\
+$s_x\gets 2b_x-1$\hfill $\rhd\quad s_x$ is quite uniform in $\{-1,+1\}$ and
+quite independent of $i_x$.\\
+\end{algorithm}  
+
+We now explain and analyze Algorithm \ref{alg:h-and-s-k}. First we set
+$h_x=h(x)+1$.  The result is $b$-bit string that is uniform except
+that we are missing 0, the all \texttt0s. For contract, in Algorithm
+\ref{alg:h-and-s}, $h_x$ was uniform except for the all
+\texttt1s. 
+
+Now $j_x$ gets the $b-1$ least significant bits of
+$h_x$. We have two elements from $[2^b-1]$ mapping to each element in
+$[2^{b-1}]$, except that only one element maps to $0$, so $0$ has only
+half the probability. We note that this distribution is a weighted
+average between the distribution that is uniform on $[2^{b-1}]$ and
+the distribution that is uniform on $[2^{b-1}]\setminus\{0\}$.
+
+Next we set $i_x\gets (rj_x)\texttt{>>}b-1$. This is the map that
+to $[r]$ that we know from Lemma \ref{lem:most-uniform} (i)-(ii) 
+is most uniform on both $[2^{b-1}]$ and $[2^{b-1}]\setminus\{0\}$.
+The resulting distribution is therefore again a weighted average
+between if $i_x$ was uniform on $[2^{b-1}]$ and
+if $i_x$ was uniform on $[2^{b-1}]\setminus\{0\}$. By Jensen's inequality
+
+
+
+
+
+We now consider the situation where balls in $[q]$ have unit weight while ball $q$
+has weight $\eps\in[0,1]$. This corresponds to the case where we have a uniform
+distribution in $[p]$ where $p=2^c-1$. This is a uniform $c$-bit string, except
+that the all 1s $p$ is excluded. Now set $r=2^b-1$, and use $y=(x\texttt{\&} r)$.
+This corresponds to ball $r$ getting weight $\eps=1-2^{b-c}$. We then do
+our final mapping $z=(y+1)\texttt{>>} b$, which places ball $r$ in bin $0$.
+
+Let $a\in\{1,\ldots,k\}$ be such that $k$ divides $q+a$. Then $a$ ``light'' buckets
+get $\ell=(q+a-k)/k$ unit balls each while $k-a$ ``heavy'' buckets 
+get $\ell+1=(q+a)/k$ unit balls each. We have here allowed $k$ to divide $r$.
+Now, the special ball $r$ lands in bucket 0, which is was one of
+the light buckets which gets total weight $\ell+\eps$. 
+
+If the weight the balls landing in a bin $i$ is $w_i$, then the probability
+of landing in it is $w_i/(r+\eps)$. We now want to
+analyse the collision probability, which is $\sum_{i\in k} w_i^2/(r+\eps)$.
+We already know the answer if $\eps$ is $0$ or $1$. The former corresponds
+to case of a uniform distribution in $r$, and the latter to a uniform
+distribution in $r+1$. For any $\eps$, we can get our distribution as
+a weighted average of these two. We want ball $r$ to get probability $\eps/(r+\eps)$.
+Ball $r$ gets zero probability from the uniform distribution on $[r]$, and it gets
+probability $1/(r+1)$ from the uniform distribution of on $[r+1]$, so we
+must use the later with weight $\alpha$ such that 
+\[\alpha/(r+1)=\eps/(r+\eps)\iff \alpha=\eps\frac{r+1}{r+\eps}.\]
+This weighted average gives us the right distribution on balls, hence the
+right distribution on bins. We want the sum of squares for this average distribution,
+and by Jensen's inequality, this is less than or equal to the corresponding
+weigthed average of the sum of squares. Thus we
+get that the collision probability with the $\eps$-weighted ball $r$ is
+bounded by 
+\begin{align*}
+(1-\alpha)(1+&a(k-a)/r^2)/k+\alpha (1+(a-1)(k-(a-1))/(r+1)^2)/k\\
+&=(1+(1-\alpha)(a(k-a)/r^2)+\alpha (1+(a-1)(k-(a-1))/(r+1)^2))/k.
+\end{align*}
+However, all we care about here is that it is bounded by the maximum 
+of the two extremes, which are both most uniform distributions
+and both are bounded by $(1+(k/(2r))^2)/k$, that is,
+\begin{equation}\label{eq:collision-r}
+\Pr[i_x=i_y]=(1+(k/(2r))^2)/k.
+\end{equation}
+Best use of $r$ is to use $c=b-1$ so that all bits except the sign bit is used.
+Then $r=(p+1)/2-1=(p-1)/2$, so we get
+\begin{equation}\label{eq:collision-p}
+\Pr[i_x=i_y]=(1+(k/((p-1))^2)/k.
+\end{equation}
+
+
+\subsection{Other stuff}
+We now have $k< u$ be arbitrary and pick Mersenne prime $p=2^b-1\geq 10 u$.
+
+\begin{algorithm}\label{alg:h-and-s-k}
+  \caption{For key $x\in [u]$, compute $h(x)=i_x\in[k]$ and
+    $s(x)=s_x\in\{-1,+1\}$.\rule{5ex}{0ex}
+    Uses 4-universal $g:[u]\to [p]$ for Mersenne prime $p=2^b-1\geq u$..}
+  $g_x\gets g(x)$\hfill $\rhd\quad g_x$ uses $b$ bits\\
+  $f_x\gets g_x\&(2^{b-1}-1)$\hfill $\rhd\quad f_x$ gets $b-1$ least significant
+    bits of $g_x$\\
+  $i_x\gets k(f_x+1)\texttt{>>}b-1$\hfill $\rhd\quad i_x$ is most uniform
+  in $[k]$\\
+$b_x\gets g_x\texttt{>>}(b-1)$\hfill $\rhd\quad b_x$ gets the most significant bit of $g_x$\\
+$s_x\gets 1-2b_x$
+\end{algorithm}  
+From \req{eq:remove-si}, we have
+\begin{equation*}
+\E[s_xA]=\E_{g_x=p}[A]/p.
+\end{equation*}
+With our old calculation of $g_x=p$ implied $i_x=r-1$. However, now 
+$g_x=p$ implies $i_x=0$, so Lemma \ref{lem:remove-si} is replaced
+by 
+\begin{lemma}\label{lem:remove-si-k}
+$\E[s_xA]=\E[A\suchthat i_x=0]/p$.
+\end{lemma}
+The calculation of the expection is unchanged, and the same with the
+calculation of variance for terms with 4 distinct keys, so their
+total contribution to the variance is still the $F_2^2 n^2/p^4$ from
+\req{eq:distinct}
+
+However, for the terms with two unique keys and one pair of identical keys, the
+factor $\E[i_x=r-1]<1/k$ gets replaced with $\E[i_x=0]$ with our
+new probability distribution where
+\begin{align*}
+\Pr[i_x=0]&=(\floor{r/k}+\eps)/(r+\eps)\leq \floor{r/k}+1)/(r+1)\\
+&\leq (r/k+1)/(r+1)<(1+k/(r+1))/k=(1+2k/(p+1))/k.
+\end{align*}
+As a result, for the total contribution of these terms, we have to multiply the
+$4 F_2^2 n/(rp^2)$ from \req{eq:one-pair} by $(1+2k/(p+1))$, so they
+sum up to
+\begin{equation}\label{eq:one-pair'}
+4 (1+2k/(p+1)) F_2^2 n/(rp^2)
+\end{equation}
+Finally, for the terms with two pairs of identical keys, $\Pr[i_x=i_y]$ was bounded
+by $(1+1/p)/k$, which is replaced by the bound $(1+(k/(p-1))^2)/k$, so
+so 
+\begin{align}
+2\sum_{x,y\in[u],x\neq y}&(f_x^2f_y^2)\Pr[i_x=i_y]\nonumber\\
+&=2\sum_{x,y\in[u],x\neq y}(f_x^2f_y^2)(1+(2k/(p-1))^2)/k\nonumber\\
+&=2(F_2^2-F_4)(1+(k/(p-1))^2)/k\nonumber\\
+&\leq 2(1-1/n)F_2^2(1+(k/(p-1))^2)/k\label{eq:two-pairs'}\\
+\end{align}
+Adding it all up, we have proved that 
+\[\Var[Y]=F_2^2 n^2/p^4+(1-1/n)F_2^2(1+(k/(p-1))^2)/k+4(1+2/(p+1))F_2^2 n/(rp^2).\]
+We want the argue
+\begin{equation}\label{eq:Var-bound}
+\Var[Y]\leq 2(1+(k/(p-1))^2)))F_2^2/k.
+\end{equation}
+which follows if 
+\[ku^3/p^4+4(1+2/(p+1))n^2/p^2\leq 2(1+(k/(p-1))^2)).\]
+In fact, we will show 
+\[ku^3/p^4+4(1+2/(p+1))n^2/p^2\leq 2.\]
+Recall that $2\leq k<u\leq (p+1)/2$. Since $u$ is a power of two,
+$u\geq 4$. We conclude $n/p\leq u/p\leq 4/7$, $r/p\leq 3/7$, and
+$p+1\geq 8$. Therefore the left-hand side is bounded by
+$(3/7)(4/7)^3+4(1+2/8)(4/7)^2<1.8<2$. This completes the proof of
+\req{eq:Var-bound}.  \bibliographystyle{alpha} \bibliography{general}
+
+\end{document}
+\section{Arbitrary number of bins}
+We say a map $R$ to $[k]$ is \emph{most uniform} if for any
+$i\in[k]$ the number of elements from $R$ mapping to $i$ is either
+$\floor {|R|/k}$ or $\ceil{|R|/k}$. 
+
+For example, with $R=[r]$, $x\mapsto x\bmod k$ is a most uniform map
+from $[r]$ to $[k]$. However, the modulo operation is quite slow on
+many computers, unless say, $k$ is a power of two, in which case it
+can be implemented as $x\texttt\& (r-1)$ where $\texttt\&$ denotes
+bit-wise {\sc and}.
+
+Another example of a most uniform map is $x\mapsto \floor{xk/r}$,
+which is also quite slow in general, but if $r=2^b$ is a power of two,
+it can be implemented as $x\mapsto x\texttt{>>} b$ where $\texttt{>>}$ denotes
+right-shift.
+
+Now, our interest is the case where $r=p=2^b-1$ is a Mersenne prime,
+and here we claim  that
+\[x\mapsto \floor{(x+1)k/2^b}=(x+1)\texttt{>>} b \]
+is most uniform. The proof is simple. The statement is equivalent
+to saying that $x\mapsto\texttt{>>} b$ is most uniform on 
+$\{1,\ldots,r\}$, but we know it is most uniform on $[2^b]=\{0,\ldots,r\}$
+in that every $i\in[k]$ gets hit by $\floor {2^b/k}$ or $\ceil{2^b/k}$
+elements from $[2^b]$. It is also that $\ceil{2^b/k}$ elements, including
+$0$, maps to $0$. Removing $0$ implies that only $\ceil{2^b/k}-1$ elements map
+to $0$.
+
+Now $k$ cannot divide $p=2^b-1$ since $p$ is prime, so 
+$\ceil{p/k}=\ceil{p+1/k}=\ceil{2^b/k}$
+and $\floor{p/k}=\ceil{p/k}-1$. Therefore we conclude $x\mapsto\texttt{>>} b$ 
+maps $\ceil{p/k}$ or $\floor{p/k}$ elements from $\{1,\ldots,2^b-1\}$ 
+to each $i\in[k]$, and the same holds for $x\mapsto (x+1)\texttt{>>} b$ applied
+to $[p]$, so this efficient map is most uniform from $[p]$ to $[k]$.
+
+We note that this trick does not work when $r=2^b-a$ for $a\geq 2$, that is,
+using $x\mapsto (x+a)\texttt{>>} b$, for in the general case, the number of elements 
+hashing to $0$ becomes $\floor {2^b/k}-a$ assuming $a\leq \floor {2^b/k}$; 0 otherwise.
+
+\end{document}
+(1-1/u)(1+((k/(p-1))^2)<?(1+((k/(p+1))^2)
+
+It is less than 1+((k/(p-1))^2)-1/u, and we ask
+if ((k/(p-1))^2)-((k/(p+1))^2)<=1/u=2/(p+1)
+
+Putting it all on one, we want k^2((p+1)^2-(p-1)^2)<2(p+1)(p-1)^2.
+
+Worst case k=1... not true, all wrong ??... so k^2((p+1)^2-(p-1)^2)<2(p+1)(p-1)^2.
+This becomes 4p^2<2(p^3-p^2-p+1)... Very true since p>=7.
+
+p
+
+
+
+
+(k(p+1)/3/(p-1))^2)-1/u, and putting together,
+
+
+
+
+
+
+MUCH EASIER if ((x+1)*k)>>b is a most uniform map from [2^b-1] to [k]
+
+Cool trick... set $g_x\gets g_x+1$, so it is distributed in $\{1,\ldots,p\}$,
+hence is it the all zeros that has smaller probability, which is useful.
+Then if we do $(g_x\cdot k)\texttt b$, we get a good distribution in
+the sence that for any $i \in [k]$, 
+\[\floor{p/k}/p\leq \Pr[h(x)=i]\leq \ceil{p/k}/p.\]
+The interesting thing is that $\Pr[h(x)=0]$ lies strictly between these values.
+
+NOT QUITE TRUE, BUT SOMETHING LIKE IT...
+
+
+
+\end{document}
+

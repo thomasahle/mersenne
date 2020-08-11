@@ -1,70 +1,31 @@
-%! TEX root = ../merdiv.tex
+%! TEX root = ../../mersenne.tex
 
 \subsection{Algorithm}
 
-The proposed algorithm takes integers $n>c>0$ and $x$, and returns
-$\left\lfloor\frac{x}{2^n-c}\right\rfloor$.
-The algorithm performs two additions, a shift, and a multiplication with $c$ for each memory word occupied by $x$.
-Thus, in the case of Generalized Mersenne Primes with sparsity $k$, we can use a total of $3+k$ simple operations.
-\begin{algorithm}
-   %\caption{}\label{euclid}
-   \begin{algorithmic}[1]
-      \Procedure{Divide}{x, n, c}
-         \State \textbf{let} $m$ \text{such that} $x \le (2^n/c)^m$.
-         \State $v \gets 0$
-         %\For{$i\gets 1$ \textbf{to} $m$}
-         \For{ $m$ times}
-            \State $v \gets (v + 1)c+x$ \textbf{shift-right} $n$.
-         \EndFor
-         %\EndFor
-         \State\textbf{return} $v$
-      \EndProcedure
-   \end{algorithmic}
-\end{algorithm}
-
-%Note that for many Pseudo Mersenne Primes, multiplication by $c$ can be replaced by a single shift, making the algorithm completely additions and shifts.
-
-%Note that we use the same number of operations independent of $x$.
-
-
-To compute modulo we use the fact that
-\begin{align}
-   x \bmod p
-   = x - p\left\lfloor\frac{x}{p}\right\rfloor
-   = x - (2^n - c)\left\lfloor\frac{x}{2^n-c}\right\rfloor,
-\end{align}
-which is only two additions, a shift, and a multiplication with $c$ on top of the division algorithm.
-As $\left\lfloor\frac{x}{p}\right\rfloor p \le x$ there is no danger of overflow.
-
-In fact our algorithm does something stronger, namely gives an efficient division algorithm for any number on the form $q-c$ where $q$ supports fast division.
-The intuition for the algorithm is the expansion
-\begin{align}
-   \frac{x}{q-c}
-   = \frac{x}{q}\sum_{i=0}^\infty \left(\frac{c}{q}\right)^i
-   = x\frac{1+\frac{c+\frac{c^2 + \dots}{q}}{q}}{q}
-   = \frac{x+c\frac{x+c\frac{x + \dots}{q}}{q}}{q},
-\end{align}
-however curiously we need to add a $+1$ to get efficient convergence.
-
-\begin{theorem}
-   %Given integers $q>c>0$, $n\ge 0$ and
-   \todo{Do we support negative $c$? Can we instead say $q>|c|>0$?}
-   $0\le x \le (q/c)^{n-1}(q-c)$,
-   \todo{Given the Corollary, we can also write this as $x < (q/c)^n$, which may be easier to understand?}
-   then
-   \begin{align}
-      \left\lfloor\frac{x}{q-c}\right\rfloor = v_n,
-   \end{align}
-   where $v_0 = 0$ and
-   $v_{i+1} = \left\lfloor\frac{(v_i+1)c+x}{q}\right\rfloor$.
+\begin{theorem}\label{thm:simple-div}
+   Given integers $q>c>0$, $n\ge 0$ and
+   %\todo{Do we support negative $c$? Can we instead say $q>|c|>0$?}
+   $$0\le x \le \begin{cases}
+      (q/c)^{n-1}(q-c) &\quad\text{if } c > 1\\
+      q^{n} &\quad\text{if } c = 1
+   \end{cases}.$$
+   Define the sequence $(v_i)_{i\in[n]}$ by
+   $
+      v_0 = 0$ and
+      $v_{i+1} = \left\lfloor\frac{(v_i+1)c+x}{q}\right\rfloor$.
+   Then
+   $
+      v_n = \left\lfloor\frac{x}{q-c}\right\rfloor$.
+   %\todo{Given the Corollary, we can also write this as $x < (q/c)^n$, which may be easier to understand?}
 \end{theorem}
+In particular it always suffices that $x\le (q/c)^m$.
 \begin{proof}
    Write $x = m(q-c)+h$ for non-negative integers $m$ and $h$ with $h<q-c$.
    Then we get
-   \begin{align}
+   \begin{align*}
       \left\lfloor\frac{x}{q-c}\right\rfloor = m.
       \label{eq:floor}
-   \end{align}
+   \end{align*}
 
    Let $u_0=0$, $u_{i+1} = \lfloor\frac{q}{c}u_i+1\rfloor$.
    By induction $u_i \ge (q/c)^{i-1}$ for $i>0$.
@@ -75,40 +36,38 @@ however curiously we need to add a $+1$ to get efficient convergence.
    For a start $E_0=m\ge 0$ and $E_0 = \lfloor x/(q-c)\rfloor \le (q/c)^{n-1} \le u_n$.
 
    For the induction step we plug in our expressions for $x$ and $v_i$:
-   \begin{align}
+   \begin{align*}
       v_{i+1}
       &= \left\lfloor \frac{(m-E_i+1)c+m(q-c)+h}{q}\right\rfloor
-    =
+    \\&=
     m
     +
     \left\lfloor \frac{(- E_i+1)c +h}{q}\right\rfloor
-    =
+    \\&=
     m
     - \left\lceil \frac{(E_i-1)c - h}{q}\right\rceil.
-   \end{align}
+   \end{align*}
    Now by the induction hypothesis,
-   \begin{align}
+   \begin{align*}
       E_{i+1}
-      = \left\lceil \frac{(E_i-1)c - h}{q}\right\rceil
-      \le\left\lceil (u_{n-i}-1)\frac{c}{q}\right\rceil
-      = \left\lceil \left\lfloor \frac{q}{c}u_{n-i-1} \right\rfloor \frac{c}{q}\right\rceil
-      \le \left\lceil u_{n-i-1}\right\rceil
-      = u_{n-i-1}.
-   \end{align}
+      &= \left\lceil \frac{(E_i-1)c - h}{q}\right\rceil
+    \\&\le\left\lceil (u_{n-i}-1)\frac{c}{q}\right\rceil
+    \\&= \left\lceil \left\lfloor \frac{q}{c}u_{n-i-1} \right\rfloor \frac{c}{q}\right\rceil
+    \\&\le \left\lceil u_{n-i-1}\right\rceil
+    \\&= u_{n-i-1}.
+   \end{align*}
    and similarly since $E_i \ge 0$ and $h\le q-c-1$,
    we have
-   $\left\lceil \frac{E_ic - h - c}{q}\right\rceil \ge
-   \left\lceil \frac{- q + 1}{q}\right\rceil = 0$, which completes the proof.
-\end{proof}
-\begin{corollary}
-   For $c=1$ we can be slightly more specific, and support $x < q^n$.
-   In particular, for $c=1$ and $x < q^2$ we have
-   $
-   \left\lfloor\frac{x}{q-1}\right\rfloor
-   = v_2
-   = \left\lfloor\frac{\left\lfloor\frac{x+1}{q}\right\rfloor+x+1}{q}\right\rfloor
-   $.
-\end{corollary}
-\begin{proof}
+   $$\left\lceil \frac{E_ic - h - c}{q}\right\rceil \ge
+   \left\lceil \frac{- q + 1}{q}\right\rceil = 0,$$
+   which completes the proof.
+
+   For $c=1$ we can be slightly more specific, and support $x < q^m$.
    This follows by repeating the proof, but noting that $u_i = \frac{q^i-1}{q-1}$ since all the $q/c$ terms are integral.
 \end{proof}
+   %In particular, for $c=1$ and $x < q^2$ we have
+   %$
+   %\left\lfloor\frac{x}{q-1}\right\rfloor
+   %= v_2
+   %= \left\lfloor\frac{\left\lfloor\frac{x+1}{q}\right\rfloor+x+1}{q}\right\rfloor
+   %$.
