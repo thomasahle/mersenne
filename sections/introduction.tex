@@ -409,23 +409,14 @@ proved in Section \ref{sec:analysis-two-for-one}.
 
 
 \subsection{Arbitrary number of buckets}\label{sec:most-uniform}
-We now consider the general case where we want to hash into a set of
-buckets $R$ whose size is not a power of two. Suppose we have a
-$2$-universal hash function $h:U\to Q$. We will compose $h$ with a
-map $\mu:Q\to R$, and use $\mu\circ h$ as a hash function from
-$U$ to $R$.
-
-Let $q=|Q|$ and $r=|R|$. We want the map $\mu$ to be \emph{most
-uniform} in the sense that for bucket $i\in R$, the number of
-elements from $Q$ mapping to $i$ is either $\floor{q/r}$ or
-$\ceil{q/r}$. Then the uniformity of hash values with $h$ implies for
-any key $x$ and bucket $i\in R$
-\[\floor{q/r}/q\leq \Pr[\mu\circ
-h(x)=i]\leq \ceil{q/r}/q.\]
-Below we typically have $Q=[q]$ and $R=[r]$. A standard example of a most uniform map $\mu:[q]\to[r]$ 
-is $\mu(x)=x\bmod r$ which the one used above when we defined 
-$h^r:[u]\to[r]$, but as we mentioned before, the modulo operation is 
-quite slow unless $r$ is a power of two.
+We now consider the general case where we want to hash into a set of buckets $R$ whose size is not a power of two.
+Suppose we have a $2$-universal hash function $h:U\to Q$.
+We will compose $h$ with a map $\mu:Q\to R$, and use $\mu\circ h$ as a hash function from $U$ to $R$.
+Let $q=|Q|$ and $r=|R|$.
+We want the map $\mu$ to be \emph{most uniform} in the sense that for bucket $i\in R$, the number of elements from $Q$ mapping to $i$ is either $\floor{q/r}$ or $\ceil{q/r}$.
+Then the uniformity of hash values with $h$ implies for any key $x$ and bucket $i\in R$ \[\floor{q/r}/q\leq \Pr[\mu\circ h(x)=i]\leq \ceil{q/r}/q.\]
+Below we typically have $Q=[q]$ and $R=[r]$.
+A standard example of a most uniform map $\mu:[q]\to[r]$ is $\mu(x)=x\bmod r$ which the one used above when we defined $h^r:[u]\to[r]$, but as we mentioned before, the modulo operation is quite slow unless $r$ is a power of two.
 
 Another example of a most uniform map $\mu:[q]\to[r]$ 
 is $\mu(x)=\floor{xr/q}$,
@@ -560,11 +551,11 @@ Our generalized algorithm is shown in Algorithm \ref{alg:division-generalized}.
 \end{algorithm}
 The full proof of this is given in Theorem \ref{thm:simple-div} in Section \ref{sec:division}.
 
-In the Crandal case $x\le 2^n$ and $c\le 2^{\floor n/2}$, as described by the Encyclopedia of Cryptography and Security~\cite{van2014encyclopedia}, we can let $m=2$ and the algorithm runs in just two steps for a total of six operations:
+In the Crandall case $x\le 2^n$ and $c\le 2^{\floor n/2}$, as described by the Encyclopedia of Cryptography and Security~\cite{van2014encyclopedia}, we can let $m=2$, unroll the loop, and the algorithm runs in just two steps for a total of six operations:
    $$
    \left\lfloor\frac{x}{2^n-c}\right\rfloor
-   = \left\lfloor{\frac{\left(\lfloor\frac{(x+1)c}{q}\rfloor+x+1\right)c}{q}\right\rfloor
-   = ((x+1)*c \rs n)*c+x+1 \rs n
+   = \left\lfloor{\frac{\left(\lfloor\frac{c+x}{q}\rfloor+1\right)c+x}{q}\right\rfloor
+      = ((c+x \rs n) + 1)*c+x \rs n
    .$$
 
 %In fact our algorithm does something stronger, namely gives an efficient division algorithm for any number on the form $q-c$ where $q$ supports fast division.
@@ -573,7 +564,7 @@ The intuition for the algorithm is the expansion
    \frac{x}{q-c}
    = \frac{x}{q}\sum_{i=0}^\infty \left(\frac{c}{q}\right)^i
    = x\frac{1+\frac{c+\frac{c^2 + \dots}{q}}{q}}{q}
-   = \frac{x+c\frac{x+c\frac{x + \dots}{q}}{q}}{q},
+   = \frac{\frac{\frac{\dots+x}{q}c+x}{q}c+x}{q},
 \end{align}
 however curiously we need to add $+1$ to get efficient convergence.
 
@@ -602,27 +593,15 @@ As $\floor{\frac{x}{p}} p \le x$ there is no danger of overflow.
 In the case $x\le 2^{2b}$ and $c=1$, we get the simplified Algorithm \ref{alg:div-simple} described above: $ \left\lfloor\frac{x}{2^n-1}\right\rfloor = (x+1 \rs n)+x+1 \rs n$.
 
 
-\subsubsection{$k$-wise hashing without modulus}
+\paragraph{Application to arbitrary number of buckets}
+In Subsection~\ref{sec:most-uniform} we discussed how $\floor{\frac{h(x)r}{2^b-1}}$ provides a most uniform map from $[2^b-1]\to[r]$.
+To avoid the division step, we instead considered the map
+$\floor{\frac{(h(x)+1)r}{2^b}}$.
+However, for primes on the form $2^b-c$, $c>1$ this approach doesn't provide a most-uniform map.
+%
+Instead we may use Algorithm \ref{alg:division-generalized} to compute
+$$\left\lfloor\frac{h(x)r}{2^b-a}\right\rfloor$$
+directly, getting a perfect most-uniform map.
+(Another alternative was to pre-compute $q = \lfloor2^n/p\rfloor$ and take
+$\floor{\frac{h(x)rq}{2^b}}$, however that requires larger words to store the product $h(x)rq$.)
 
-A very common algorithm is to define
-$h(x) = \sum_{i=0}^k a_i x^i \mod p$
-for some prime $p$.
-
-This is efficient if $p$ supports fast modulus.
-However now the range of $h$ is $[p]$, which may not be what we are looking for.
-Hence it is common to take $h(x)\mod m$ for some $m<p$.
-However $m$ is a general number, and can't be expected to support fast modulus.
-
-An alternative is the following:
-\begin{align}
-   \left\lfloor\frac{h(x)m}{p}\right\rfloor.
-\end{align}
-This only requires division with $p$, which we have shown can be done fast.
-
-An alternative is to compute $q = \lfloor2^n/p\rfloor$ and take
-\begin{align}
-\left\lfloor
-   \frac{h(x)mq}2^n
-\right\rfloor
-\end{align}
-but that requires using larger words, and has some other drawbacks\todo{Which ones?}
