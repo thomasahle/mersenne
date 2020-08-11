@@ -1,4 +1,4 @@
-\documentclass[12pt]{article}  
+\documentclass[11pt]{article}  
 %\renewcommand\baselinestretch{0.95}
 \usepackage{amssymb}
 \usepackage{amsmath}
@@ -10,6 +10,7 @@
 \usepackage{todonotes}
 \usepackage{hyperref}
 \usepackage{algorithmic}
+\usepackage{cleveref}
 \usepackage[ruled,vlined,commentsnumbered,titlenotnumbered]{algorithm2e}
 \newcommand{\suchthat}{\mathrel{}\mathclose{}\ifnum\currentgrouptype=16\middle\fi\vert\mathopen{}\mathrel{}}
 \newcommand{\xor}{\oplus}
@@ -39,6 +40,7 @@
 \renewcommand\theinvariant{\Roman{invariant}}
 \newtheorem {lemma} {Lemma}[section]
 \newtheorem {fact} [lemma] {Fact}
+\newtheorem {assumption} {Assumption}
 \newtheorem {definition} {Definition}
 \newtheorem {corollary} [lemma] {Corollary}
 \newtheorem {theorem}[lemma] {Theorem}
@@ -56,6 +58,9 @@
 \newcommand\hshift{h_a^{\gg}}
 \newcommand\ol\overline
 \newcommand\Z{\mathbb Z}
+
+\newcommand{\unif}{\mathcal{U}}
+
 
 % Eva's comments in a different colour
 \usepackage{color}

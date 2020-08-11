@@ -11,19 +11,25 @@ For each key $x\in [u]$, we have a value $f_x\in \Z$, and the
 goal was to estimate the second moment $F_2=\sum_{x\in u}f^2$.
 
 We had two functions $i:[u]\fct[r]$ and $s:[u]\fct\{-1,+1\}$. 
-For notational convinience, we define $i_x=i(x)$ and $s_x=s(x)$.
+For notational convenience, we define $i_x=i(x)$ and $s_x=s(x)$.
 
 For each $i\in [r]$, we have a counter 
 $C_i=\sum_{x\in[u]} s_x f_x[i_x=i]$, and we define the 
 estimator $X=\sum_{i\in[k]} C_i^2$. We want to study how
 well it approximates $F_2$.
 We have 
+% \begin{align*}
+% X&=\sum_{i\in[r]}\left( \sum_{x\in[u]}s_x f_x[i_x=i]\right)^2\\
+% &=\sum_{i\in[r]}\sum_{x,y\in[u]}s_x f_x[i_x=i=i_y]s_y f_y\\
+% &=\sum_{x,y\in[u]}s_x f_x[i_x=i_y]s_y f_y.\\
+% &=\sum_{x\in[u]} f_x^2+\sum_{x,y\in[u],x\neq y}
+% s_x f_x[i_x=i_y]s_y f_y.
+% \end{align*}
 \begin{align*}
 X&=\sum_{i\in[r]}\left( \sum_{x\in[u]}s_x f_x[i_x=i]\right)^2\\
-&=\sum_{i\in[r]}\sum_{x,y\in[u]}s_x f_x[i_x=i=i_y]s_y f_y\\
-&=\sum_{x,y\in[u]}s_x f_x[i_x=i_y]s_y f_y.\\
-&=\sum_{x\in[u]} f_x^2+\sum_{x,y\in[u],x\neq y}
-s_x f_x[i_x=i_y]s_y f_y.
+&=\sum_{i\in[r]}\sum_{x,y\in[u]}s_x s_y f_x f_y [i_x = i_y = i]\\
+&=\sum_{x,y\in[u]}s_x s_y f_x f_y[i_x=i_y]\\
+&=\sum_{x\in[u]} f_x^2+\sum_{x,y\in[u],x\neq y} s_x s_y f_x f_y[i_x=i_y] .
 \end{align*}
 Thus 
 \begin{equation}\label{eq:decomp}
