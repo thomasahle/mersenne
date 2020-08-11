@@ -482,7 +482,7 @@ values from Section \ref{sec:two-for-one}.
 \subsection{Even faster division and modulo with (Pseudo) Mersenne Primes}
 %
 \begin{algorithm}\label{alg:div-simple}
-   \caption{For Mersenne prime $p=2^b-1$ and $x\leq 2^{2b}$, computes
+   \caption{For Mersenne prime $p=2^b-1$ and $x< 2^{2b}$, computes
    $y=x\bmod p$ and $z=\floor{x/p}$}
    \begin{algorithmic}
       \State $z \gets x+1 \rs b$,
@@ -535,7 +535,7 @@ There are in general two kinds of such primes:
 
 Our generalized algorithm is shown in Algorithm \ref{alg:division-generalized}.
 \begin{algorithm}\label{alg:division-generalized}
-   \caption{For Pseudo-Mersenne prime $p=2^b-c$ and $x,m$ such that $x\leq (2^b/c)^m$, computes
+   \caption{For Pseudo-Mersenne prime $p=2^b-c$ and $x,m$ such that $x< (2^b/c)^m$, computes
       $v=\floor{x/p}$}
    \begin{algorithmic}[1]
       \Procedure{Divide}{x, n, c}
@@ -613,3 +613,115 @@ directly, getting a perfect most-uniform map.
 (Another alternative was to pre-compute $q = \lfloor2^n/p\rfloor$ and take
 $\floor{\frac{h(x)rq}{2^b}}$, however that requires larger words to store the product $h(x)rq$.)
 
+
+\subsubsection{Related Algorithms}
+
+Modulus computation by Generalized Mersenne primes is widely studied in the Cryptography community.
+For example, four of the recommended primes in NIST's document ``Recommended Elliptic Curves for Federal Government Use'' are Generalized Mersenne.
+Naturally, much work has been done on making computations with those primes fast.
+Articles like ``Simple Power Analysis on Fast Modular Reduction with Generalized Mersenne Prime for Elliptic Curve Cryptosystems''~\cite{sakai2006simple}
+give very specific algorithms such as Algorithm \ref{alg:solina}, for each of a number of well known such primes.
+
+\begin{algorithm}\label{alg:solina}
+   \caption{Fast reduction modulo $p_{192} = 2^{192} - 2^{64} - 1$}
+   \begin{algorithmic}
+      \State \textbf{input} $c \gets (c_5, c_4, c_3, c_2, c_1, c_0)$, where each $c_i$ is a 64-bit word, and $0 \le c < p^2_{192}$.
+      \State $s_0 \gets (c_2, c_1, c_0)$
+      \State $s_1 \gets (0, c_3, c_3)$
+      \State $s_2 \gets (c_4, c_4, 0)$
+      \State $s_3 \gets (c_5, c_5, c_5)$
+      \State \textbf{return} $s_0 + s_1 + s_2 + s_3 \mod p_{192}$.
+   \end{algorithmic}
+\end{algorithm}
+
+Division by Mersenne primes is a less common task, but a number of well known division algorithms can be specialized, such as 
+ classical trial division, Montgomery's method and Barrett reduction.
+
+
+%Montgomery method:
+%\begin{align}
+%   (aR\mod N)(bR\mod N) \mod N = (abR)R \mod N
+%\end{align}
+%We then need to remove the factor of $R$ by multiplying with its inverse $\mod N$.
+
+
+The state of the art appears to be the modified Crandall Algorithm by Chung and Hasan~\cite{chung2006low}.
+This algorithm, given in Algorithm \ref{alg:cch} modifies Crandall's algorithm~\cite{crandall1992method} from 1992 to compute division as well as modulo for generalized $2^n-c$ Mersenne primes.
+\begin{algorithm}\label{alg:cch}
+   \caption{Crandall, Chung, Hassan algorithm. For $p=2^n-c$, computes $q, r$ such that $x = qp+r$ and $r<p$.}
+   \begin{algorithmic}[1]
+      \Procedure{Divide}{x, n, c}
+         \State $q_0 \gets x \rs n $
+         \State $r_0 \gets x \andtt 2^n-1$
+         \State $q \gets q_0, r\gets r_0$
+         \State $i \gets 0$
+         \While{$q_i>0$}
+            \State $t \gets q_i*c$
+            \State $q_{i+1} \gets t \rs n$
+            \State $r_{i+1} \gets t \andtt {2^n -1}$
+            \State $q\gets q+q_{i+1}$
+            \State $r\gets r+r_{i+1}$
+            \State $i\gets i+1$
+         \EndWhile
+         \State $t \gets 2^n-c$
+         \While{$r\ge t$}
+            \State $r\gets r-t$
+            \State $q\gets q+1$
+         \EndWhile
+         \State\textbf{return} $q$
+      \EndProcedure
+   \end{algorithmic}
+\end{algorithm}
+Unfortunately no running time analysis is given, and the algorithm ends up doing double work, by computing the quotient and remainder concurrently.
+The algorithm also suffers from the extra while loop for ``cleaning up'' the computations after the main loop.
+
+
+
+%No proof of correctness is given.
+%The while loop condition is different.
+%No guarantees on running time.
+%The addition is different from ours.
+%Doesn't add 1. Doesn't add $x$.
+%Has that extra weird loop for fixing things in the end.
+%So it actually has to do the $r$ computation?
+
+
+Chung and Hasan also has an earlier, simpler algorithm from 2003~\cite{chung2003more},
+but it appears to give the wrong result for many simple cases.
+
+%listed in Algorithm \ref{alg:cch2}.
+%\begin{algorithm}\label{alg:cch2}
+%   \caption{For $q=2^n-c$, computes $t, r$ such that $x = tq+r$ and $r<q$. (Broken.)}
+%   \begin{algorithmic}[1]
+%      \State $r \gets x$
+%      \State $t \gets 0$
+%      \While{$r > q$}
+%         \State $A \gets r \rs n$
+%         \State $B \gets r \andtt 2^n-1$
+%         \State $t \gets t + A$
+%         \State $r \gets B + A*c$
+%      \EndWhile
+%      \State\textbf{return} $(t, r)$
+%   \end{algorithmic}
+%\end{algorithm}
+%Chung and Hasan show that Algorithm \ref{alg:cch2} runs in $O(n)$ time.
+%The algorithm however seems to be broken, as one can see from the example
+%$n=4, c=2, x=15$.
+%In this case we let $r\gets 15$ and we have $r\ge q = 2^4-2=14$,
+%but $A = r \ns n = 0$, so the algorithm never makes progress.
+
+
+%In~\cite{granger2013generalised} the authors defined a different family of Generalised Mersenne numbers and showed various fast multiplication and reduction schemes.
+
+
+
+% On the number of Mersenne Primes:
+%Unfortunately there are only 45 of them known.
+%The most useful one perhaps being.
+%Heuristically there are $O(\log x)$ Mersenne primes up to $x$.
+%Trivia:
+%Euler proved that an even number $n$ is perfect if and only if it is on the form $n=2^{q-1}M_q$, where $M_q=2^q-1$ is prime.
+%(Usually we know a number is perfect if its divisors sum to the number itself, e.g. $6=1+2+3$ or $28=1+2+4+7+14$.)
+
+
+%[[Curve448]] uses the Solinas prime <math>2^{448} - 2^{224} - 1</math>

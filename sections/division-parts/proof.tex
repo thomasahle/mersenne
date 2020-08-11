@@ -1,13 +1,14 @@
 %! TEX root = ../../mersenne.tex
 
-\subsection{Algorithm}
+The purpose of this section is to prove the correctness of Algorithm \ref{alg:division-generalized}.
+In particular we will prove the following equivalent mathematical statement:
 
 \begin{theorem}\label{thm:simple-div}
    Given integers $q>c>0$, $n\ge 0$ and
    %\todo{Do we support negative $c$? Can we instead say $q>|c|>0$?}
    $$0\le x \le \begin{cases}
       (q/c)^{n-1}(q-c) &\quad\text{if } c > 1\\
-      q^{n} &\quad\text{if } c = 1
+      q^{n} - 1 &\quad\text{if } c = 1
    \end{cases}.$$
    Define the sequence $(v_i)_{i\in[n]}$ by
    $
@@ -18,7 +19,7 @@
       v_n = \left\lfloor\frac{x}{q-c}\right\rfloor$.
    %\todo{Given the Corollary, we can also write this as $x < (q/c)^n$, which may be easier to understand?}
 \end{theorem}
-In particular it always suffices that $x\le (q/c)^m$.
+In particular it always suffices that $x< (q/c)^n$ when $c<q-1$.
 
 The value at each step satisfy $v_i = \floor{\frac{x}{q-c}} - E_i$ where
 the errors $E_i$ are never negative.
@@ -68,8 +69,9 @@ In particular this means that if we stop the algorithm after $n-1$ steps, the er
    \left\lceil \frac{- q + 1}{q}\right\rceil = 0,$$
    which completes the proof.
 
-   For $c=1$ we can be slightly more specific, and support $x < q^m$.
-   This follows by repeating the proof, but noting that $u_i = \frac{q^i-1}{q-1}$ since all the $q/c$ terms are integral.
+   For $c=1$ we can be slightly more specific, and support $x < q^n$.
+   This follows by noting that $u_i = \frac{q^i-1}{q-1}$ for $i>0$, since all the $q/c$ terms are integral.
+   Thus for $E_0=\floor{x/(q-1)}\le u_n$ it suffices to require $x\le q^n-1$.
 \end{proof}
    %In particular, for $c=1$ and $x < q^2$ we have
    %$
