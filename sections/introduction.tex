@@ -485,13 +485,13 @@ values from Section \ref{sec:two-for-one}.
    $y=x\bmod p$ and $z=\floor{x/p}$}
    \begin{algorithmic}
       \State $z \gets x+1 \rs b$,
-      \State $z \gets z+1 \rs b$,
-      %\State $y \gets x - p*z$.
-      \State $y \gets x - (z \ls b) + z$.
+      \State $z \gets z+x+1 \rs b$,
+      %\State $y \gets x - (z \ls b) + z$.
+      \State $y \gets (x + z) \andtt p $.
    \end{algorithmic}
 \end{algorithm}
 %
-We even suggest a speedup the computation of $\pmod p$ for Mersenne primes
+We even suggest a speed-up the computation of $\pmod p$ for Mersenne primes
 $p=2^b-1$. The issue in Algorithm \ref{alg:Mersenne} is that
 if-statement can be slow because of branch prediction.
 From the standard Algorithm \ref{alg:Mersenne} this means that we can
@@ -538,11 +538,12 @@ Our generalized algorithm is shown in Algorithm \ref{alg:division-generalized}.
       $v=\floor{x/p}$}
    \begin{algorithmic}[1]
       \Procedure{Divide}{x, n, c}
-         \State $v \gets 0$.
+         \State $x' \gets x + c$
+         \State $v \gets 0$
          %\For{$i\gets 1$ \textbf{to} $m$}
          \For{ $m$ times}
-            \State $v \gets (v + 1) * c + x$
-            \State $v \gets v \rs n$.
+            \State $v \gets v * c + x'$
+            \State $v \gets v \rs n$
          \EndFor
          %\EndFor
          \State \Return $v$
@@ -551,12 +552,13 @@ Our generalized algorithm is shown in Algorithm \ref{alg:division-generalized}.
 \end{algorithm}
 The full proof of this is given in Theorem \ref{thm:simple-div} in Section \ref{sec:division}.
 
-In the Crandall case $x\le 2^n$ and $c\le 2^{\floor n/2}$, as described by the Encyclopedia of Cryptography and Security~\cite{van2014encyclopedia}, we can let $m=2$, unroll the loop, and the algorithm runs in just two steps for a total of six operations:
+In the Crandall case $x\le 2^n$ and $c\le 2^{\floor n/2}$, as described by the Encyclopedia of Cryptography and Security~\cite{van2014encyclopedia}, we can let $m=2$, unroll the loop, and the algorithm runs in just two steps for a total of five operations:
    $$
    \left\lfloor\frac{x}{2^n-c}\right\rfloor
-   = \left\lfloor\frac{\left(\lfloor\frac{c+x}{q}\rfloor+1\right)c+x}{q}\right\rfloor
-      = ((c+x \rs n) + 1)*c+x \rs n
-   .$$
+   = \left\lfloor\frac{\lfloor\frac{x'}{2^n}\rfloor c + x'}{2^n}\right\rfloor
+      = (x' \rs n)*c + x' \rs n
+   ,$$
+   including $x'=x+c$.
 
 %In fact our algorithm does something stronger, namely gives an efficient division algorithm for any number on the form $q-c$ where $q$ supports fast division.
 The intuition for the algorithm is the expansion
@@ -566,7 +568,7 @@ The intuition for the algorithm is the expansion
    = x\frac{1+\frac{c+\frac{c^2 + \dots}{q}}{q}}{q}
    = \frac{\frac{\frac{\dots+x}{q}c+x}{q}c+x}{q},
 \end{align}
-however curiously we need to add $+1$ to get efficient convergence.
+however curiously we need to shift $x$ by $c$ to compensate for the rounding down.
 
 
 
@@ -590,8 +592,13 @@ To compute modulo we use the fact that
 \end{align}
 which is only two additions, a shift, and a multiplication with $c$ on top of the division algorithm.
 As $\floor{\frac{x}{p}} p \le x$ there is no danger of overflow.
-In the case $x\le 2^{2b}$ and $c=1$, we get the simplified Algorithm \ref{alg:div-simple} described above: $ \left\lfloor\frac{x}{2^n-1}\right\rfloor = (x+1 \rs n)+x+1 \rs n$.
+An alternative method is to note
+$x = \lfloor\frac{x}{p}\rfloor (2^n-c) + r$, so
+$$x\bmod p = \left(x+c\left\lfloor\frac{x}{p}\right\rfloor \right) \bmod 2^n,$$
+which is fast to compute using $(\andtt p)$.
+This is the method applied in Algorithm \ref{alg:div-simple}.
 
+%In the case $x\le 2^{2b}$ and $c=1$, we get the simplified Algorithm \ref{alg:div-simple} described above: $ \left\lfloor\frac{x}{2^n-1}\right\rfloor = (x+1 \rs n)+x+1 \rs n$.
 
 \paragraph{Application to arbitrary number of buckets}
 In Subsection~\ref{sec:most-uniform} we discussed how $\floor{\frac{h(x)r}{2^b-1}}$ provides a most uniform map from $[2^b-1]\to[r]$.

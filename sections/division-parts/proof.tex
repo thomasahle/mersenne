@@ -19,6 +19,12 @@
    %\todo{Given the Corollary, we can also write this as $x < (q/c)^n$, which may be easier to understand?}
 \end{theorem}
 In particular it always suffices that $x\le (q/c)^m$.
+
+The value at each step satisfy $v_i = \floor{\frac{x}{q-c}} - E_i$ where
+the errors $E_i$ are never negative.
+They are bounded above $0\le E_i\le u_{n-i}$ a sequence $u_i$,
+defined by $u_0=0$ and $u_{i+1} = \lfloor\frac{q}{c}u_i+1\rfloor$.
+In particular this means that if we stop the algorithm after $n-1$ steps, the error will be at most $u_1=1$.
 \begin{proof}
    Write $x = m(q-c)+h$ for non-negative integers $m$ and $h$ with $h<q-c$.
    Then we get

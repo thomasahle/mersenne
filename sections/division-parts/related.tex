@@ -2,48 +2,49 @@
 
 \subsection{Related Work}
 
-Division by Mersenne primes, while less commonly considered than modulo, is a common task in Cryptography, and has thus been studied and specified in much detail.
-In ``Simple Power Analysis on Fast Modular Reduction with Generalized Mersenne Prime for Elliptic Curve Cryptosystems''
+Modulus computation by Generalized Mersenne primes is widely studied in the Cryptography community.
+For example, four of the recommended primes in NIST's document ``Recommended Elliptic Curves for Federal Government Use'' are Generalized Mersenne.
+Naturally, much work has been done on making computations with those primes fast.
+Articles like ``Simple Power Analysis on Fast Modular Reduction with Generalized Mersenne Prime for Elliptic Curve Cryptosystems''~\cite{sakai2006simple}
+give very specific algorithms such as Algorithm \ref{alg:solina}, for each of a number of well known such primes.
 
-%https://pdfs.semanticscholar.org/3f84/39b357a8331f1cc6f8de68a19223ff027f2c.pdf
-\cite{sakai2006simple}
-
-\begin{algorithm}
+\begin{algorithm}\label{alg:solina}
    \caption{Fast reduction modulo $p_{192} = 2^{192} - 2^{64} - 1$}
    \begin{algorithmic}
       \State \textbf{input} $c \gets (c_5, c_4, c_3, c_2, c_1, c_0)$, where each $c_i$ is a 64-bit word, and $0 \le c < p^2_{192}$.
-      \State $s_0 = (c_2, c_1, c_0)$
-      \State $s_0 = (0, c_3, c_3)$
-      \State $s_0 = (c_4, c_4, 0)$
-      \State $s_0 = (c_5, c_5, c_5)$
+      \State $s_0 \gets (c_2, c_1, c_0)$
+      \State $s_1 \gets (0, c_3, c_3)$
+      \State $s_2 \gets (c_4, c_4, 0)$
+      \State $s_3 \gets (c_5, c_5, c_5)$
       \State \textbf{return} $s_0 + s_1 + s_2 + s_3 \mod p_{192}$.
    \end{algorithmic}
 \end{algorithm}
-That's weird.
 
-In~\cite{granger2013generalised} the authors defined a different family of Generalised Mersenne numbers and showed various fast multiplication and reduction schemes.
+Division by Mersenne primes is a less common task, but a number of well known division algorithms can be specialized, such as 
+ classical trial division, Montgomery's method and Barrett reduction.
 
-Other methods:
- - Classical one using divisions
- - Montgomery's method
- - ! Barrett reduction
 
-Modified Crandall Algorithm:
-https://ieeexplore.ieee.org/stamp/stamp.jsp?arnumber=4016496
+%Montgomery method:
+%\begin{align}
+%   (aR\mod N)(bR\mod N) \mod N = (abR)R \mod N
+%\end{align}
+%We then need to remove the factor of $R$ by multiplying with its inverse $\mod N$.
 
-Does modulo in parallel with division (which we have shown is unnecessary), but taking only the division parts the algorithm is
-\begin{algorithm}
+
+The state of the art appears to be the modified Crandall Algorithm by Chung and Hasan~\cite{chung2006low}.
+This algorithm, given in Algorithm \ref{alg:cch} modifies Crandall's algorithm~\cite{crandall1992method} from 1992 to compute division as well as modulo for generalized $2^n-c$ Mersenne primes.
+\begin{algorithm}\label{alg:cch}
+   \caption{Crandall, Chung, Hassan algorithm. For $p=2^n-c$, computes $q, r$ such that $x = qp+r$ and $r<p$.}
    \begin{algorithmic}[1]
       \Procedure{Divide}{x, n, c}
-         \State $q_0 \gets \lfloor x/2^n\rfloor$
-         \State $r_0 \gets x \bmod 2^n$
-         \State $q \gets q_0$
-         \State $r \gets r_0$
+         \State $q_0 \gets x \rs n $
+         \State $r_0 \gets x \andtt 2^n-1$
+         \State $q, r \gets q_0, r_0$
          \State $i \gets 0$
          \While{$q_i>0$}
             \State $t \gets q_i c$
             \State $q_{i+1} \gets \lfloor t / 2^n\rfloor$
-            \State $r_{i+1} \gets t \bmod 2^n$
+            \State $r_{i+1} \gets t \rs n$
             \State $q\gets q+q_{i+1}$
             \State $r\gets r+r_{i+1}$
             \State $i\gets i+1$
@@ -57,75 +58,54 @@ Does modulo in parallel with division (which we have shown is unnecessary), but 
       \EndProcedure
    \end{algorithmic}
 \end{algorithm}
-
-No proof of correctness is given.
-The while loop condition is different.
-No guarantees on running time.
-The addition is different from ours.
-Doesn't add 1. Doesn't add $x$.
-Has that extra weird loop for fixing things in the end.
-So it actually has to do the $r$ computation?
-
-
-Words:
- GM, PM reduction: Module af Generalized or Pseudo-Mersennes.
-
-The most important case is ``Modular Multiplication'', in which we are given two $w$-word numbers, $x,y$ and want to compute $xy\mod p$ which is again a $w$-word number.
-
-Montgomery method:
-\begin{align}
-   (aR\mod N)(bR\mod N) \mod N = (abR)R \mod N
-\end{align}
-We then need to remove the factor of $R$ by multiplying with its inverse $\mod N$.
+Unfortunately no running time analysis is given, and the algorithm ends up doing double work, by computing the quotient and remainder concurrently.
+The algorithm also suffers from the extra while loop for ``cleaning up'' the computations after the main loop.
 
 
 
-Unfortunately there are only 45 of them known.
-The most useful one perhaps being.
+%No proof of correctness is given.
+%The while loop condition is different.
+%No guarantees on running time.
+%The addition is different from ours.
+%Doesn't add 1. Doesn't add $x$.
+%Has that extra weird loop for fixing things in the end.
+%So it actually has to do the $r$ computation?
 
-Heuristically there are $O(\log x)$ Mersenne primes up to $x$.
+
+Chung and Hasan also has a simpler algorithm from 2003~\cite{chung2003more},
+listed in Algorithm \ref{alg:cch2}.
+\begin{algorithm}\label{alg:cch2}
+   \caption{For $q=2^n-c$, computes $t, r$ such that $x = tq+r$ and $r<q$. (Broken.)}
+   \begin{algorithmic}[1]
+      \State $r \gets x$
+      \State $t \gets 0$
+      \While{$r > q$}
+         \State $A \gets r \rs n$
+         \State $B \gets r \andtt 2^n-1$
+         \State $t \gets t + A$
+         \State $r \gets B + A*c$
+      \EndWhile
+      \State\textbf{return} $(t, r)$
+   \end{algorithmic}
+\end{algorithm}
+Chung and Hasan show that Algorithm \ref{alg:cch2} runs in $O(n)$ time.
+The algorithm however seems to be broken, as one can see from the example
+$n=4, c=2, x=15$.
+In this case we let $r\gets 15$ and we have $r\ge q = 2^4-2=14$,
+but $A = r \ns n = 0$, so the algorithm never makes progress.
 
 
-Trivia:
-Euler proved that an even number $n$ is perfect if and only if it is on the form $n=2^{q-1}M_q$, where $M_q=2^q-1$ is prime.
-(Usually we know a number is perfect if its divisors sum to the number itself, e.g. $6=1+2+3$ or $28=1+2+4+7+14$.)
+%In~\cite{granger2013generalised} the authors defined a different family of Generalised Mersenne numbers and showed various fast multiplication and reduction schemes.
 
-Four of the recommended primes in NIST's document "Recommended Elliptic Curves for Federal Government Use" are Solinas primes:
+
+
+% On the number of Mersenne Primes:
+%Unfortunately there are only 45 of them known.
+%The most useful one perhaps being.
+%Heuristically there are $O(\log x)$ Mersenne primes up to $x$.
+%Trivia:
+%Euler proved that an even number $n$ is perfect if and only if it is on the form $n=2^{q-1}M_q$, where $M_q=2^q-1$ is prime.
+%(Usually we know a number is perfect if its divisors sum to the number itself, e.g. $6=1+2+3$ or $28=1+2+4+7+14$.)
 
 
 %[[Curve448]] uses the Solinas prime <math>2^{448} - 2^{224} - 1</math>
-
-The classical Mersenne mod algorithm.
-Write $n = a2^p + b$, then
-\begin{align}
-   n \mod M_p = \begin{cases}
-      a + b & \text{if } a+b<M_p\\
-      a + b + 1 - 2^p & \text{otherwise}.
-   \end{cases}
-\end{align}
-
-Thus reduction modulo a Mersenne prime requires an
-integer addition, as opposed to an integer division for
-modular reduction in the general case. There are two
-drawbacks to this method of modular reduction:
-\begin{itemize}
-   \item Finding the integers a and b is easiest when p is a multiple of word size of the machine, since then there is
-no actual shifting of bits needed to align a and b for
-the modular addition. But word sizes are in practice
-powers of two, whereas p must be an odd prime.
-   \item The Mersenne primes are so rare, with none between
-      $M_{127}$ and $M_{521}$ hat usually there will be none of the desired magnitude.
-\end{itemize}
-For these reasons~\cite{van2014encyclopedia}, cryptographers tend not to use Mersenne primes, preferring similar moduli such as pseudo-Mersenne primes and generalized Mersenne primes.
-
-\paragraph{Pseudo-Mersenne primes}
-On the form $p = 2^n-k$.
-If $x < p^2$, write $x = a 2^{2n} + b 2^m + c$,
-where $a\in\{0,1\}$.
-(Note, if $k > 0$, we always have $a=0$.)
-Then $n \mod p = ak^2+bk+c$.
-Repeating this a few times gives the calculation.
-
-
-\paragraph{Generalised Mersenne primes}
-Solinas algorithm
