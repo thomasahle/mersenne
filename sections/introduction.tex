@@ -138,7 +138,7 @@ $h^r$ are not quite uniform in $[r]$.
 Recall that for any key $x$, we have $h(x)$ uniformly distributed in $[2^b-1]$.
 This is the uniform distribution on $b$-bit strings except that we are
 missing $p=2^b-1$. Now $p$ is the all \texttt{1}s, and 
-$p\andtt (r-1)=r-1$. Therefore, for any 
+$p \bmod r = p\andtt (r-1) = r-1$. Therefore, for any 
 any $i<r-1$,
 \begin{equation}\label{eq:coll-ell<r-1}
    \Pr[h^r(x)=i]=\lceil p/r\rceil/p=((p+1)/r)/p
@@ -158,14 +158,13 @@ to a Mersenne prime $p=2^b-1$
 Combining \req{eq:coll-ell<r-1} and \req{eq:coll-ell=r-1} with
 pairwise independence, for any distinct keys $x,y\in [u]$, we get
 collision probability
-\begin{align}
+\begin{equation}\begin{split}  
    \Pr[h^r(x)=h^r(y)]
-      &=(r-1)((1+1/p)/r)^2+((1-(r-1)r/p)/r)^2\nonumber
-      \\[.5ex]&=
-      \frac{r +(r^2-r)/p^2}{r^2}
+      &=(r-1)((1+1/p)/r)^2+((1-(r-1)r/p)/r)^2
+      \\&= \frac{r +(r^2-r)/p^2}{r^2}
       =(1+(r-1)/p^2)/r
       <(1+r/p^2)/r.\label{eq:coll}
-\end{align}
+\end{split}\end{equation}
 We note that relative error $r/p^2$ is small as long as $p$ is
 large.
 
@@ -225,9 +224,9 @@ total value of key $x\in[u]$ is
 \[f_x=\sum_{i\in[n],x_i=x} \Delta_i.\]
 We let $n\leq u$ be  the number of non-zero values
 $f_x\neq 0$, $x\in [u]$. Often $n$ is much smaller than $u$.
-We define the $m$th moment
-$F_m=\sum_{x\in [u]}f_y^m=\|f\|_m^m$. The goal here is to
-estimate the second moment $F_2=\sum_{x\in [u]}f_x^2$ which is the square of the Euclidean norm $\|f\|_2$. 
+We define the $m$th moment which the $m$-norm to $m$th power,
+$\|f\|_m^m = \sum_{x\in [u]}f_y^m$. The goal here is to
+estimate the second moment $\|f\|_2^2 = \sum_{x\in [u]}f_x^2$. 
 
 \begin{algorithm}
    \caption{\label{alg:count-sketch} Count Sketch. Uses a
@@ -242,21 +241,21 @@ estimate the second moment $F_2=\sum_{x\in [u]}f_x^2$ which is the square of the
 \end{algorithm}
 The standard analysis \cite{charikar04count-sketch} shows that 
 \begin{align}
-   \E[X]&=F_2\label{eq:E-F2}\\
-   \Var[X]&=2(F_2-F_4)/r<2F_2/r\label{eq:V-F2}
+   \E[X]&= \| f\|_2^2 \label{eq:E-F2}\\
+   \Var[X]&=2(\| f\|_2^4 - \| f\|_4^4)/r<2\| f\|_2^4/r \label{eq:V-F2}
 \end{align}
 By Chebyshev's inequality, this implies
-\[\Pr[|X-F_2|\geq \eps F_2]\leq \Var[X]/(\eps F_2)^2<
+\[\Pr[|X-\| f\|_2^2|\geq \eps \| f\|_2^2]\leq \Var[X]/(\eps \| f\|_2^2)^2<
 2/(k\eps^2).\]
 With $t=8/\eps^2$, the error probability is below 1/4.
 To
 reduce the error probability, we can use the standard trick of
 making $r$ independent experiments
 and return the median estimate. Using Chernoff bounds, the probability
-that the median deviates by more than $\eps F_2$ is bounded by
+that the median deviates by more than $\eps \| f\|_2^2$ is bounded by
 $\exp(-r/12)$.
 
-\subsubsection{Two-for-one hash functions with $b$-bit hash values}
+\subsubsection{Two-for-one hash functions with \texorpdfstring{$b$}{b}-bit hash values}
 As the count sketch is described above,
 it uses two independent 4-universal hash functions
 $i:[u]\to[r]$ and $s:[u]\to\{-1,1\}$, but 4-universal hash functions
