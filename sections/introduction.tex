@@ -410,34 +410,14 @@ proved in Section \ref{sec:analysis-two-for-one}.
 
 
 \subsection{Arbitrary number of buckets}\label{sec:most-uniform}
-<<<<<<< HEAD
-We now consider the general case where we want to hash into a set of
-buckets $R$ whose size is not a power of two. Suppose we have a
-$2$-universal hash function $h:U\to Q$. We will compose $h$ with a
-map $\mu:Q\to R$, and use $\mu\circ h$ as a hash function from
-$U$ to $R$.
-
-Let $q=|Q|$ and $r=|R|$. We want the map $\mu$ to be \emph{most
-uniform} in the sense that for bucket $i\in R$, the number of
-elements from $Q$ mapping to $i$ is either $\floor{q/r}$ or
-$\ceil{q/r}$. Then the uniformity of hash values with $h$ implies for
-any key $x$ and bucket $i\in R$
-\[\floor{q/r}/q\leq \Pr[\mu(
-  h(x))=i]\leq \ceil{q/r}/q.\]
-Below we typically have $Q=[q]$ and $R=[r]$. A standard example of a most uniform map $\mu:[q]\to[r]$ 
-is $\mu(x)=x\bmod r$ which the one used above when we defined 
-$h^r:[u]\to[r]$, but as we mentioned before, the modulo operation is 
-quite slow unless $r$ is a power of two. 
-=======
 We now consider the general case where we want to hash into a set of buckets $R$ whose size is not a power of two.
 Suppose we have a $2$-universal hash function $h:U\to Q$.
 We will compose $h$ with a map $\mu:Q\to R$, and use $\mu\circ h$ as a hash function from $U$ to $R$.
 Let $q=|Q|$ and $r=|R|$.
 We want the map $\mu$ to be \emph{most uniform} in the sense that for bucket $i\in R$, the number of elements from $Q$ mapping to $i$ is either $\floor{q/r}$ or $\ceil{q/r}$.
-Then the uniformity of hash values with $h$ implies for any key $x$ and bucket $i\in R$ \[\floor{q/r}/q\leq \Pr[\mu\circ h(x)=i]\leq \ceil{q/r}/q.\]
+Then the uniformity of hash values with $h$ implies for any key $x$ and bucket $i\in R$ \[\floor{q/r}/q\leq \Pr[\mu(h(x))=i]\leq \ceil{q/r}/q.\]
 Below we typically have $Q=[q]$ and $R=[r]$.
 A standard example of a most uniform map $\mu:[q]\to[r]$ is $\mu(x)=x\bmod r$ which the one used above when we defined $h^r:[u]\to[r]$, but as we mentioned before, the modulo operation is quite slow unless $r$ is a power of two.
->>>>>>> aa381796eb80da996bdd3069c9d63716037a549a
 
 Another example of a most uniform map $\mu:[q]\to[r]$ 
 is $\mu(x)=\floor{xr/q}$,
@@ -575,13 +555,8 @@ The full proof of this is given in Theorem \ref{thm:simple-div} in Section \ref{
 In the Crandall case $x\le 2^n$ and $c\le 2^{\floor n/2}$, as described by the Encyclopedia of Cryptography and Security~\cite{van2014encyclopedia}, we can let $m=2$, unroll the loop, and the algorithm runs in just two steps for a total of six operations:
    $$
    \left\lfloor\frac{x}{2^n-c}\right\rfloor
-<<<<<<< HEAD
    = \left\lfloor\frac{\left(\lfloor\frac{(x+1)c}{q}\rfloor+x+1\right)c}{q}\right\rfloor
    = ((x+1)*c \rs n)*c+x+1 \rs n
-=======
-   = \left\lfloor{\frac{\left(\lfloor\frac{c+x}{q}\rfloor+1\right)c+x}{q}\right\rfloor
-      = ((c+x \rs n) + 1)*c+x \rs n
->>>>>>> aa381796eb80da996bdd3069c9d63716037a549a
    .$$
 
 %In fact our algorithm does something stronger, namely gives an efficient division algorithm for any number on the form $q-c$ where $q$ supports fast division.
