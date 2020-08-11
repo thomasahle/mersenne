@@ -481,8 +481,9 @@ values from Section \ref{sec:two-for-one}.
 
 \subsection{Even faster division and modulo with (Pseudo) Mersenne Primes}
 %
-\begin{algorithm}\label{alg:div-simple}
+\begin{algorithm}
    \caption{For Mersenne prime $p=2^b-1$ and $x< 2^{2b}$, computes
+   \label{alg:div-simple}
    $y=x\bmod p$ and $z=\floor{x/p}$}
    \begin{algorithmic}
       \State $z \gets x+1 \rs b$,
@@ -534,9 +535,10 @@ There are in general two kinds of such primes:
 \end{description}
 
 Our generalized algorithm is shown in Algorithm \ref{alg:division-generalized}.
-\begin{algorithm}\label{alg:division-generalized}
+\begin{algorithm}
    \caption{For Pseudo-Mersenne prime $p=2^b-c$ and $x,m$ such that $x< (2^b/c)^m$, computes
       $v=\floor{x/p}$}
+   \label{alg:division-generalized}
    \begin{algorithmic}[1]
       \Procedure{Divide}{x, n, c}
          \State $x' \gets x + c$
@@ -622,8 +624,9 @@ Naturally, much work has been done on making computations with those primes fast
 Articles like ``Simple Power Analysis on Fast Modular Reduction with Generalized Mersenne Prime for Elliptic Curve Cryptosystems''~\cite{sakai2006simple}
 give very specific algorithms such as Algorithm \ref{alg:solina}, for each of a number of well known such primes.
 
-\begin{algorithm}\label{alg:solina}
+\begin{algorithm}
    \caption{Fast reduction modulo $p_{192} = 2^{192} - 2^{64} - 1$}
+   \label{alg:solina}
    \begin{algorithmic}
       \State \textbf{input} $c \gets (c_5, c_4, c_3, c_2, c_1, c_0)$, where each $c_i$ is a 64-bit word, and $0 \le c < p^2_{192}$.
       \State $s_0 \gets (c_2, c_1, c_0)$
@@ -647,8 +650,9 @@ Division by Mersenne primes is a less common task, but a number of well known di
 
 The state of the art appears to be the modified Crandall Algorithm by Chung and Hasan~\cite{chung2006low}.
 This algorithm, given in Algorithm \ref{alg:cch} modifies Crandall's algorithm~\cite{crandall1992method} from 1992 to compute division as well as modulo for generalized $2^n-c$ Mersenne primes.
-\begin{algorithm}\label{alg:cch}
+\begin{algorithm}
    \caption{Crandall, Chung, Hassan algorithm. For $p=2^n-c$, computes $q, r$ such that $x = qp+r$ and $r<p$.}
+   \label{alg:cch}
    \begin{algorithmic}[1]
       \Procedure{Divide}{x, n, c}
          \State $q_0 \gets x \rs n $
@@ -672,7 +676,11 @@ This algorithm, given in Algorithm \ref{alg:cch} modifies Crandall's algorithm~\
       \EndProcedure
    \end{algorithmic}
 \end{algorithm}
-Unfortunately no running time analysis is given, and the algorithm ends up doing double work, by computing the quotient and remainder concurrently.
+The authors state that for $2n+\ell$ bit input, Algorithm \ref{alg:cch}
+requires at most $s$ iterations of the first loop, if $c < 2^{((s-1)n-\ell)/s}$.
+This corresponds roughly to the requirement $x < 2^n (2^n/c)^s$, similar to ours.
+
+Unfortunately the algorithm ends up doing double work, by computing the quotient and remainder concurrently.
 The algorithm also suffers from the extra while loop for ``cleaning up'' the computations after the main loop.
 
 
@@ -688,6 +696,7 @@ The algorithm also suffers from the extra while loop for ``cleaning up'' the com
 
 Chung and Hasan also has an earlier, simpler algorithm from 2003~\cite{chung2003more},
 but it appears to give the wrong result for many simple cases.
+This appears to be because of a lack of the ``clean up'' while loop at the end of Algorithm \ref{alg:cch}.
 
 %listed in Algorithm \ref{alg:cch2}.
 %\begin{algorithm}\label{alg:cch2}
