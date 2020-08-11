@@ -7,12 +7,7 @@ can largely be treated as uniform $b$-bit strings, that is, we can use
 the tool box of very simple and efficient tricks for uniform
 $b$-bit strings.
 
-From $[2^b]$ we are missing $p$, the all \texttt1s value, but
-a careful analysis shows that this has only minor effect
-on the quality of the outcome. Many of the ideas presented
-here would not apply at all if we had a prime $2^b-a$ with $a>1$, e.g.,
-$a=3$, so our work is very particular to Mersenne primes.
-
+From $[2^b]$ we are missing $p$, the all \texttt1s value, but a careful analysis shows that this has only minor effect on the quality of the outcome.
 To put our results in perspective, suppose we were hashing $n$ keys uniformly into $b$-bit strings.
 The probability that any of them hash to $p=2^b-1$ is at most $n/p$.
 This mean the total variation between the two distributions is $n/p$ and any error probability we might have proved assuming uniform $b$-bit hash values is off by at most $n/p$.
@@ -20,6 +15,9 @@ This mean the total variation between the two distributions is $n/p$ and any err
 \emph{In contrast, our analysis yields errors of $n/p^2$ or less!}
 This allows good error bounds even as we set $p$ close to $n$, which again means that half the word operations can saved.
 
+Many of the ideas presented here would not apply at all if we had a prime $2^b-a$ with $a>1$, e.g., $a=3$, so our work is very particular to Mersenne primes.
+Primes on the form $2^b-a$ with $a>1$ are known as Pseudo-Mersenne Primes~\cite{van2014encyclopedia}, and are often sometimes used when a Mersenne prime of a reasonable magnitude isn't available.
+For completeness, we also provide a new algorithm for division and hashing with such numbers, which improves upon classical cryptographic work by Crandall~\cite{crandall1992method}.
 
 % TODO: Mention Mersenne division results.
 
@@ -445,8 +443,9 @@ Our simple solution is to define
 Lemma \ref{lem:most-uniform} (iii) below 
 states that \req{eq:most-uniform} indeed
 gives a most uniform map. 
-\begin{lemma}\label{lem:most-uniform} Let $r$ and $b$ the positive integers
-   $2^b-1$. 
+\begin{lemma}\label{lem:most-uniform} Let $r$ and $b$ be positive integers.
+   %, and let $x\in [2^b-1]$.
+   Then
    \begin{itemize}
       \item[(i)] $x\mapsto (xr)\rs\,b$ is a most
          uniform map from $[2^b]$ to $[r]$.
@@ -476,10 +475,12 @@ gives a most uniform map.
 We note that our trick does not work when $q=2^b-a$ for $a\geq 2$, that is,
 using $x\mapsto ((x+a)r)\rs  b$, for in this general case, 
 the number of elements hashing to $0$ is $\ceil {2^b/r}-a$, or $0$ if
-$a\geq \floor {2^b/r}$. Our new uniform map from \req{eq:most-uniform}
-is thus very specific to Mersenne prime fields.
+$a\geq \floor {2^b/r}$.
+One may try many other hash functions $(c_1 x r+ c_2 x+ c_3 r + c_4) \rs b$ similarly without any luck.
+Our new uniform map from \req{eq:most-uniform} is thus very specific to Mersenne prime fields.
+For general $a\ge 2$ we provide a scheme using two shifts in Section \ref{sec:division}.
 
-We shall see in Section \ref{sec:count-sketch-r} that our new uniform map
+We will see in Section \ref{sec:count-sketch-r} that our new uniform map
 works very well in conjunction with the idea of splitting of hash values 
 values from Section \ref{sec:two-for-one}.
 
