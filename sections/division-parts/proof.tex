@@ -21,6 +21,7 @@ In particular we will prove the following equivalent mathematical statement:
    %\todo{Given the Corollary, we can also write this as $x < (q/c)^n$, which may be easier to understand?}
 \end{theorem}
 We note that when $c<q-1$ a sufficient requirement is that $x< (q/c)^n$.
+For $c=q-1$ we are computing $\floor{x/1}$ so we do not need to run the algorithm at all.
 
 To be more specific, the error $E_i = \floor{\frac{x}{q-c}} - v_i$ at each step
 %The value at each step satisfy $v_i = \floor{\frac{x}{q-c}} - E_i$ where
@@ -28,7 +29,7 @@ To be more specific, the error $E_i = \floor{\frac{x}{q-c}} - v_i$ at each step
 is bounded by $0\le E_i\le u_{n-i}$,
 where $u_i$ is a sequence defined by
 $u_0=0$ and $u_{i+1} = \lfloor\frac{q}{c}u_i+1\rfloor$.
-In particular this means that if we stop the algorithm after $n-1$ steps, the error will be at most $u_1=1$.
+For example, this means that if we stop the algorithm after $n-1$ steps, the error will be at most $u_1=1$.
 \begin{proof}
    Write $x = m(q-c)+h$ for non-negative integers $m$ and $h$ with $h<q-c$.
    Then we get
@@ -45,6 +46,10 @@ In particular this means that if we stop the algorithm after $n-1$ steps, the er
    We will show by induction that $0\le E_{i} \le u_{n-i}$ for $0\le i\le n$ such that $E_n = 0$, which gives the theorem.
    For a start $E_0=m\ge 0$ and $E_0 = \lfloor x/(q-c)\rfloor \le (q/c)^{n-1} \le u_n$.
 
+   For $c\setminus q$ we can be slightly more specific, and support $x \le c (q/c)^n-c$.
+   This follows by noting that $u_i = \frac{(q/c)^i-1}{q/c-1}$ for $i>0$, since all the $q/c$ terms are integral.
+   Thus for $E_0=\floor{x/(q-c)}\le u_n$ it suffices to require $x\le c q^n-c$.
+
    For the induction step we plug in our expressions for $x$ and $v_i$:
    \begin{align*}
       v_{i+1}
@@ -57,7 +62,10 @@ In particular this means that if we stop the algorithm after $n-1$ steps, the er
     m
     - \left\lceil \frac{(E_i-1)c - h}{q}\right\rceil.
    \end{align*}
-   Now by the induction hypothesis,
+   The lower bound follows easily from $E_i \ge 0$ and $h\le q-c-1$:
+   $$E_{i+1} = \left\lceil \frac{E_ic - h - c}{q}\right\rceil \ge
+   \left\lceil \frac{- q + 1}{q}\right\rceil = 0.$$
+   For the upper bound we use the inductive hypothesis as well as the bound $h\ge 0$:
    \begin{align*}
       E_{i+1}
       &= \left\lceil \frac{(E_i-1)c - h}{q}\right\rceil
@@ -66,15 +74,8 @@ In particular this means that if we stop the algorithm after $n-1$ steps, the er
     \\&\le \left\lceil u_{n-i-1}\right\rceil
     \\&= u_{n-i-1}.
    \end{align*}
-   and similarly since $E_i \ge 0$ and $h\le q-c-1$,
-   we have
-   $$\left\lceil \frac{E_ic - h - c}{q}\right\rceil \ge
-   \left\lceil \frac{- q + 1}{q}\right\rceil = 0,$$
-   which completes the proof.
-
-   For $c\setminus q$ we can be slightly more specific, and support $x \le c (q/c)^n-c$.
-   This follows by noting that $u_i = \frac{(q/c)^i-1}{q/c-1}$ for $i>0$, since all the $q/c$ terms are integral.
-   Thus for $E_0=\floor{x/(q-c)}\le u_n$ it suffices to require $x\le c q^n-c$.
+   The last equality comes from $u_{n-i-1}$ being integer.
+   Having thus bounded the errors, the proof is complete.
 \end{proof}
    %In particular, for $c=1$ and $x < q^2$ we have
    %$
