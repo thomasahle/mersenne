@@ -1,30 +1,26 @@
 \input{sections/header}
 
 \title{Fast second moment estimation and other fun with Mersenne primes} 
-\author{Thomas Dybdahl Ahle, Jakob Tejs Bæk Knudsen, Mikkel Thorup}
+\author{Thomas Dybdahl Ahle, Jakob Tejs Bk Knudsen, Mikkel Thorup}
 \begin{document}
 \maketitle
 
 \begin{abstract}
-The classic way of computing a $k$-universal hash function is
-to use a random degree-$(k-1)$ polynomial over a prime field $\mathbb Z_p$.
-For a fast computation of the polynomial, the prime $p$ is often
-chosen as a Mersenne prime $p=2^b-1$.
+The classic way of computing a $k$-universal hash function is to use a random degree-$(k-1)$ polynomial over a prime field $\mathbb Z_p$.
+For a fast computation of the polynomial, the prime $p$ is often chosen as a Mersenne prime $p=2^b-1$.
 
-In this paper, we show that there are other nice advantages to using
-Mersenne primes. Our view is that the output of the hash function is a
-$b$-bit integer that is uniformly distributed in $[2^b]$, except that
-$p$ (the all \texttt1s value) is missing. Thinking of the hash
-values as almost uniform $b$-bit integers leads to simple efficient code 
-with strong theoretical qualities. We will demonstrate this with focus on the
-4-universal hashing in the classic count-sketch for second moment
-estimation.
+In this paper, we show that there are other nice advantages to using Mersenne primes.
+Our view is that the output of the hash function is a $b$-bit integer that is uniformly distributed in $[2^b]$, except that $p$ (the all \texttt1s value) is missing.
+Thinking of the hash values as almost uniform $b$-bit integers leads to simple efficient code with strong theoretical qualities.
+We will demonstrate this with focus on the 4-universal hashing in the classic count-sketch for second moment estimation.
 
-We also provide a new algorithm for division and modulus with Pseudo-Mersenne Primes, which are numbers $p=2^n-c$ for $c<\!< 2^n$.
-This expands the range of fast Mersenne techniques to a much large range of primes, and improves upon a large number of algorithms specifically designed for various primes.
-
-Basically just
-   $[x+1 \rs n]+x+1 \rs n$.
+We also provide a new algorithm for division and modulus with Pseudo-Mersenne primes
+%, which are numbers
+$p=2^b-c$ for $c<\!< 2^b$.
+This improves upon a classical algorithm of Crandall, and 
+%cryptographic algorithms specifically designed for various primes, and
+expands the availability and speed of Mersenne based techniques. %Basically just
+   %$[x+1 \rs n]+x+1 \rs n$.
 \end{abstract}
 
 \tableofcontents
