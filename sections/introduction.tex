@@ -17,9 +17,7 @@ This allows good error bounds even as we set $p$ close to $n$, which again means
 
 Many of the ideas presented here would not apply at all if we had a prime $2^b-a$ with $a>1$, e.g., $a=3$, so our work is very particular to Mersenne primes.
 Primes on the form $2^b-a$ with $a>1$ are known as Pseudo-Mersenne Primes~\cite{van2014encyclopedia}, and are often sometimes used when a Mersenne prime of a reasonable magnitude isn't available.
-For completeness, we also provide a new algorithm for division and hashing with such numbers, which improves upon classical cryptographic work by Crandall~\cite{crandall1992method}.
-
-% TODO: Mention Mersenne division results.
+Supplementing our main analysis, we provide a new algorithm for division and hashing with such numbers, which improves upon classical cryptographic work by Crandall~\cite{crandall1992method}.
 
 
 \subsection{Polynomial hashing using Mersenne primes}
@@ -32,64 +30,67 @@ goes back to Carter and Wegman \cite{wegman81kwise}.
    is equivalent to saying that each $h(x_i)$ is uniform in $R$ and that
    all the $h(x_i)$ are independent of each other.
 \end{definition}
-We generally use the notation $[s]=\{0,\ldots,s-1\}$.
 The classic example of $k$-universal
 hash function is uniformly random degree-$(k-1)$ polynomial over a prime field
 $\Z_p$, that is, we pick a uniformly random vector
 $\vec a=(a_0,\ldots,a_{k-1})\in \Z_p^k$ of $k$ coefficients, and define
-$h_{\vec a}:[p]\to[p]$, by 
-\[h_{\vec a}(x)=\left(\sum_{x\in[k]}a_i x^i\right)\bmod p.\]
-
-Often we are given a key domain $[u]$ and a range of hash values $[r]$. Assuming $p\geq \max\{u,r\}$, we define
-$h^r_{\vec a}:[u]\to[r]$, by
+$h_{\vec a}:[p]\to[p]$,
+\footnote{ We use the notation $[s]=\{0,\ldots,s-1\}$.  }
+   by 
+\[h_{\vec a}(x)=\sum_{x\in[k]}a_i x^i \mod p.\]
+%
+Generally, we are given a key domain $[u]$ and a smaller range $[r]$ for the hash values.
+It is natural to define
+$h^r_{\vec a}:[u]\to[r]$ by
 \[h^r_{\vec a}(x)=h_{\vec a}(x)\bmod r.\]
-With this definition, the hash values of $k$ distinct keys 
-remain independent, but they are not exactly uniform. More
-precisely, for any $i\in[r]$, we have that
-$\Pr[h_{\vec a}^r(x)=i]$ is
-either $\lfloor p/r\rfloor/p$ or $\lceil p/r\rceil/p$. In
-either case, this is $(1\pm r/p)/r$, so this is close to uniform if
-$p\gg r$.
+Assuming $p\geq \max\{u,r\}$, the hash values of $k$ distinct keys remain independent,
+while staying as close as possible to the uniform distribution on $[r]$.
+(This will turn out to be very important.)
 
-
-The main problem with the above approach is speed because computing
-the mod-function is slow on most computers. Often it
-is OK if we for the hash range $[r]$ pick $r=2^\ell$ as a power of two.
-Then $r-1$ consists of $\ell$ \texttt1s, and then 
-\[y\bmod r=y\,\andtt \,(r-1)\]
-where $\andtt$ denotes bit-wise {\sc and}. Bit-wise operations are
-extremely fast, so now $\bmod\,r$ is not an issue.
-
-For general primes, computing $\bmod\,p$ is slow, but an old idea,
-mentioned by Carter and Wegmen \cite{carter77universal}, is to use a
-Mersenne prime $p=2^b-1$, e.g., $p=2^{61}-1$ for hashing 32-bit keys or
-$p=2^{89}-1$ for hashing 64-bit keys. The point in using such a Mersenne prime
-is that
-\begin{equation}\label{eq:Mersenne}
-   y\equiv y\bmod 2^{b}+\floor{y/2^b}\ppmod {p}.
+In terms of speed, the main bottleneck in the above approach is the mod operations.
+If we assume $r=2^\ell$, the $\bmod r$ operation above can be replaced by a binary AND: $x \bmod r = x \andtt r-1$.
+In the same vein, an old idea by 
+Carter and Wegmen \cite{carter77universal} is to use a
+Mersenne prime for $p=2^b-1$,\footnote{e.g., $p=2^{61}-1$ for hashing 32-bit keys or
+$p=2^{89}-1$ for hashing 64-bit keys.}
+to speed up the computation of the $\mod p$ operations.
+The point is that
+\begin{equation}
+   y \bmod (2^b-1)
+   \equiv (y\bmod 2^{b}) + \floor{y/2^b}
+   \equiv (y \andtt p) + (y \rs b)
+   \pmod {p}.
+   \label{eq:Mersenne}
 \end{equation}
-This leads to efficient computations because 
-\[y\bmod 2^{b}=y\andtt p\quad\textnormal{and}\quad\floor{y/2^b}=y\rs b.\]
-Here the bit-wise {\sc and} ($\andtt$) and the right-shift ($\rs$) are
-both very fast operations. For
-an extra fast implementation, we further assume that $p=2^b-1\geq 2u-1$.
-This is automatically satisfied in the typical case where $u$ is a power
-of two, e.g., $2^{32}$ or $2^{64}$. This is all used in Algorithm \ref{alg:Mersenne} to make a very fast
-computation of a degree $(k-1)$-polynomial using Horner's rule. Note that
-the reduction $y\gets (y\andtt p)+(y \rs b)$ is applied after
-every multiplication so that the numbers involved never get too big (multiplication of large numbers is expensive).
-\begin{algorithm}\label{alg:Mersenne}
+%This leads to efficient computations because 
+%\[y\bmod 2^{b}=y\andtt p\quad\textnormal{and}\quad\floor{y/2^b}=y\rs b.\]
+Again allowing us to use the very fast bit-wise {\sc and} ($\andtt$) and the right-shift ($\rs$),
+instead of the expensive modulo operation.
+
+
+
+\vspace{.5em}
+
+The above completes our description of how Mersenne primes are
+normally used for fast computation of $k$-universal hash functions.
+We show an implementation in \cref{alg:Mersenne} with one further improvement:
+By assuming that $p=2^b-1\geq 2u-1$
+(which is automatically satisfied in the typical case where $u$ is a power
+of two, e.g., $2^{32}$ or $2^{64}$)
+we can get away with only testing a possible off-by-one in \cref{eq:Mersenne} once, rather that at every loop.
+
+\begin{algorithm}
    \caption{
       For $x\in [u]$, prime $p=2^b-1\geq 2u-1$,
       and $\vec a=(a_0,\ldots,a_{k-1})\in[p]^k$,
       compute $h_{\vec a}(x)=\left(\sum_{i\in[q]}a_i x^i\right)\bmod p$
-   }
+   }\label{alg:Mersenne}
    \begin{algorithmic}[1]
       \State $y\gets a_{k-1}$
       \For{$i=q-2,\ldots,0$}
       \Comment{$\quad y<2p$}
 
-      \State $y\gets yx+a_i$
+      \State $y\gets y*x+a_i$
       \Comment{$\quad y<2p(u-1)+(p-1)<(2u-1)p\leq p^2$}
 
       \State $y\gets (y\andtt p)+(y\rs b)$
@@ -102,18 +103,21 @@ every multiplication so that the numbers involved never get too big (multiplicat
    \end{algorithmic}
 \end{algorithm}
 
-The above completes our description of how Mersenne primes are
-normally used for fast computation of $k$-universal hash functions.
-We shall in fact show how it can be made even faster, but the main
-point in this paper is to present an analysis, showing how our
-$k$-universal hash values from $[2^b-1]$ can be almost as good as if
+
+In \Cref{subsec:intro-division} we will give one further improvement to \Cref{alg:Mersenne}.
+Mostly the description above is a fairly standard description of state-of-the-art hashing.
+\footnote{We note that $k=2$, we do have the fast multiply-shift scheme of Dietzfelbinger~\cite{dietzfel96universal}, that directly gives 2-universal
+hashing from $b$-bit strings to $\ell$-bit strings, but for $k>2$,
+there is no faster method that can be implemented in with portable code
+in a standard programming language like C.}
+
+The main point of this paper is our note from before, that the values hashed to $[r]$ are not completely uniform, as they would have been if $p=2^b$ was a prime.
+It turns out that with a novel analysis, bits from Mersenne primes are actually
+%$k$-universal hash values from $[2^b-1]$ can be
+almost as good as if
 they were uniformly distributed $b$-bit strings (we are only missing
 the all \texttt{1}s value $2^b-1$). 
 
-We note that $k=2$, we do have the fast multiply-shift scheme of Dietzfelbinger~\cite{dietzfel96universal}, that directly gives 2-universal
-hashing from $b$-bit strings to $\ell$-bit strings, but for $k>2$,
-there is no faster method that can be implemented in with portable code
-in a standard programming language like C.
 
 
 
@@ -128,7 +132,7 @@ assume $r>1$. In particular this implies that $r$ does not divide our
 prime $p$.
 
 We assume a $k$-universal hash function $h:[u]\to[p]$, e.g.,
-the one from Algorithm \ref{alg:Mersenne}. To get a hash values in $[r]$,
+the one from \Cref{alg:Mersenne}. To get hash values in $[r]$,
 we defined $h^r:[u]\to[r]$ by
 \[h^r(x)=h(x)\bmod r=h(x)\andtt (r-1).\]
 As discussed previously, the hash values of up to $k$ distinct keys remain
@@ -156,14 +160,15 @@ we would only get an upper bound of $(1+a/p)/r$. Below we return
 to a Mersenne prime $p=2^b-1$
 
 Combining \req{eq:coll-ell<r-1} and \req{eq:coll-ell=r-1} with
-pairwise independence, for any distinct keys $x,y\in [u]$, we get
-collision probability
+pairwise independence, for any distinct keys $x,y\in [u]$, we show that the
+collision probability is bounded
 \begin{equation}\begin{split}  
    \Pr[h^r(x)=h^r(y)]
-      &=(r-1)((1+1/p)/r)^2+((1-(r-1)r/p)/r)^2
-      \\&= \frac{r +(r^2-r)/p^2}{r^2}
+      =(r-1)((1+1/p)/r)^2+((1-(r-1)r/p)/r)^2
+      %\\&= \frac{r +(r^2-r)/p^2}{r^2}
       =(1+(r-1)/p^2)/r
-      <(1+r/p^2)/r.\label{eq:coll}
+      %\\& <(1+r/p^2)/r
+   %.\label{eq:coll}
 \end{split}\end{equation}
 We note that relative error $r/p^2$ is small as long as $p$ is
 large.
@@ -285,10 +290,11 @@ $\ell$ least significant bits of $h(x)$ for $i(x)$ and the most
 significant bit of $h(x)$ for a bit $a(x)\in[2]$, and finally set
 $s(x)=1-2a(x)$. It is then easy to show that if $h$ is $k$-universal
 than $h$ satisfies \cref{eq:E-0}.
-\begin{algorithm}\label{alg:h-and-s}
+\begin{algorithm}
    \caption{For key $x\in [u]$, compute $i(x)=i_x\in[2^\ell]$ and
       $s(x)=s_x\in\{-1,+1\}$,\rule{5ex}{0ex}
    using $h:[u]\to [2^b]$ where $b>\ell$.}
+   \label{alg:h-and-s}
    $h_x\gets h(x)$\hfill $\rhd\quad h_x$ uses $b$ bits\\
    $i_x\gets h_x \andtt (2^\ell-1)$\hfill $\rhd\quad i_x$ gets $\ell$ least significant
    bits of $h_x$\\
@@ -481,7 +487,7 @@ values from Section \ref{sec:two-for-one}.
 
 
 
-\subsection{Even faster division and modulo with (Pseudo) Mersenne Primes}
+\subsection{Even faster division and modulo with (Pseudo) Mersenne Primes}\label{subsec:intro-division}
 %
 \begin{algorithm}
    \caption{For Mersenne prime $p=2^b-1$ and $x< 2^{2b}$, computes
