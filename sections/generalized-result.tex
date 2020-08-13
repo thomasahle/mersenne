@@ -1,40 +1,5 @@
 \section{Generalized analysis}
 
-The general analysis use the following strong assumption.
-\begin{assumption}\label{ass:independence}
-    For distinct keys $x_0, \ldots x_{j - 1}$, $j \le k$
-    and an expression $A(i_{x_0}, \ldots, i_{x_{j - 1}}, s_{x_1}, \ldots, s_{x_{j - 1}})$,
-    which depends on $i_{x_0}, \ldots, i_{x_{j - 1}}$ and $s_{x_1}, \ldots, s_{x_{j - 1}}$
-    but not on $s_{x_0}$. Then
-    \begin{align}
-        \E[s_{x_0} A(i_{x_0}, \ldots, i_{x_{j - 1}}, s_{x_1}, \ldots, s_{x_{j - 1}})] = 0\; .
-    \end{align}
-\end{assumption}
-We will show our result using the following weaker assumption.
-\begin{assumption}\label{ass:near-independence}
-    There exists $l \in [r]$ such that for distinct keys $x_0, \ldots x_{j - 1}$, $j \le k$
-    and an expression $A(i_{x_0}, \ldots, i_{x_{j - 1}}, s_{x_1}, \ldots, s_{x_{j - 1}})$,
-    which depends on $i_{x_0}, \ldots, i_{x_{j - 1}}$ and $s_{x_1}, \ldots, s_{x_{j - 1}}$
-    but not on $s_{x_0}$. Then
-    \begin{align}\label{eq:near-independence}
-        \E[s_{x_0} A(i_{x_0}, \ldots, i_{x_{j - 1}}, s_{x_1}, \ldots, s_{x_{j - 1}})]
-            = \E[A(i_{x_0}, \ldots, i_{x_{j - 1}}, s_{x_1}, \ldots, s_{x_{j - 1}}) \mid i_{x_0} = l]/p \; .
-    \end{align}
-    Furthermore, there exists $\delta$ such that for any key $x$, then
-    \begin{align}\label{eq:prob-special-value}
-        \Pr[i_x = l] \le (1 + \delta)/r \; .
-    \end{align}
-\end{assumption}
-
-For both of the analyses we will need the following assumption
-\begin{assumption}\label{ass:collision}
-    There exists a value $a$ such that for distinct keys $x \neq y$,
-    then
-    \begin{align}\label{eq:collision}
-        \Pr[i_x = i_y] \le (1 + \eps)/r\; .
-    \end{align}
-\end{assumption}
-
 \paragraph{Uniform bits to arbitrary bins.}
 Then \Cref{ass:independence} is satisfied and \Cref{ass:collision} is
 satisfied with $\eps = (r/(2q))^2$.

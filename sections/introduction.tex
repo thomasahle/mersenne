@@ -224,9 +224,9 @@ total value of key $x\in[u]$ is
 \[f_x=\sum_{i\in[n],x_i=x} \Delta_i.\]
 We let $n\leq u$ be  the number of non-zero values
 $f_x\neq 0$, $x\in [u]$. Often $n$ is much smaller than $u$.
-We define the $m$th moment which the $m$-norm to $m$th power,
-$\|f\|_m^m = \sum_{x\in [u]}f_y^m$. The goal here is to
-estimate the second moment $\|f\|_2^2 = \sum_{x\in [u]}f_x^2$. 
+We define the $m$th moment to be the $m$-norm to $m$th power,
+$F_m^m = \sum_{x\in [u]}f_y^m$. The goal here is to
+estimate the second moment $F_2^2 = \sum_{x\in [u]}f_x^2$. 
 
 \begin{algorithm}
    \caption{\label{alg:count-sketch} Count Sketch. Uses a
@@ -264,14 +264,16 @@ in speed, a tempting idea is to compute them both using a single hash
 function.
 
 The analysis behind \req{eq:E-F2} and \req{eq:V-F2} does not quite
-require $i:[u]\to[r]$ and $s:[u]\to\{-1,1\}$ to be indepedent.
+require $i:[u]\to[r]$ and $s:[u]\to\{-1,1\}$ to be independent.
 It suffices that the hash values are uniform and that for any
 given set of $j\leq 4$ distinct keys $x_1,\ldots,x_j$, the $2j$ hash
 values $i(x_1),\ldots,i(x_j),s(x_1),\ldots,s(x_j)$ are independent.
 A critical step in the analysis is that if
 $A$ depends on $i(x_1),\ldots,i(x_j),s(x_2),\ldots,s(x_j)$, but
 not on $s(x_1)$, then
-\[\E[s(x_1)A]=0.\]
+\begin{equation}\label{eq:E-0}
+  \E[s(x_0) A] = 0 .
+\end{equation}
 This follows because $\E[s(x_1)]=0$ by uniformity of $s(x_1)$ and because $s(x_1)$ is independent of $A$.
 
 
@@ -281,7 +283,8 @@ hash function $h:[u]\to[2^b]$ where $b>\ell$. Recall that all the bits in
 $h(x_1),\ldots,h(x_4)$ are independent. We can therefore use the
 $\ell$ least significant bits of $h(x)$ for $i(x)$ and the most
 significant bit of $h(x)$ for a bit $a(x)\in[2]$, and finally set
-$s(x)=1-2a(x)$. The construction is summarized in Algorithm \ref{alg:h-and-s}
+$s(x)=1-2a(x)$. It is then easy to show that if $h$ is $k$-universal
+than $h$ satisfies \cref{eq:E-0}.
 \begin{algorithm}\label{alg:h-and-s}
    \caption{For key $x\in [u]$, compute $i(x)=i_x\in[2^\ell]$ and
       $s(x)=s_x\in\{-1,+1\}$,\rule{5ex}{0ex}
@@ -292,19 +295,19 @@ $s(x)=1-2a(x)$. The construction is summarized in Algorithm \ref{alg:h-and-s}
    $a_x\gets h_x\rs (b-1)$\hfill $\rhd\quad a_x$ gets the most significant bit of $h_x$\\
    $s_x\gets 1-2a_x$ \hfill $\rhd\quad a_x\in[2]$ is converted to a sign $s_x\in\{-1,+1\}$
 \end{algorithm}
-\begin{lemma}\label{lem:b-bit-hashing} Suppose $h:[u]\to[2^b]$ is $k$-universal. Let
-   $i:[u]\to[2^\ell]$ and
-   $s:[u]\to\{-1,1\}$ be constructed from $h$ as described in Algorithm \ref{alg:h-and-s}. Then $h$ and $s$ are both $k$-universal. Moreover, for
-   any $j\leq k$ distinct keys $x_1,\ldots,x_j$, the $2j$ hash
-   values $i(x_1),\ldots,i(x_j),s(x_1),\ldots,s(x_j)$ are independent.
-   In particular, if $A$ depends on
-   $i(x_1),\ldots,i(x_j),s(x_2),\ldots,s(x_j)$, but not on $s(x_1)$, then
-   \begin{equation}\label{eq:E-0}
-      \E[s(x_1)A]=0
-   \end{equation}
-\end{lemma}
+% \begin{lemma}\label{lem:b-bit-hashing} Suppose $h:[u]\to[2^b]$ is $k$-universal. Let
+%    $i:[u]\to[2^\ell]$ and
+%    $s:[u]\to\{-1,1\}$ be constructed from $h$ as described in Algorithm \ref{alg:h-and-s}. Then $h$ and $s$ are both $k$-universal. Moreover, for
+%    any $j\leq k$ distinct keys $x_1,\ldots,x_j$, the $2j$ hash
+%    values $i(x_1),\ldots,i(x_j),s(x_1),\ldots,s(x_j)$ are independent.
+%    In particular, if $A$ depends on
+%    $i(x_1),\ldots,i(x_j),s(x_2),\ldots,s(x_j)$, but not on $s(x_1)$, then
+%    \begin{equation}\label{eq:E-0}
+%       \E[s(x_1)A]=0
+%    \end{equation}
+% \end{lemma}
 Note that Algorithm \ref{alg:h-and-s} is well defined as long as 
-$h$ returns a $b$-bit integer. However, Lemma \ref{lem:b-bit-hashing} requires
+$h$ returns a $b$-bit integer. However, \cref{eq:E-0} requires
 that $h$ is $k$-universal into $[2^b]$, which in particular implies that
 the hash values are uniform in $[2^b]$.
 
