@@ -1,4 +1,5 @@
 .python-version
+*.swo
 build/*
 
 ## Core latex/pdflatex auxiliary files:
