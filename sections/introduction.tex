@@ -24,13 +24,30 @@ This means that we for a desired error can reduce the bit-length of the primes t
 
 Hashing is often used in the sketching of high volume data streams, such as traffic through an Internet router, and then this speed is critical to keep up with the stream.
 
+\begin{figure}
+
+   \centering
+   \begin{tikzpicture}[darkstyle/.style={circle,draw,fill=gray!40,minimum size=20}]
+     \foreach \x in {0,...,4}
+       \foreach \y in {0,...,4} 
+          {\pgfmathtruncatemacro{\label}{\x - 5 *  \y +21}
+          \node [darkstyle]  (\x\y) at (1.5*\x,1.5*\y) {\label};} 
+
+     \foreach \x in {0,...,4}
+       \foreach \y [count=\yi] in {0,...,3}  
+         \draw (\x\y)--(\x\yi) (\y\x)--(\yi\x) ;
+
+   \end{tikzpicture}
+   \caption{test}
+   \label{fig:bits}
+\end{figure}
 
 \subsection{Polynomial hashing using Mersenne primes}
 
 
 
 The k-universal hashing with a polynomial uses O(k) space and O(k) time
-to compute the hash value of a key. Seigel \cite{Seigel04} has proved that if we want k universal hashing in time t<k, then we need to use space $u^{1/t}$.
+to compute the hash value of a key. Siegel \cite{Siegel04} has proved that if we want k universal hashing in time t<k, then we need to use space $u^{1/t}$.
 Such tabulation based methods are useful in many contexts (see survey \cite{Thorup17} , but not if we need small space. 
 
 A classic example where constant space hash functions are needed is in static two-level hash functions \cite{FKS84}. To store n keys with constant access time, they n second level hash tables, each with its own  hash function.
@@ -127,6 +144,9 @@ Mostly the description above is a fairly standard description of state-of-the-ar
 hashing from $b$-bit strings to $\ell$-bit strings, but for $k>2$,
 there is no faster method that can be implemented in with portable code
 in a standard programming language like C.}
+
+We stress that while this is a particularly fast implementation of Mersenne prime hashing, the main novelty of the paper will be in the analysis.
+In particular 
 
 The main point of this paper is our note from before, that the values hashed to $[r]$ are not completely uniform, as they would have been if $p=2^b$ was a prime.
 It turns out that with a novel analysis, bits from Mersenne primes are actually
