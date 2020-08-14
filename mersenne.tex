@@ -12,12 +12,14 @@ For a fast computation of the polynomial, the prime $p$ is often chosen as a Mer
 
 In this paper, we show that there are other nice advantages to using Mersenne primes.
 Our view is that the output of the hash function is a $b$-bit integer that is uniformly distributed in $[2^b]$, except that $p$ (the all \texttt1s value) is missing.
-Thinking of the hash values as almost uniform $b$-bit integers leads to simple efficient code with strong theoretical qualities.
+Uniform bit strings have many nice properties, such as splitting into substrings, which
+%Thinking of the hash values as almost uniform $b$-bit integers
+leads to simple efficient code with strong theoretical qualities.
 We will demonstrate this with focus on the 4-universal hashing in the classic count-sketch for second moment estimation.
 
-We also provide a new algorithm for division and modulus with Pseudo-Mersenne primes
-$p=2^b-c$ for small $c$.
-This improves upon a classical algorithm of Crandall, and 
+From an algorithmic perspective we provide a new algorithm for division and modulus with Pseudo-Mersenne primes
+$p=2^b-c$ for small $c$,
+which improves upon a classical algorithm of Crandall, and 
 expands the availability and speed of Mersenne based techniques.
 \end{abstract}
 
