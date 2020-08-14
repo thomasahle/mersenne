@@ -19,8 +19,26 @@ Many of the ideas presented here would not apply at all if we had a prime $2^b-a
 Primes on the form $2^b-a$ with $a>1$ are known as Pseudo-Mersenne Primes~\cite{van2014encyclopedia}, and are often sometimes used when a Mersenne prime of a reasonable magnitude isn't available.
 Supplementing our main analysis, we provide a new algorithm for division and hashing with such numbers, which improves upon classical cryptographic work by Crandall~\cite{crandall1992method}.
 
+While hashing with Mersenne primes has been used for more than 40 years by anyone who, for k>2, wanted to implement k-universal hashing efficiently using standard portable code, we believe we are the first to notice the special advantages of having hash values that are uniform in a Mersenne prime field rather than any other prime field. Essentially our new kind of analysis shows that we can reduce errors from $n/p$ to $n/p^2$.
+This means that we for a desired error can reduce the bit-length of the primes to less than half. This saves not only space. It typically means that we can speed up the multiplications with at least a factor 2.
+
+Hashing is often used in the sketching of high volume data streams, such as traffic through an Internet router, and then this speed is critical to keep up with the stream.
+
 
 \subsection{Polynomial hashing using Mersenne primes}
+
+
+
+The k-universal hashing with a polynomial uses O(k) space and O(k) time
+to compute the hash value of a key. Seigel \cite{Seigel04} has proved that if we want k universal hashing in time t<k, then we need to use space $u^{1/t}$.
+Such tabulation based methods are useful in many contexts (see survey \cite{Thorup17} , but not if we need small space. 
+
+A classic example where constant space hash functions are needed is in static two-level hash functions \cite{FKS84}. To store n keys with constant access time, they n second level hash tables, each with its own  hash function.
+
+Another example is small sketches such as the count sketch cite{XXX} discussed in this paper. Here we may want to store the hash function as part of the sketch, e.g., to query the value of a given key.
+
+
+\subsubsection{Preliminaries: The classical implementation}
 The classic definition of $k$-universal (or $k$-independent) hashing
 goes back to Carter and Wegman \cite{wegman81kwise}.
 \begin{definition}
@@ -66,7 +84,6 @@ The point is that
 %\[y\bmod 2^{b}=y\andtt p\quad\textnormal{and}\quad\floor{y/2^b}=y\rs b.\]
 Again allowing us to use the very fast bit-wise {\sc and} ($\andtt$) and the right-shift ($\rs$),
 instead of the expensive modulo operation.
-
 
 
 \vspace{.5em}
