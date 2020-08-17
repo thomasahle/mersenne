@@ -41,7 +41,7 @@ Hashing is often used in the sketching of high volume data streams, such as traf
 %
 While hashing with Mersenne primes has been used for more than 40 years by anyone who
 %, for $k>2$,
-wanted to implement k-independent hashing efficiently using standard portable code.
+wanted to implement k-universal hashing efficiently using standard portable code.
 Here we argue that uniform hash values from a Mersenne prime field with prime $p=2^b-1$
 are not only fast to compute,
 but have special advantages different from any other prime field.
@@ -64,14 +64,10 @@ Primes on the form $2^b-a$ with $a>1$ are known as Pseudo-Mersenne Primes~\cite{
 Supplementing our main analysis, we provide a new algorithm for division and hashing with such numbers, which improves upon classical cryptographic work by Crandall~\cite{crandall1992method}.
 
 
-
-
 \subsection{Polynomial hashing using Mersenne primes}
 
-
-
-The k-independent hashing with a polynomial uses $O(k)$ space and $O(k)$ time
-to compute the hash value of a key. Siegel \cite{Siegel04} has proved that if we want k-independent hashing in time $t<k$, then we need to use space $u^{1/t}$.
+The $k$-universal hashing with a polynomial uses $O(k)$ space and $O(k)$ time
+to compute the hash value of a key. Siegel \cite{Siegel04} has proved that if we want $k$-universal hashing in time $t<k$, then we need to use space $u^{1/t}$.
 Such tabulation based methods are useful in many contexts (see survey \cite{Thorup17}, but not if we need small space.
 
 A classic example where constant space hash functions are needed is in static two-level hash functions \cite{FKS84}.
@@ -80,14 +76,19 @@ Another example is small sketches such as the count sketch \cite{XXX}\todo{What 
 
 
 \subsubsection{Preliminaries: Implementation of a Hash Function}
-The classic definition of $k$-independent hashing (or $k$-universal)
-goes back to Carter and Wegman \cite{wegman81kwise}.
+The classic definition of $k$-universal hashing
+goes back to Carter and Wegman~\cite{wegman81kwise}.
 \begin{definition}
-   A random hash function $h:U\to R$ is $k$-independent if for $k$
+   A random hash function $h:U\to R$ is $k$-universal if for $k$
    distinct keys $x_0,\ldots,x_{k-1}\in U$, the values
-   $h(x_0),\ldots,h(x_{k-1})$ are independent.
+   $h(x_0),\ldots,h(x_{k-1})$ are uniform in $R^k$.
 \end{definition}
-The classic example of $k$-independent
+\noindent
+Note that the definition also implies the values 
+$h(x_0),\ldots,h(x_{k-1})$ are independent.
+A very similar concept is that of $k$-independence, which has only this requirement, but doesn't include that values must be uniform.
+
+The classic example of $k$-universal
 hash function is uniformly random degree-$(k-1)$ polynomial over a prime field
 $\Z_p$, that is, we pick a uniformly random vector
 $\vec a=(a_0,\ldots,a_{k-1})\in \Z_p^k$ of $k$ coefficients, and define
@@ -128,7 +129,7 @@ instead of the expensive modulo operation.
 \vspace{1em}
 
 The above completes our description of how Mersenne primes are
-normally used for fast computation of $k$-independent hash functions.
+normally used for fast computation of $k$-universal hash functions.
 We show an implementation in \cref{alg:Mersenne} with one further improvement:
 By assuming that $p=2^b-1\geq 2u-1$
 (which is automatically satisfied in the typical case where $u$ is a power
@@ -164,7 +165,7 @@ Note the proof by loop invariant in the comments.
 
 In \Cref{subsec:intro-division} we will give one further improvement to \Cref{alg:Mersenne}.
 Mostly the description above is a fairly standard description of state-of-the-art hashing.
-\footnote{We note that $k=2$, we do have the fast multiply-shift scheme of Dietzfelbinger~\cite{dietzfel96universal}, that directly gives 2-independent
+\footnote{We note that $k=2$, we do have the fast multiply-shift scheme of Dietzfelbinger~\cite{dietzfel96universal}, that directly gives 2-universal
 hashing from $b$-bit strings to $\ell$-bit strings, but for $k>2$,
 there is no faster method that can be implemented in with portable code
 in a standard programming language like C.}
@@ -189,7 +190,7 @@ two. We will often refer to the hash values in $[r]$ as buckets so
 that we are hashing keys to buckets.
 %Avoiding a degenerate case, we assume $r>1$. In particular this implies that $r$ does not divide our prime $p$.
 
-We assume a $k$-independent hash function $h:[u]\to[p]$, e.g.,
+We assume a $k$-universal hash function $h:[u]\to[p]$, e.g.,
 the one from \Cref{alg:Mersenne}. To get hash values in $[r]$,
 we defined $h^r:[u]\to[r]$ by
 \[h^r(x)=h(x)\bmod r=h(x)\andtt (r-1).\]
@@ -259,20 +260,20 @@ In this section we discuss how we can get several hash functions for
 the price of one, and apply the idea to second moment estimation using
 count sketches \cite{charikar04count-sketch}.
 
-Suppose we had a $k$-independent hash function into $b$-bit strings.
+Suppose we had a $k$-universal hash function into $b$-bit strings.
 We note that using standard programming languages such as C, we have
 no simple and efficient method computing such hash
 functions when $k>2$. However, later we will argue that polynomial
 hashing using a Mersenne prime $2^b-1$ delivers a better-than-expected
 approximation.
 
-Let $h:U\to [2^b]$ be $k$-independent. By definition this
+Let $h:U\to [2^b]$ be $k$-universal. By definition this
 means that if we have $j\leq k$ distinct keys $x_1,\ldots,x_j$, then
 $(h(x_1),\ldots,h(x_j))$ is uniform in $[2^b]^j\equiv [2]^{bj}$,
 so this means that \emph{all} the bits in $h(x_1),\ldots,h(x_j)$ are
 independent and uniform. We can use this to split our $b$-bit hash
 values into smaller segments, and sometimes use them as if
-they were the output of independently computed hash functions.
+they were the output of universally computed hash functions.
 We illustrate this idea below in the context of the second moment estimation.
 
 \subsubsection{Second moment estimation}
@@ -309,17 +310,13 @@ By Chebyshev's inequality, this implies
 \[\Pr[|X-\| f\|_2^2|\geq \eps \| f\|_2^2]\leq \Var[X]/(\eps \| f\|_2^2)^2<
 2/(k\eps^2).\]
 With $t=8/\eps^2$, the error probability is below 1/4.
-To
-reduce the error probability, we can use the standard trick of
-making $r$ independent experiments
-and return the median estimate. Using Chernoff bounds, the probability
-that the median deviates by more than $\eps \| f\|_2^2$ is bounded by
-$\exp(-r/12)$.
+To reduce the error probability, we can use the standard trick of making $r$ independent experiments and return the median estimate.
+Using Chernoff bounds, the probability that the median deviates by more than $\eps \|f\|_2^2$ is bounded by $\exp(-r/12)$.
 
 \subsubsection{Two-for-one hash functions with \texorpdfstring{$b$}{b}-bit hash values}
 As the count sketch is described above,
-it uses two independent 4-independent hash functions
-$i:[u]\to[r]$ and $s:[u]\to\{-1,1\}$, but 4-independent hash functions
+it uses two independent 4-universal hash functions
+$i:[u]\to[r]$ and $s:[u]\to\{-1,1\}$, but 4-universal hash functions
 are generally slow to compute, so, aiming to save roughly a factor 2
 in speed, a tempting idea is to compute them both using a single hash
 function.
@@ -339,12 +336,12 @@ This follows because $\E[s(x_1)]=0$ by uniformity of $s(x_1)$ and because $s(x_1
 
 
 Assuming that $t=2^\ell$ is a power of two, we can easily construct
-$i:[u]\to[t]$ and $s:[u]\to\{-1,1\}$ using a single $4$-independent
+$i:[u]\to[t]$ and $s:[u]\to\{-1,1\}$ using a single $4$-universal
 hash function $h:[u]\to[2^b]$ where $b>\ell$. Recall that all the bits in
 $h(x_1),\ldots,h(x_4)$ are independent. We can therefore use the
 $\ell$ least significant bits of $h(x)$ for $i(x)$ and the most
 significant bit of $h(x)$ for a bit $a(x)\in[2]$, and finally set
-$s(x)=1-2a(x)$. It is then easy to show that if $h$ is $k$-independent
+$s(x)=1-2a(x)$. It is then easy to show that if $h$ is $k$-universal
 than $h$ satisfies \cref{eq:E-0}.
 \begin{algorithm}
    \caption{For key $x\in [u]$, compute $i(x)=i_x\in[2^\ell]$ and
@@ -357,11 +354,11 @@ than $h$ satisfies \cref{eq:E-0}.
    $a_x\gets h_x\rs (b-1)$\hfill $\rhd\quad a_x$ gets the most significant bit of $h_x$\\
    $s_x\gets 1-2a_x$ \hfill $\rhd\quad a_x\in[2]$ is converted to a sign $s_x\in\{-1,+1\}$
 \end{algorithm}
-% \begin{lemma}\label{lem:b-bit-hashing} Suppose $h:[u]\to[2^b]$ is $k$-independent. Let
+% \begin{lemma}\label{lem:b-bit-hashing} Suppose $h:[u]\to[2^b]$ is $k$-universal. Let
 %    $i:[u]\to[2^\ell]$ and
-%    $s:[u]\to\{-1,1\}$ be constructed from $h$ as described in Algorithm \ref{alg:h-and-s}. Then $h$ and $s$ are both $k$-independent. Moreover, for
+%    $s:[u]\to\{-1,1\}$ be constructed from $h$ as described in Algorithm \ref{alg:h-and-s}. Then $h$ and $s$ are both $k$-universal. Moreover, for
 %    any $j\leq k$ distinct keys $x_1,\ldots,x_j$, the $2j$ hash
-%    values $i(x_1),\ldots,i(x_j),s(x_1),\ldots,s(x_j)$ are independent.
+%    values $i(x_1),\ldots,i(x_j),s(x_1),\ldots,s(x_j)$ are universal.
 %    In particular, if $A$ depends on
 %    $i(x_1),\ldots,i(x_j),s(x_2),\ldots,s(x_j)$, but not on $s(x_1)$, then
 %    \begin{equation}\label{eq:E-0}
@@ -370,22 +367,22 @@ than $h$ satisfies \cref{eq:E-0}.
 % \end{lemma}
 Note that Algorithm \ref{alg:h-and-s} is well defined as long as 
 $h$ returns a $b$-bit integer. However, \cref{eq:E-0} requires
-that $h$ is $k$-independent into $[2^b]$, which in particular implies that
+that $h$ is $k$-universal into $[2^b]$, which in particular implies that
 the hash values are uniform in $[2^b]$.
 
 
 \subsubsection{Two-for-one hashing with  Mersenne primes}\label{sec:two-for-one}
-Above we discussed how useful it would be with $k$-independent hashing
+Above we discussed how useful it would be with $k$-universal hashing
 mapping uniformly into $b$-bit strings. The issue was that the lack of
 efficient implementations with standard portable code if
 $k>2$. However, when $2^b-1$ is a Mersenne prime $p\geq u$, then we do
 have have the efficient computation from Algorithm \ref{alg:Mersenne}
-of a $k$-independent hash function $h:[u]\to[2^b-1]$. The hash values
+of a $k$-universal hash function $h:[u]\to[2^b-1]$. The hash values
 are $b$-bit integers, and they are uniformly distributed, except that
 we are missing the all \texttt{1}s value $p=2^b-1$. We want to
 understand how this missing value affects us if we try to split the
 hash values as in Algorithm \ref{alg:h-and-s}. Thus, we assume a
-$k$-independent hash function $h:[u]\to[2^b-1]$ from which we construct
+$k$-universal hash function $h:[u]\to[2^b-1]$ from which we construct
 $i:[u]\to[2^\ell]$ and $s:[u]\to\{-1,1\}$ as
 described in Algorithm \ref{alg:h-and-s}. As usual, we assume $2^\ell>1$.
 Since $i_x$ and $s_x$ are
@@ -456,7 +453,7 @@ based on Mersenne primes performs almost perfectly:
 \begin{theorem}\label{thm:h-and-s-p}
    Let $r>1$ and $u>r$ be powers of two and let $p=2^b-1>u$ be a
    Mersenne prime.
-   Suppose with have a $k$-independent hash function $h:[u]\to[2^b-1]$, e.g.,
+   Suppose with have a $k$-universal hash function $h:[u]\to[2^b-1]$, e.g.,
    generated using Algorithm \ref{alg:Mersenne}. Suppose
    $i:[u]\to[r]$ and
    $s:[u]\to\{-1,1\}$ are constructed from $h$ as described in
@@ -475,7 +472,7 @@ proved in Section \ref{sec:analysis-two-for-one}.
 
 \subsection{Arbitrary number of buckets}\label{sec:most-uniform}
 We now consider the general case where we want to hash into a set of buckets $R$ whose size is not a power of two.
-Suppose we have a $2$-independent hash function $h:U\to Q$.
+Suppose we have a $2$-universal hash function $h:U\to Q$.
 We will compose $h$ with a map $\mu:Q\to R$, and use $\mu\circ h$ as a hash function from $U$ to $R$.
 Let $q=|Q|$ and $r=|R|$.
 We want the map $\mu$ to be \emph{most uniform} in the sense that for bucket $i\in R$, the number of elements from $Q$ mapping to $i$ is either $\floor{q/r}$ or $\ceil{q/r}$.
@@ -488,7 +485,7 @@ is $\mu(x)=\floor{xr/q}$,
 which is also quite slow in general, but if $q=2^b$ is a power of two,
 it can be implemented as $\mu(x)=(xr)\rs\,b$ where 
 $\rs$ denotes right-shift. This would be yet another advantage 
-of of having $k$-independent hashing into $[2^b]$.\todo{Add comment about it being efficient for Mersenne aswell using our result!}
+of of having $k$-universal hashing into $[2^b]$.\todo{Add comment about it being efficient for Mersenne aswell using our result!}
 
 Now, our interest is the case where $q$ is a Mersenne prime $p=2^b-1$. We want
 an efficient and most uniform map $\mu:[2^b-1]$ into any given $[r]$.
@@ -648,7 +645,7 @@ however curiously we need to shift $x$ by $c$ to compensate for the rounding dow
 
 %Note that for many Pseudo Mersenne Primes, multiplication by $c$ can be replaced by a single shift, making the algorithm completely additions and shifts.
 
-%Note that we use the same number of operations independent of $x$.
+%Note that we use the same number of operations universal of $x$.
 
 
 To compute modulo we use the fact that
