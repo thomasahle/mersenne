@@ -137,13 +137,13 @@ of two, e.g., $2^{32}$ or $2^{64}$)
 we can get away with only testing a possible off-by-one in \cref{eq:Mersenne} once, rather that at every loop.
 Note the proof by loop invariant in the comments.
 
-\begin{algorithm}
+\begin{algorithm}[H]
    \caption{
       For $x\in [u]$, prime $p=2^b-1\geq 2u-1$,
       and $\vec a=(a_0,\ldots,a_{k-1})\in[p]^k$,
-      compute $h_{\vec a}(x)=\left(\sum_{i\in[q]}a_i x^i\right)\bmod p$
+      computes $y=h_{\vec a}(x)=\left(\sum_{i\in[q]}a_i x^i\right)\bmod p$
    }\label{alg:Mersenne}
-   \begin{algorithmic}[1]
+   \begin{algorithmic}
       \State $y\gets a_{k-1}$
       \For{$i=q-2,\ldots,0$}
       \Comment{Invariant: $\quad y<2p$}
@@ -156,9 +156,9 @@ Note the proof by loop invariant in the comments.
       \EndFor
       \If{$y\geq p$}
       \State $y\gets y-p$
-      \EndIf
-      \State \Return $y$
       \Comment{$y<p$}
+      \EndIf
+      %\State \Return $y$
    \end{algorithmic}
 \end{algorithm}
 
@@ -290,16 +290,22 @@ We define the $m$th moment to be the $m$-norm to $m$th power,
 $F_m^m = \sum_{x\in [u]}f_y^m$. The goal here is to
 estimate the second moment $F_2^2 = \sum_{x\in [u]}f_x^2$. 
 
-\begin{algorithm}
+\begin{algorithm}[H]
    \caption{\label{alg:count-sketch} Count Sketch. Uses a
       vector/array $C$ of $r$ integers and two independent
       4-universal hash functions $i:[u]\to[r]$ and $s:[u]\to\{-1,1\}$.
    .}
-   \begin{description}
-      \item[Initialize] For $i\in[t]$, set $C[i]\gets 0$.
-      \item[Process$(x,\Delta)$] $C[i(x)]\gets C[i(x)]+s(x) \Delta$. 
-      \item[Output] $X=\sum_{i\in[t]} C[i]^2$.
-   \end{description}
+   \begin{algorithmic}
+      \Procedure{Initialize}{}
+         \State For $i\in[t]$, set $C[i]\gets 0$.
+      \EndProcedure
+      \Procedure{Process}{$x, \Delta$}
+         \State $C[i(x)]\gets C[i(x)]+s(x) \Delta$. 
+      \EndProcedure
+      \Procedure{Output}{}
+         \State \Return $\sum_{i\in[t]} C[i]^2$.
+      \EndProcedure
+   \end{algorithmic}
 \end{algorithm}
 The standard analysis \cite{charikar04count-sketch} shows that 
 \begin{align}
@@ -343,16 +349,21 @@ $\ell$ least significant bits of $h(x)$ for $i(x)$ and the most
 significant bit of $h(x)$ for a bit $a(x)\in[2]$, and finally set
 $s(x)=1-2a(x)$. It is then easy to show that if $h$ is $k$-universal
 than $h$ satisfies \cref{eq:E-0}.
-\begin{algorithm}
+\begin{algorithm}[H]
    \caption{For key $x\in [u]$, compute $i(x)=i_x\in[2^\ell]$ and
       $s(x)=s_x\in\{-1,+1\}$,\rule{5ex}{0ex}
    using $h:[u]\to [2^b]$ where $b>\ell$.}
    \label{alg:h-and-s}
-   $h_x\gets h(x)$\hfill $\rhd\quad h_x$ uses $b$ bits\\
-   $i_x\gets h_x \andtt (2^\ell-1)$\hfill $\rhd\quad i_x$ gets $\ell$ least significant
-   bits of $h_x$\\
-   $a_x\gets h_x\rs (b-1)$\hfill $\rhd\quad a_x$ gets the most significant bit of $h_x$\\
-   $s_x\gets 1-2a_x$ \hfill $\rhd\quad a_x\in[2]$ is converted to a sign $s_x\in\{-1,+1\}$
+   \begin{algorithmic}
+      \State $h_x\gets h(x)$
+      \Comment $h_x$ uses $b$ bits
+      \State $i_x\gets h_x \andtt (2^\ell-1)$
+      \Comment $i_x$ gets $\ell$ least significant bits of $h_x$
+      \State $a_x\gets h_x\rs (b-1)$
+      \Comment $a_x$ gets the most significant bit of $h_x$
+      \State $s_x\gets 1-2a_x$
+      \Comment $a_x\in[2]$ is converted to a sign $s_x\in\{-1,+1\}$
+   \end{algorithmic}
 \end{algorithm}
 % \begin{lemma}\label{lem:b-bit-hashing} Suppose $h:[u]\to[2^b]$ is $k$-universal. Let
 %    $i:[u]\to[2^\ell]$ and
@@ -542,7 +553,7 @@ values from Section \ref{sec:two-for-one}.
 
 \subsection{Even faster division and modulo with (Pseudo) Mersenne Primes}\label{subsec:intro-division}
 %
-\begin{algorithm}
+\begin{algorithm}[H]
    \caption{For Mersenne prime $p=2^b-1$ and $x< 2^{2b}$, computes
    \label{alg:div-simple}
    $y=x\bmod p$ and $z=\floor{x/p}$}
@@ -578,7 +589,7 @@ There are in general two kinds of such primes:
 
 \begin{description}
    \item[Pseudo-Mersenne Primes]
-      are primes on the form $2^n-c$, where is usually required that $c < 2^{\lfloor n/2\rfloor}$~\cite{van2014encyclopedia}.
+      are primes on the form $2^b-c$, where is usually required that $c < 2^{\lfloor n/2\rfloor}$~\cite{van2014encyclopedia}.
       Crandal patented a method for working with Pseudo-Mersenne Primes in 1992~\cite{crandall1992method},
       why those primes are also sometimes called ``Crandal-primes''.
       The method was formalized and extended by Jaewook Chung and Anwar Hasan in 2003~\cite{chung2003more}.
@@ -596,30 +607,30 @@ There are in general two kinds of such primes:
 \end{description}
 
 Our generalized algorithm is shown in Algorithm \ref{alg:division-generalized}.
-\begin{algorithm}
+\begin{algorithm}[H]
    \caption{For Pseudo-Mersenne prime $p=2^b-c$ and $x,m$ such that $x< (2^b/c)^m$, computes
-      $v=\floor{x/p}$}
+      $z=\floor{x/p}$}
    \label{alg:division-generalized}
-   \begin{algorithmic}[1]
-      \Procedure{Divide}{x, n, c}
+   \begin{algorithmic}
+      %\Procedure{Divide}{x, n, c}
          \State $x' \gets x + c$
-         \State $v \gets 0$
+         \State $z \gets 0$
          %\For{$i\gets 1$ \textbf{to} $m$}
          \For{ $m$ times}
-            \State $v \gets v * c + x'$
-            \State $v \gets v \rs n$
+            \State $z \gets z * c + x'$
+            \State $z \gets z \rs n$
          \EndFor
          %\EndFor
-         \State \Return $v$
-      \EndProcedure
+         %\State \Return $v$
+      %\EndProcedure
    \end{algorithmic}
 \end{algorithm}
 The full proof of this is given in Theorem \ref{thm:simple-div} in Section \ref{sec:division}.
 
-In the Crandall case $x\le 2^n$ and $c\le 2^{\floor n/2}$, as described by the Encyclopedia of Cryptography and Security~\cite{van2014encyclopedia}, we can let $m=2$, unroll the loop, and the algorithm runs in just two steps for a total of five operations:
+In the Crandall case $x\le 2^b$ and $c\le 2^{\floor n/2}$, as described by the Encyclopedia of Cryptography and Security~\cite{van2014encyclopedia}, we can let $m=2$, unroll the loop, and the algorithm runs in just two steps for a total of five operations:
    $$
-   \left\lfloor\frac{x}{2^n-c}\right\rfloor
-   = \left\lfloor\frac{\lfloor\frac{x'}{2^n}\rfloor c + x'}{2^n}\right\rfloor
+   \left\lfloor\frac{x}{2^b-c}\right\rfloor
+   = \left\lfloor\frac{\lfloor\frac{x'}{2^b}\rfloor c + x'}{2^b}\right\rfloor
       = (x' \rs n)*c + x' \rs n
    ,$$
    including $x'=x+c$.
@@ -648,19 +659,31 @@ however curiously we need to shift $x$ by $c$ to compensate for the rounding dow
 %Note that we use the same number of operations universal of $x$.
 
 
-To compute modulo we use the fact that
+To compute modulo we use the fact that if $z=\floor{x/p}$, then
 \begin{align}
    x \bmod p
-   = x - p\left\lfloor\frac{x}{p}\right\rfloor
-   = x - (2^n - c)\left\lfloor\frac{x}{2^n-c}\right\rfloor,
+   = x - pz
+   = x - (2^b-c)z
+   = x - (z\ls b) - c*z,
 \end{align}
 which is only two additions, a shift, and a multiplication with $c$ on top of the division algorithm.
-As $\floor{\frac{x}{p}} p \le x$ there is no danger of overflow.
-An alternative method is to note
-$x = \lfloor\frac{x}{p}\rfloor (2^n-c) + r$, so
-$$x\bmod p = \left(x+c\left\lfloor\frac{x}{p}\right\rfloor \right) \bmod 2^n,$$
+As $pz = \floor{x/p}p \le x$ there is no danger of overflow.
+We can save one operation by noting
+that if $x = z (2^b-c) + r$, then
+$$x\bmod p = \left(x+c*z \right) \bmod 2^b,$$
 which is fast to compute using $(\andtt p)$.
-This is the method applied in Algorithm \ref{alg:div-simple}.
+This is the method is shown in Algorithm \ref{alg:mod-generalized} and applied with $c=1$ in Algorithm \ref{alg:div-simple}.
+
+\begin{algorithm}[H]
+   \caption{For Pseudo-Mersenne prime $p=2^b-c$ and $z=\floor{x/p}$ computes
+      $r=x \bmod p$.}
+   \label{alg:mod-generalized}
+   \begin{algorithmic}
+      \State $r \gets (x + z*c) \andtt 2^b-1$
+   \end{algorithmic}
+\end{algorithm}
+
+
 
 %In the case $x\le 2^{2b}$ and $c=1$, we get the simplified Algorithm \ref{alg:div-simple} described above: $ \left\lfloor\frac{x}{2^n-1}\right\rfloor = (x+1 \rs n)+x+1 \rs n$.
 
@@ -671,9 +694,9 @@ $\floor{\frac{(h(x)+1)r}{2^b}}$.
 However, for primes on the form $2^b-c$, $c>1$ this approach doesn't provide a most-uniform map.
 %
 Instead we may use Algorithm \ref{alg:division-generalized} to compute
-$$\left\lfloor\frac{h(x)r}{2^b-a}\right\rfloor$$
+$$\left\lfloor\frac{h(x)r}{2^b-c}\right\rfloor$$
 directly, getting a perfect most-uniform map.
-(Another alternative was to pre-compute $q = \lfloor2^n/p\rfloor$ and take
+(Another alternative was to pre-compute $q = \lfloor2^b/p\rfloor$ and take
 $\floor{\frac{h(x)rq}{2^b}}$, however that requires larger words to store the product $h(x)rq$.)
 
 
@@ -685,7 +708,7 @@ Naturally, much work has been done on making computations with those primes fast
 Articles like ``Simple Power Analysis on Fast Modular Reduction with Generalized Mersenne Prime for Elliptic Curve Cryptosystems''~\cite{sakai2006simple}
 give very specific algorithms such as Algorithm \ref{alg:solina}, for each of a number of well known such primes.
 
-\begin{algorithm}
+\begin{algorithm}[H]
    \caption{Fast reduction modulo $p_{192} = 2^{192} - 2^{64} - 1$}
    \label{alg:solina}
    \begin{algorithmic}
@@ -710,36 +733,36 @@ Division by Mersenne primes is a less common task, but a number of well known di
 
 
 The state of the art appears to be the modified Crandall Algorithm by Chung and Hasan~\cite{chung2006low}.
-This algorithm, given in Algorithm \ref{alg:cch} modifies Crandall's algorithm~\cite{crandall1992method} from 1992 to compute division as well as modulo for generalized $2^n-c$ Mersenne primes.
-\begin{algorithm}
-   \caption{Crandall, Chung, Hassan algorithm. For $p=2^n-c$, computes $q, r$ such that $x = qp+r$ and $r<p$.}
+This algorithm, given in Algorithm \ref{alg:cch} modifies Crandall's algorithm~\cite{crandall1992method} from 1992 to compute division as well as modulo for generalized $2^b-c$ Mersenne primes.
+\begin{algorithm}[H]
+   \caption{Crandall, Chung, Hassan algorithm. For $p=2^b-c$, computes $q, r$ such that $x = qp+r$ and $r<p$.}
    \label{alg:cch}
-   \begin{algorithmic}[1]
-      \Procedure{Divide}{x, n, c}
+   \begin{algorithmic}
+      %\Procedure{Divide}{x, n, c}
          \State $q_0 \gets x \rs n $
-         \State $r_0 \gets x \andtt 2^n-1$
+         \State $r_0 \gets x \andtt 2^b-1$
          \State $q \gets q_0, r\gets r_0$
          \State $i \gets 0$
          \While{$q_i>0$}
             \State $t \gets q_i*c$
             \State $q_{i+1} \gets t \rs n$
-            \State $r_{i+1} \gets t \andtt {2^n -1}$
+            \State $r_{i+1} \gets t \andtt {2^b -1}$
             \State $q\gets q+q_{i+1}$
             \State $r\gets r+r_{i+1}$
             \State $i\gets i+1$
          \EndWhile
-         \State $t \gets 2^n-c$
+         \State $t \gets 2^b-c$
          \While{$r\ge t$}
             \State $r\gets r-t$
             \State $q\gets q+1$
          \EndWhile
          \State\textbf{return} $q$
-      \EndProcedure
+      %\EndProcedure
    \end{algorithmic}
 \end{algorithm}
 The authors state that for $2n+\ell$ bit input, Algorithm \ref{alg:cch}
 requires at most $s$ iterations of the first loop, if $c < 2^{((s-1)n-\ell)/s}$.
-This corresponds roughly to the requirement $x < 2^n (2^n/c)^s$, similar to ours.
+This corresponds roughly to the requirement $x < 2^b (2^b/c)^s$, similar to ours.
 
 Unfortunately the algorithm ends up doing double work, by computing the quotient and remainder concurrently.
 The algorithm also suffers from the extra while loop for ``cleaning up'' the computations after the main loop.
