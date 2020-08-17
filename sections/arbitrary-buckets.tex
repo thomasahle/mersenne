@@ -52,19 +52,22 @@ are only uniform in $[2^b-1]$.
 
 The construction of $s$ and $i$ is presented in 
 Algorithm \ref{alg:b-bit-arb-r}.
-\begin{algorithm}\label{alg:b-bit-arb-r}
-   \caption{For key $x\in [u]$, compute $i(x)=i_x\in[r]$ and
-      $s(x)=s_x\in\{-1,+1\}$.\rule{5ex}{0ex}
-   Uses 4-universal $h:[u]\to [2^b]$.}
-   $h_x\gets h(x)$\hfill $\rhd\quad h_x$ has $b$ uniform bits\\
-   $j_x\gets h_x\andtt(2^{b-1}-1)$\hfill $\rhd\quad j_x$ gets $b-1$ least 
-   significant bits of $h_x$\\
-   $i_x\gets (rj_x)\rs (b-1)$\hfill $\rhd\quad i_x$ is most uniform
-   in $[r]$\\
-   $a_x\gets h_x\rs (b-1)$\hfill $\rhd\quad a_x$ gets the most significant bit of $h_x$\\
-   $s_x\gets 2b_x-1$\hfill $\rhd\quad s_x$ is uniform in $\{-1,+1\}$ and
-   independent of $i_x$.\\
-\end{algorithm}  
+\begin{algorithm}
+   \caption{For key $x\in [u]$, compute $i(x)=i_x\in[r]$ and $s(x)=s_x\in\{-1,+1\}$.\rule{5ex}{0ex} Uses 4-universal $h:[u]\to [2^b]$.}
+   \label{alg:b-bit-arb-r}
+   \begin{algorithmic}
+      \State $h_x\gets h(x)$
+      \Comment $h_x$ has $b$ uniform bits
+      \State $j_x\gets h_x\andtt(2^{b-1}-1)$
+      \Comment $j_x$ gets $b-1$ least significant bits of $h_x$
+      \State $i_x\gets (r*j_x)\rs (b-1)$
+      \Comment $i_x$ is most uniform in $[r]$
+      \State $a_x\gets h_x\rs (b-1)$
+      \Comment $a_x$ gets the most significant bit of $h_x$
+      \State $s_x\gets 2b_x-1$
+      \Comment $s_x$ is uniform in $\{-1,+1\}$ and independent of $i_x$.
+   \end{algorithmic}
+\end{algorithm}
 The difference relative to Algorithm \ref{alg:h-and-s} is the computation
 of $i_x$ where we now first pick out the $(b-1)$-bit string $j_x$ from
 $h_x$, and then apply the most uniform map $(rj_x)\rs (b-1)$
@@ -93,24 +96,29 @@ construct the two hash functions $s:[u]\to\{-1,+1\}$ and
 $i:[u]\to[r]$.  The construction will be the same as we had in
 Algorithm \ref{alg:b-bit-arb-r} when $h$ returned uniform values in
 $[2^b]$ with the change that we set $h_x\gets h(x)+1$, so that it
-becomes uniform in $[2^b]\setminus\{0\}$. It is also convinient to
-swap the sign of the signbit $s_x$ setting $s_x\gets 2a_x+1$ instead
+becomes uniform in $[2^b]\setminus\{0\}$. It is also convenient to
+swap the sign of the sign-bit $s_x$ setting $s_x\gets 2a_x+1$ instead
 of $s_x\gets 1-2a_x$. The basic reason is that we have swapped the
 role of \texttt{0} and \texttt{1} in $a_x$.  The resulting algorithm
 is presented as Algorithm \ref{alg:Mersenne-arb-r}.
-\begin{algorithm}\label{alg:Mersenne-arb-r}
+\begin{algorithm}
    \caption{For key $x\in [u]$, compute $i(x)=i_x\in[r]$ and
       $s(x)=s_x\in\{-1,+1\}$.\rule{5ex}{0ex}
    Uses 4-universal $h:[u]\to [p]$ for Mersenne prime $p=2^b-1\geq u$.}
-   $h_x\gets h(x)+1$\hfill $\rhd\quad h_x$ uses $b$ bits uniformly except $h_x\neq 0$\\
-   $j_x\gets h_x\andtt(2^{b-1}-1)$\hfill $\rhd\quad j_x$ gets $b-1$ least 
-   significant bits of $h_x$\\
-   $i_x\gets (rj_x)\rs b-1$\hfill $\rhd\quad i_x$ is quite uniform
-   in $[r]$\\
-   $a_x\gets h_x\rs (b-1)$\hfill $\rhd\quad a_x$ gets the most significant bit of $h_x$\\
-   $s_x\gets 1-2b_x$\hfill $\rhd\quad s_x$ is quite uniform in $\{-1,+1\}$ and
-   quite independent of $i_x$.\\
-\end{algorithm}  
+   \label{alg:Mersenne-arb-r}
+   \begin{algorithmic}
+      \State $h_x\gets h(x)+1$
+      \Comment $h_x$ uses $b$ bits uniformly except $h_x\neq 0$
+      \State $j_x\gets h_x\andtt(2^{b-1}-1)
+      \Comment $j_x$ gets $b-1$ least significant bits of $h_x$
+      \State $i_x\gets (r*j_x)\rs b-1$
+      \Comment $i_x$ is quite uniform in $[r]$
+      \State $a_x\gets h_x\rs (b-1)
+      \Comment $a_x$ gets the most significant bit of $h_x$
+      \State $s_x\gets 1-2b_x$
+      \Comment $s_x$ is quite uniform in $\{-1,+1\}$ and quite independent of $i_x$.
+   \end{algorithmic}
+\end{algorithm}
 The rest of Algorithm \ref{alg:Mersenne-arb-r} is exactly like 
 Algorithm \ref{alg:b-bit-arb-r}, and we will now discuss the new
 distributions of the resulting variables. We had
