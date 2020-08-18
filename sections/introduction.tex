@@ -364,7 +364,7 @@ than $h$ satisfies \cref{eq:E-0}.
       \Comment $i_x$ gets $\ell$ least significant bits of $h_x$
       \State $a_x\gets h_x\rs (b-1)$
       \Comment $a_x$ gets the most significant bit of $h_x$
-      \State $s_x\gets 1-2a_x$
+      \State $s_x\gets 1-(a_x\ls1)$
       \Comment $a_x\in[2]$ is converted to a sign $s_x\in\{-1,+1\}$
    \end{algorithmic}
 \end{algorithm}
