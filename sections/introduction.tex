@@ -475,7 +475,8 @@ based on Mersenne primes performs almost perfectly:
    in the Count Sketch Algorithm \ref{alg:count-sketch}, the second moment 
    estimate $X=\sum_{i\in[k]} C_i^2$ satisfies:
    \begin{align}
-      \E[X]=&F_2+(F_1^2-F_2)/p^2 < (1+n/p^2)\,F_2\textnormal,\label{eq:E-F2-p}\\
+      \E[X]&=F_2+(F_1^2-F_2)/p^2 < (1+n/p^2)\,F_2\textnormal,\label{eq:E-F2-p}\\
+      | \E[X] - F_2 | &\le F_2 (n - 1)/p^2, \label{eq:E-F2-p-com}\\
       \Var[X]&< 2(F_2^2-F_4)/r+F_2^2 (2.33+4 n/r)/p^2<2F_2^2/r.\label{eq:V-F2-p}
    \end{align}
 \end{theorem}

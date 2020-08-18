@@ -139,7 +139,7 @@ instead we have \Cref{prop:near-independence}. We will show that this does
 not change the expectation and variance too much. Similarly, to the
 analysis of the classical case we will analyse a slightly more general
 problem, which will be useful in \Cref{sec:arbitrary-buckets}.
-\begin{lemma}
+\begin{lemma}\label{lem:count-mersenne}
     If \Cref{prop:near-independence} is satisfied with $t$
     and $\delta$ and \Cref{prop:collision} is satisfied with
     $\eps$, then
@@ -247,20 +247,47 @@ problem, which will be useful in \Cref{sec:arbitrary-buckets}.
 \end{proof}
 
 We are now ready to prove \Cref{thm:h-and-s-p}.
+\begingroup
+    \def\thelemma{\ref{thm:h-and-s-p}}
+    \begin{theorem}
+        Let $r>1$ and $u>r$ be powers of two and let $p=2^b-1>u$ be a
+        Mersenne prime.
+        Suppose with have a $k$-universal hash function $h:[u]\to[2^b-1]$, e.g.,
+        generated using Algorithm \ref{alg:Mersenne}. Suppose
+        $i:[u]\to[r]$ and
+        $s:[u]\to\{-1,1\}$ are constructed from $h$ as described in
+        Algorithm \ref{alg:h-and-s}. Using this $i$ and $s$ 
+        in the Count Sketch Algorithm \ref{alg:count-sketch}, the second moment 
+        estimate $X=\sum_{i\in[k]} C_i^2$ satisfies:
+        \begin{align*}
+           \E[X] &= F_2+(F_1^2-F_2)/p^2, \tag{\ref{eq:E-F2-p}}\\
+           | \E[X] - F_2 | &\le F_2 (n - 1)/p^2, \tag{\ref{eq:E-F2-p-com}}\\
+           \Var[X]&< 2F_2^2/r.\tag{\ref{eq:V-F2-p}}
+        \end{align*}
+    \end{theorem}
+    \addtocounter{lemma}{-1}
+\endgroup
+
 From \Cref{eq:remove-si} and \Cref{eq:coll-ell=r-1} we know
 that \Cref{prop:near-independence} is satisfied with $t = r - 1$
 and $\delta = -(r - 1)/p$, and \Cref{eq:coll} implies that
 \Cref{prop:collision} is satisfied with $\eps = (r - 1)/p^2$.
+Now \Cref{lem:count-mersenne} give us \eqref{eq:E-F2-p}
+and \eqref{eq:E-F2-p-com}. Furthermore, we have that
+\begin{align*}
+    \Var[X] 
+        &\le 2F_2^2/r + F_2^2 (2\eps/r + 4(1 + \delta)n / (rp^2) + n^2/p^4 - 2 /(rn))
+        \\&= 2F_2^2/r + F_2^2(2/p^2 + 4n/(r p^2) + n^2/p^4 - 2/(rn)) .
+\end{align*}
 
 We know that $2 \le r \le u/2 \le (p + 1)/4$ and $n \le u$.
 This implies that $p \ge 7$ and that $n/p \le u/p \le 4/7$.
 We want to prove that
-$2\eps/r + 4(1 + \delta)n / (rp^2) + n^2/p^4 - 2/(rn) \le 0$ which would
+$2/p^2 + 4n/(r p^2) + n^2/p^4 - 2/(rn) \le 0$ which would
 prove our result. We get that
 \begin{align*}
-    2\eps/r + 4(1 + \delta)n / (rp^2) + n^2/p^4 - 2/(rn) 
-        &\le 2/p^2 + 4n/(r p^2) + n^2/p^4 - 2/(rn)
-        \\&\le 2/p^2 + 4u/(r p^2) + u^2/p^4 - 2/(ru) .
+    2/p^2 + 4n/(r p^2) + n^2/p^4 - 2/(rn)
+        \le 2/p^2 + 4u/(r p^2) + u^2/p^4 - 2/(ru) .
 \end{align*}
 Now we note that $4u/(r p^2) - 2/(ru) = (2u^2 - p^2)/(u p^2 r) \le 0$
 since $u \le (p + 1)/2$ so it maximized when $r = u/2$. We then get
@@ -275,7 +302,7 @@ We now use that $u/p \le (4/7)^2$ and get that
         \le (10 + (4/7)^2 - 4 (7/4)^2)/p^2
         \le 0 .
 \end{align*}
-This finishes the proof of \Cref{thm:h-and-s-p}.
+This finishes the proof of \eqref{eq:V-F2-p} and thus also \Cref{thm:h-and-s-p}.
 
 % \subsection{Two-for-one hashing from uniform bits to arbitrary number of buckets}
 % We have a hash function $h:U\to Q$, but we want hash values in $R$, so
