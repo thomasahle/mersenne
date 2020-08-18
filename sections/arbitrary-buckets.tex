@@ -33,9 +33,10 @@ thus have $r-a$ buckets hit with probability $(1+a/q)/r$ and
 $a$ buckets hit with probability $(1-(r-a)/q)/r$.
 The collision probability is then
 \begin{equation}\begin{split}
-   \Pr[\mu(h(x))=&\mu(h(y))]= (r-a)((1+a/q)/r)^2+a((1-(r-a)r/q)/r)^2
-                 \\&=\frac{(r-a)+(r-a)2a/q+(r-a)a^2/q^2+ a-a^2(r-a)/p+a(r-a)^2/q^2}{r^2}
-                 \\&=\frac{r +r a (r-a)/q^2}{r^2}
+   \Pr[\mu(h(x))=\mu(h(y))]
+                  &= (r-a)((1+a/q)/r)^2+a((1-(r-a)r/q)/r)^2
+%                 \\&=\frac{(r-a)+(r-a)2a/q+(r-a)a^2/q^2+ a-a^2(r-a)/p+a(r-a)^2/q^2}{r^2}
+%                 \\&=\frac{r +r a (r-a)/q^2}{r^2}
                  \\&=(1+a(r-a)/q^2)/r
                  \\&\le \left(1+(r/(2q))^2\right)/r.\label{eq:coll-a}
 \end{split}\end{equation}
@@ -169,7 +170,7 @@ that we shall later.
    Using \req{eq:prix0} and the fact $\ceil{2^{b-1}/r}\le(2^{b-1}+r-1)/r$ we have
    \begin{align*}
       \Pr[i_x=0]&\le (2(2^{b-1}+r-1)/r)-1)/(2^{b}-1)\\
-                &=((2^b+r-2)/r)/(2^b-1)\\
+                %&=((2^b+r-2)/r)/(2^b-1)\\
                 &=\left(1+(r-1)/(2^b-1)\right)/r\\
                 &\le\left(1+r/2^b\right)/r.
    \end{align*}
