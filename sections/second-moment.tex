@@ -26,35 +26,35 @@ X=\sum_{i\in[r]}\left( \sum_{x\in[u]}s_x f_x[i_x=i]\right)^2
 where $Y=\sum_{x,y\in[u],x\neq y} s_x s_y f_x f_y [i_x = i_y]$.
 The goal is thus to bound mean and variance of the error $Y$.
 
-As discussed in the introduction one of the critical steps in the analysis
-of count sketch in the classical case is \cref{eq:E-0}. We formalize this into
-the following property.
+As discussed in the introduction, one of the critical steps in the analysis of count sketch in the classical case is \cref{eq:E-0}.
+We formalize this into the following property:
 \begin{property}\label{prop:independence}
     For distinct keys $x_0, \ldots x_{j - 1}$, $j \le k$
     and an expression $A(i_{x_0}, \ldots, i_{x_{j - 1}}, s_{x_1}, \ldots, s_{x_{j - 1}})$,
     which depends on $i_{x_0}, \ldots, i_{x_{j - 1}}$ and $s_{x_1}, \ldots, s_{x_{j - 1}}$
-    but not on $s_{x_0}$. Then
+    but not on $s_{x_0}$
     \begin{align}
         \E[s_{x_0} A(i_{x_0}, \ldots, i_{x_{j - 1}}, s_{x_1}, \ldots, s_{x_{j - 1}})] = 0\; .
     \end{align}
 \end{property}
 
-The case where we use a Mersenne prime for our hash function we
-have that $h$ is uniform in $[2^b - 1]$ and not in $[2^b]$, hence \Cref{prop:independence}
-is not satisfied. Instead we have \cref{eq:E-0} which is almost as good
-and will replace \Cref{prop:independence} in the analysis for count sketch.
-Again, we have formalized this into an property.
+The case where we use a Mersenne prime for our hash function we have that $h$ is uniform in $[2^b - 1]$ and not in $[2^b]$, hence \Cref{prop:independence} is not satisfied.
+Instead we have \cref{eq:E-0} which is almost as good, and will replace \Cref{prop:independence} in the analysis for count sketch.
+We formalize this as the following ``near universal'' property:
 \begin{property}\label{prop:near-independence}
     There exists $t \in [r]$ such that for distinct keys $x_0, \ldots x_{j - 1}$, $j \le k$
-    and an expression \\$A(i_{x_0}, \ldots, i_{x_{j - 1}}, s_{x_1}, \ldots, s_{x_{j - 1}})$,
-    which depends on $i_{x_0}, \ldots, i_{x_{j - 1}}$ and $s_{x_1}, \ldots, s_{x_{j - 1}}$
-    but not on $s_{x_0}$. Then
+    and an expression \\$A(i_{x_0}, \ldots, i_{x_{j - 1}}, s_{x_1}, \dots, s_{x_{j - 1}})$,
+    which depends on $i_{x_0}, \ldots$
+    %, i_{x_{j - 1}}$
+    and $s_{x_1}, \ldots$,
+    %, s_{x_{j - 1}}$
+    but not on $s_{x_0}$
     \begin{align}
         \E[s_{x_0} A(i_{x_0}, \ldots, i_{x_{j - 1}}, s_{x_1}, \ldots, s_{x_{j - 1}})]
             = \frac1p \E[A(i_{x_0}, \ldots, i_{x_{j - 1}}, s_{x_1}, \ldots, s_{x_{j - 1}}) \mid i_{x_0} = t].
          \label{eq:near-independence}
     \end{align}
-    Furthermore, there exists $\delta$ such that for any key $x$, then
+    Furthermore, there exists $\delta$ such that for any key $x$
     \begin{align}
         \Pr[i_x = l] \le (1 + \delta)/r \; .
          \label{eq:prob-special-value}
@@ -126,7 +126,7 @@ did not need $s$ and $i$ to be completely independent. All we needed
 was that for any $j\leq 4$ distinct keys $x_1,\ldots,x_j$, the hash
 values $s(x_1),\ldots,s(x_j)$ and $i(x_1),\ldots,i(x_j)$ are all
 independent and uniform in the desired domain. This was why we could
-use a single $k$-universal hash function $h:[u]\to[2^b]$ with
+use a single 4-universal hash function $h:[u]\to[2^b]$ with
 $b>\ell$, and use it to construct $s:[u]\to\{-1,+1\}$ and
 $i:[u]\to[2^\ell]$ as described in Algorithm \ref{alg:h-and-s}.
 % This was removed from the introduction
