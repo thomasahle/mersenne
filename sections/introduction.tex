@@ -655,15 +655,16 @@ $$
       }{q}}c +x+c
    }{q}}c +x+c
 }{q}}
+\vspace{-1em} % Move the next line further up
 $$
 which is visually similar to the series expansion
-$$
+$
    \frac{x}{q-c}
-   = \frac{x}{q}\sum_{i=0}^\infty \left(\frac{c}{q}\right)^i
-   = x\frac{1+\frac{c+\frac{c^2 + \dots}{q}}{q}}{q}
+   = \frac{x}{q}\sum_{i=0}^\infty (\frac{c}{q})^i
+   %= x\frac{1+\frac{c+\frac{c^2 + \dots}{q}}{q}}{q}
    = \frac{\frac{\frac{\dots+x}{q}c+x}{q}c+x}{q}.
-$$
-It is natural to truncate after $m$ steps for a $(c/q)^m$ approximation.
+$
+It is natural to truncate this after $m$ steps for a $(c/q)^m$ approximation.
 The less intuitive part is that we need to add $x+c$ rather than $x$ at each step, to compensate for rounding down the intermediate divisions.
 
 \paragraph{Computing mod}
