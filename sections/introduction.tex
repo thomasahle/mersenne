@@ -675,7 +675,7 @@ to work for different kinds of primes generalizing Mersenne primes:
       %also sometimes known as Crandall primes, are numbers on the form $2^n - c$ for a small odd $c$.
    \item[Generalized Mersenne Primes]
       also sometimes known as Solinas primes~\cite{Solinas2011}, are sparse numbers, that is $f(2^b)$ where $f(x)$ is a low-degree polynomial.
-      Examples are the primes in NIST's document ``Recommended Elliptic Curves for Federal Government Use'':
+      Examples are the primes in NIST's document ``Recommended Elliptic Curves for Federal Government Use''~\cite{nist}:
          $p_{192} = 2^{192} - 2^{64} - 1$
       and
          $p_{384} = 2^{384}-2^{128}-2^{96}+2^{32}-1$.
@@ -761,7 +761,7 @@ This is the method presented in Algorithm \ref{alg:mod-generalized} and applied 
 
 %In the case $x\le 2^{2b}$ and $c=1$, we get the simplified Algorithm \ref{alg:div-simple} described above: $ \left\lfloor\frac{x}{2^n-1}\right\rfloor = (x+1 \rs n)+x+1 \rs n$.
 
-\subsection{Application to arbitrary number of buckets}\label{sec:pseudo-arbitrary}
+\subsubsection{Application to arbitrary number of buckets}\label{sec:pseudo-arbitrary}
 In Subsection~\ref{sec:most-uniform} we discussed how $\floor{\frac{h(x)r}{2^b-1}}$ provides a most uniform map from $[2^b-1]\to[r]$.
 To avoid the division step, we instead considered the map
 $\floor{\frac{(h(x)+1)r}{2^b}}$.
@@ -776,11 +776,11 @@ directly, getting a perfect most-uniform map.
 
 \subsubsection{Related Algorithms}
 
-Modulus computation by Generalized Mersenne primes is widely studied in the Cryptography community.
-For example, four of the recommended primes in NIST's document ``Recommended Elliptic Curves for Federal Government Use''~\cite{nist} are Generalized Mersenne.
+Modulus computation by Generalized Mersenne primes is widely used in the Cryptography community.
 Naturally, much work has been done on making computations with those primes fast.
 Articles like ``Simple Power Analysis on Fast Modular Reduction with Generalized Mersenne Prime for Elliptic Curve Cryptosystems''~\cite{sakai2006simple}
-give very specific algorithms such as Algorithm \ref{alg:solina}, for each of a number of well known such primes.
+give very specific algorithms \emph{for each} of a number of well known such primes.
+An example is shown in \Cref{alg:solina}.
 
 \begin{algorithm}[H]
    \caption{Fast reduction modulo $p_{192} = 2^{192} - 2^{64} - 1$}
