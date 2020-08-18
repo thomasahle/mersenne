@@ -500,7 +500,7 @@ is $\mu(x)=\floor{xr/q}$,
 which is also quite slow in general, but if $q=2^b$ is a power of two,
 it can be implemented as $\mu(x)=(xr)\rs\,b$ where 
 $\rs$ denotes right-shift. This would be yet another advantage 
-of of having $k$-universal hashing into $[2^b]$.\todo{Add comment about it being efficient for Mersenne aswell using our result!}
+of of having $k$-universal hashing into $[2^b]$.
 
 Now, our interest is the case where $q$ is a Mersenne prime $p=2^b-1$. We want
 an efficient and most uniform map $\mu:[2^b-1]$ into any given $[r]$.
@@ -540,13 +540,14 @@ gives a most uniform map.
    no bucket from $[r]$ can get hit by more than $q/r=\ceil{q/r}$ 
    elements from $Q$. This completes the proof of (ii), and hence of (iii).
 \end{proof}
-We note that our trick does not work when $q=2^b-a$ for $a\geq 2$, that is,
-using $x\mapsto ((x+a)r)\rs  b$, for in this general case, 
-the number of elements hashing to $0$ is $\ceil {2^b/r}-a$, or $0$ if
-$a\geq \floor {2^b/r}$.
+We note that our trick does not work when $q=2^b-c$ for $c\geq 2$, that is,
+using $x\mapsto ((x+c)r)\rs  b$, for in this general case, 
+the number of elements hashing to $0$ is $\ceil {2^b/r}-c$, or $0$ if
+$c\geq \floor {2^b/r}$.
 One may try many other hash functions $(c_1 x r+ c_2 x+ c_3 r + c_4) \rs b$ similarly without any luck.
 Our new uniform map from \req{eq:most-uniform} is thus very specific to Mersenne prime fields.
-For general $a\ge 2$ we provide a scheme using two shifts in Section \ref{sec:division}.
+For general $c\ge 2$ we provide a scheme using two shifts in
+Section \ref{sec:pseudo-arbitrary}.
 
 We will see in Section \ref{sec:two-for-one} that our new uniform map
 works very well in conjunction with the idea of splitting of hash values.
@@ -619,11 +620,12 @@ to work for different kinds of primes generalizing Mersenne primes:
       can be done using a few shifts and additions.
 \end{description}
 We will now first generalize the division from Algorithm \ref{alg:div-simple}
-to cover arbitrary $x$ and division with arbitrary Pseudo-Mersenne primes $p=2^b-c$. This is done Algorithm \ref{alg:division-generalized} below. The
+to cover arbitrary $x$ and division with arbitrary Pseudo-Mersenne primes $p=2^b-c$. This is done Algorithm \ref{alg:division-generalized} below which
+works also if $p=2^b-c$ is not a prime.  The
 simple division in Algorithm \ref{alg:div-simple} corresponds to the case
 where $c=1$ and $m=2$.
 \begin{algorithm}[H]
-  \caption{Given Pseudo-Mersenne prime $p=2^b-c$ and parameter $m$.
+  \caption{Given integers $p=2^b-c$ and $m$.
     For any $x< (2^b/c)^m$, compute $z=\floor{x/p}$}
    \label{alg:division-generalized}
    \begin{algorithmic}
@@ -666,7 +668,7 @@ that if $x = z (2^b-c) + y$, then
 $$x\bmod p = y=\left(x+c*z \right) \bmod 2^b.$$
 This is the method presented in Algorithm \ref{alg:mod-generalized} and applied with $c=1$ in Algorithm \ref{alg:div-simple}.
 \begin{algorithm}[H]
-   \caption{For Pseudo-Mersenne prime $p=2^b-c$ and $z=\floor{x/p}$ computes
+   \caption{For integers $p=2^b-c$ and $z=\floor{x/p}$ compute
       $y=x \bmod p$.}
    \label{alg:mod-generalized}
    \begin{algorithmic}
@@ -678,7 +680,7 @@ This is the method presented in Algorithm \ref{alg:mod-generalized} and applied 
 
 %In the case $x\le 2^{2b}$ and $c=1$, we get the simplified Algorithm \ref{alg:div-simple} described above: $ \left\lfloor\frac{x}{2^n-1}\right\rfloor = (x+1 \rs n)+x+1 \rs n$.
 
-\paragraph{Application to arbitrary number of buckets}
+\subsection{Application to arbitrary number of buckets}\label{sec:pseudo-arbitrary}
 In Subsection~\ref{sec:most-uniform} we discussed how $\floor{\frac{h(x)r}{2^b-1}}$ provides a most uniform map from $[2^b-1]\to[r]$.
 To avoid the division step, we instead considered the map
 $\floor{\frac{(h(x)+1)r}{2^b}}$.
