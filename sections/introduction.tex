@@ -843,42 +843,10 @@ The algorithm also suffers from the extra while loop for ``cleaning up'' the com
 
 
 
-%No proof of correctness is given.
-%The while loop condition is different.
-%No guarantees on running time.
-%The addition is different from ours.
-%Doesn't add 1. Doesn't add $x$.
-%Has that extra weird loop for fixing things in the end.
-%So it actually has to do the $r$ computation?
-
 
 Chung and Hasan also has an earlier, simpler algorithm from 2003~\cite{chung2003more},
 but it appears to give the wrong result for many simple cases.
 This appears to be because of a lack of the ``clean up'' while loop at the end of Algorithm \ref{alg:cch}.
-
-%listed in Algorithm \ref{alg:cch2}.
-%\begin{algorithm}\label{alg:cch2}
-%   \caption{For $q=2^n-c$, computes $t, r$ such that $x = tq+r$ and $r<q$. (Broken.)}
-%   \begin{algorithmic}[1]
-%      \State $r \gets x$
-%      \State $t \gets 0$
-%      \While{$r > q$}
-%         \State $A \gets r \rs n$
-%         \State $B \gets r \andtt 2^n-1$
-%         \State $t \gets t + A$
-%         \State $r \gets B + A*c$
-%      \EndWhile
-%      \State\textbf{return} $(t, r)$
-%   \end{algorithmic}
-%\end{algorithm}
-%Chung and Hasan show that Algorithm \ref{alg:cch2} runs in $O(n)$ time.
-%The algorithm however seems to be broken, as one can see from the example
-%$n=4, c=2, x=15$.
-%In this case we let $r\gets 15$ and we have $r\ge q = 2^4-2=14$,
-%but $A = r \ns n = 0$, so the algorithm never makes progress.
-
-
-%In~\cite{granger2013generalised} the authors defined a different family of Generalised Mersenne numbers and showed various fast multiplication and reduction schemes.
 
 
 
@@ -886,8 +854,7 @@ This appears to be because of a lack of the ``clean up'' while loop at the end o
 %Unfortunately there are only 45 of them known.
 %The most useful one perhaps being.
 %Heuristically there are $O(\log x)$ Mersenne primes up to $x$.
-%Trivia:
-%Euler proved that an even number $n$ is perfect if and only if it is on the form $n=2^{q-1}M_q$, where $M_q=2^q-1$ is prime.
+%Trivia: Euler proved that an even number $n$ is perfect if and only if it is on the form $n=2^{q-1}M_q$, where $M_q=2^q-1$ is prime.
 %(Usually we know a number is perfect if its divisors sum to the number itself, e.g. $6=1+2+3$ or $28=1+2+4+7+14$.)
 
 
