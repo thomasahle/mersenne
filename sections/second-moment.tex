@@ -4,18 +4,13 @@
 
 \section{Analysis of second moment estimation using Mersenne primes}
 \label{sec:analysis-two-for-one}
-In this section, we will prove Theorem \ref{thm:h-and-s-p} -- that .
-Thus we
-have $r=2^\ell>1$ and $u>r$ both powers of two and $p=2^b-1>u$ a
-Mersenne prime.
-
-Now let us set up the relevant variables for the basic count sketch.
-For each key $x\in [u]$, we have a value $f_x\in \Z$, and the
+In this section, we will prove Theorem \ref{thm:h-and-s-p}---that a single Mersenne hash function works for Count Sketch.
+Recall that for each key $x\in [u]$, we have a value $f_x\in \Z$, and the
 goal was to estimate the second moment $F_2 = \sum_{x\in u}f_x^2$.
 
 We had two functions $i:[u]\to[r]$ and $s:[u]\to\{-1,+1\}$. 
 For notational convenience, we define $i_x=i(x)$ and $s_x=s(x)$.
-
+As before we have $r=2^\ell>1$ and $u>r$ both powers of two and $p=2^b-1>u$ a Mersenne prime.
 For each $i\in [r]$, we have a counter 
 $C_i=\sum_{x\in[u]} s_x f_x[i_x=i]$, and we define the 
 estimator $X=\sum_{i\in[k]} C_i^2$. We want to study how
@@ -24,13 +19,12 @@ We have
 \begin{align}
 X=\sum_{i\in[r]}\left( \sum_{x\in[u]}s_x f_x[i_x=i]\right)^2
 %=\sum_{i\in[r]}\sum_{x,y\in[u]}s_x s_y f_x f_y [i_x = i_y = i]
-%=\sum_{x,y\in[u]}s_x s_y f_x f_y[i_x=i_y]
-=\sum_{x\in[u]} f_x^2+Y
-%\sum_{x,y\in[u],x\neq y} s_x s_y f_x f_y[i_x=i_y] .
+=\sum_{x,y\in[u]}s_x s_y f_x f_y[i_x=i_y]
+=\sum_{x\in[u]} f_x^2+Y,
 \label{eq:decomp}
 \end{align}
 where $Y=\sum_{x,y\in[u],x\neq y} s_x s_y f_x f_y [i_x = i_y]$.
-We proceed to bound the error $Y$.
+The goal is thus to bound mean and variance of the error $Y$.
 
 As discussed in the introduction one of the critical steps in the analysis
 of count sketch in the classical case is \cref{eq:E-0}. We formalize this into
