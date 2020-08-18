@@ -28,7 +28,7 @@ The goal is thus to bound mean and variance of the error $Y$.
 
 As discussed in the introduction, one of the critical steps in the analysis of count sketch in the classical case is \cref{eq:E-0}.
 We formalize this into the following property:
-\begin{property}\label{prop:independence}
+\begin{property}[Sign Cancellation]\label{prop:independence}
     For distinct keys $x_0, \ldots x_{j - 1}$, $j \le k$
     and an expression $A(i_{x_0}, \ldots, i_{x_{j - 1}}, s_{x_1}, \ldots, s_{x_{j - 1}})$,
     which depends on $i_{x_0}, \ldots, i_{x_{j - 1}}$ and $s_{x_1}, \ldots, s_{x_{j - 1}}$
@@ -40,49 +40,47 @@ We formalize this into the following property:
 
 The case where we use a Mersenne prime for our hash function we have that $h$ is uniform in $[2^b - 1]$ and not in $[2^b]$, hence \Cref{prop:independence} is not satisfied.
 Instead we have \cref{eq:E-0} which is almost as good, and will replace \Cref{prop:independence} in the analysis for count sketch.
-We formalize this as the following ``near universal'' property:
-\begin{property}\label{prop:near-independence}
-    There exists $t \in [r]$ such that for distinct keys $x_0, \ldots x_{j - 1}$, $j \le k$
-    and an expression \\$A(i_{x_0}, \ldots, i_{x_{j - 1}}, s_{x_1}, \dots, s_{x_{j - 1}})$,
+We formalize this as follows:
+\begin{property}[Sign Near Cancellation]\label{prop:near-independence}
+    Given $k, p$ and $\delta$,
+    there exists $t \in [r]$ such that for distinct keys $x_0, \ldots x_{j - 1}$, $j \le k$
+    and an expression $A(i_{x_0}, \ldots, i_{x_{j - 1}}, s_{x_1}, \dots, s_{x_{j - 1}})$,
     which depends on $i_{x_0}, \ldots$
     %, i_{x_{j - 1}}$
     and $s_{x_1}, \ldots$,
     %, s_{x_{j - 1}}$
-    but not on $s_{x_0}$
+    but not on $s_{x_0}$,
     \begin{align}
         \E[s_{x_0} A(i_{x_0}, \ldots, i_{x_{j - 1}}, s_{x_1}, \ldots, s_{x_{j - 1}})]
-            = \frac1p \E[A(i_{x_0}, \ldots, i_{x_{j - 1}}, s_{x_1}, \ldots, s_{x_{j - 1}}) \mid i_{x_0} = t].
+            &= \frac1p \E[A(i_{x_0}, \ldots, i_{x_{j - 1}}, s_{x_1}, \ldots, s_{x_{j - 1}}) \mid i_{x_0} = t].
          \label{eq:near-independence}
-    \end{align}
-    Furthermore, there exists $\delta$ such that for any key $x$
-    \begin{align}
-        \Pr[i_x = l] \le (1 + \delta)/r \; .
+            \\
+            \text{and}\quad
+    \Pr[i_x = t] &\le (1 + \delta)/r
+    \quad\text{for any key $x$}.
          \label{eq:prob-special-value}
     \end{align}
 \end{property}
 
 When the hash function $h$ is not uniform then it is not guaranteed that
-the collision probability is $1/r$, e.g., \eqref{eq:coll} showed that for
-Mersenne primes the collision probability is $(1 + (r - 1)/p^2)/r$. We
-formalize this into the following property.
-\begin{property}\label{prop:collision}
-    There exists a value $\eps$ such that for distinct keys $x \neq y$,
-    then
+the collision probability is $1/r$, but \eqref{eq:coll} showed that for
+Mersenne primes the collision probability is $(1 + (r - 1)/p^2)/r$.
+We formalize this into the following property.
+\begin{property}[Low Collisions]\label{prop:collision}
+   We say the hash function has $(1+\eps)/r$-low collision probability, if
+    for distinct keys $x \neq y$,
     \begin{align}\label{eq:collision}
         \Pr[i_x = i_y] \le (1 + \eps)/r\; .
     \end{align}
 \end{property}
 
 \subsection{The analysis in the classic case}
-First, as a warm-up for later comparison, we analyse the simple classic
-case where \Cref{prop:independence} is satisfied. We will actually consider
-a more general case here and assume that \Cref{prop:collision} is satisfied
-with $\eps$ not necessarily equal to $0$. This will be useful in
-\Cref{sec:arbitrary-buckets} where we will consider the case
-where the number of buckets is not a power of two.
+First, as a warm-up for later comparison, we analyse the
+case where \Cref{prop:independence} is satisfied, but
+the collision probability bound is only $(1+\eps)/r$.
+This will come in useful in \Cref{sec:arbitrary-buckets} where we will consider the case of an arbitrary number of buckets, not necessarily a power of two.
 \begin{lemma}
-    If \Cref{prop:independence} is satisfied for $k = 4$ and \Cref{prop:collision}
-    is satisfied with $\eps$, then
+   If the hash function has Sign Cancellation for $k = 4$ and $(1+\eps)/r$-low collision probability, then
     \begin{align}
         \E[X] &= F_2 \\
         \Var[X] &\le 2(1 + \eps)(F_2^2 - F_4)/r \le 2(1 + \eps)F_2^2/r .
@@ -94,14 +92,14 @@ where the number of buckets is not a power of two.
     By \Cref{prop:independence} we have that $\E[s_x s_y f_x f_y [i_x = i_y]] = 0$
     for $x \neq y$ and thus $\E[Y] = \sum_{x,y\in[u],x\neq y} \E[s_x s_y f_x f_y [i_x = i_y]] = 0$.
 
-    Now we want to bound the variance of $X$. We note that since $\E[Y] = 0$ and $X = F_2 + Y$ then
+    Now we want to bound the variance of $X$. We note that since $\E[Y] = 0$ and $X = F_2 + Y$
     \begin{align*}
         \Var[X] = \Var[Y] = \E[Y^2]
             = \sum_{\substack{x, y, x', y' \in [u]\\ x \neq y, x' \neq y'}} \E[(s_x s_y f_x f_y [i_x = i_y])(s_{x'} s_{y'} f_{x'} f_{y'} [i_{x'} = i_{y'}])] .
     \end{align*}
     Now we consider one of the terms $\E[(s_x s_y f_x f_y [i_x = i_y])(s_{x'} s_{y'} f_{x'} f_{y'} [i_{x'} = i_{y'}])]$.
     Suppose that one of the keys, say $x$, is unique, i.e. $x \not\in \{y, x', y'\}$.
-    Then \Cref{prop:independence} implies that 
+    Then the Sign Cancellation Property implies that 
     \[
         \E[(s_x s_y f_x f_y [i_x = i_y])(s_{x'} s_{y'} f_{x'} f_{y'} [i_{x'} = i_{y'}])] = 0 .
     \]
@@ -119,9 +117,9 @@ where the number of buckets is not a power of two.
     \end{align*}
     The inequality follows by \Cref{prop:collision}.
 \end{proof}
-Something something finish this part\todo{Write this properly}
-
-This completes the proof of \req{eq:V-F2}. In the above analysis, we
+%Something something finish this part\todo{Write this properly}
+%This completes the proof of \req{eq:V-F2}.
+In the above analysis, we
 did not need $s$ and $i$ to be completely independent. All we needed
 was that for any $j\leq 4$ distinct keys $x_1,\ldots,x_j$, the hash
 values $s(x_1),\ldots,s(x_j)$ and $i(x_1),\ldots,i(x_j)$ are all
@@ -136,15 +134,17 @@ $i:[u]\to[2^\ell]$ as described in Algorithm \ref{alg:h-and-s}.
 We will now analyse the case where the functions $s : [u] \to \{1, -1\}$
 and $i : [u] \to [2^l]$ are constructed as in \Cref{alg:Mersenne} from a
 single $k$-universal hash function $h : [u] \to [2^b - 1]$ where $2^b - 1$
-is a Mersenne prime. Now \Cref{prop:independence} is not satisfied but
-instead we have \Cref{prop:near-independence}. We will show that this does
+is a Mersenne prime.
+We now only have the Sign Near Cancellation property.
+We will show that this does
 not change the expectation and variance too much. Similarly, to the
 analysis of the classical case we will analyse a slightly more general
 problem, which will be useful in \Cref{sec:arbitrary-buckets}.
 \begin{lemma}\label{lem:count-mersenne}
-    If \Cref{prop:near-independence} is satisfied with $t$
-    and $\delta$ and \Cref{prop:collision} is satisfied with
-    $\eps$, then
+   If we have Sign Near Cancellation with $
+    \Pr[i_x = t] \le (1 + \delta)/r$
+   and $(1+\eps)/r$-low collision probability,
+   then
     \begin{align}
         \E[X] &= F_2 + (F_1^2 - F_2)/p^2 \\
         | \E[X] - F_2 | &\le F_2 (n - 1)/p^2 \\
@@ -153,7 +153,9 @@ problem, which will be useful in \Cref{sec:arbitrary-buckets}.
 \end{lemma}
 \begin{proof}
     We first bound $\E[s_x s_y f_x f_y [i_x = i_y]]$ for distinct keys
-    $x \neq y$. Using \cref{eq:near-independence} twice we get that
+    $x \neq y$.
+    Let $t$ be the special index given by Sign Near Independence.
+    Using \cref{eq:near-independence} twice we get that
     \begin{equation}\begin{split}\label{eq:twice-split}
         \E[s_x s_y f_x f_y [i_x = i_y]]
             &= \E[s_x f_x f_y [i_x = i_y] \mid i_y = t]/p
@@ -254,7 +256,7 @@ We are now ready to prove \Cref{thm:h-and-s-p}.
     \begin{theorem}
         Let $r>1$ and $u>r$ be powers of two and let $p=2^b-1>u$ be a
         Mersenne prime.
-        Suppose with have a $k$-universal hash function $h:[u]\to[2^b-1]$, e.g.,
+        Suppose with have a 4-universal hash function $h:[u]\to[2^b-1]$, e.g.,
         generated using Algorithm \ref{alg:Mersenne}. Suppose
         $i:[u]\to[r]$ and
         $s:[u]\to\{-1,1\}$ are constructed from $h$ as described in

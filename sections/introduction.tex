@@ -432,8 +432,8 @@ subtract the ``fake'' case where $h(x_1)=p=2^b-1$.  Making the
 distribution of $h(x_1)$ explicit, we get
 \begin{equation}\begin{split}
   \E_{h(x_1) \sim \unif[p]}[B]&=\sum_{y\in[p]}\E[B \mid h(x_1)=y]/p
-  =\sum_{y\in[2^b]}\E[B \mid h(x_1)=y]/p - \E[B \mid h(x_1)=p]/p \\
-  &=\E_{h(x_1) \sim \unif[2^b]}[B](p+1)/p - \E[B \mid h(x_1)=p]/p.\label{eq:play-with-dist}
+                            \\&=\sum_{y\in[2^b]}\E[B \mid h(x_1)=y]/p - \E[B \mid h(x_1)=p]/p
+                            \\ &=\E_{h(x_1) \sim \unif[2^b]}[B](p+1)/p - \E[B \mid h(x_1)=p]/p.\label{eq:play-with-dist}
 \end{split}\end{equation}
 Let us now apply this idea our situation where $i:[u]\to[2^\ell]$ and
 $s:[u]\to\{-1,1\}$ are constructed from $h$ as described in Algorithm
@@ -643,16 +643,33 @@ where $c=1$ and $m=2$.
 \end{algorithm}
 The proof that Algorithm \ref{alg:division-generalized} correctly computes
  $z=\floor{x/p}$ is provided in in Section \ref{sec:division}.
-The intuition for the algorithm is the expansion
-\begin{align}
-   \frac{x}{q-c}
-   = \frac{x}{q}\sum_{i=0}^\infty \left(\frac{c}{q}\right)^i
-   = x\frac{1+\frac{c+\frac{c^2 + \dots}{q}}{q}}{q}
-   = \frac{\frac{\frac{\dots+x}{q}c+x}{q}c+x}{q},
-\end{align}
-however curiously we need to add $c$ to $x$ to compensate for the
-rounding down.
+Note that $m$ can be computed in advance from $p$, and there is no requirement that it is chosen as small as possible.
+For Mersenne and Solinas primes, the multiplication $z*c$ can be done very fast.
 
+Mathematically the algorithm computes the nested division
+$$
+\bbfloor{\frac{x}{q-c}}
+=
+\bbfloor{\frac{
+   \bfloor{\frac{
+      \floor{\frac{
+         \dots+x+c
+      }{q}}c +x+c
+   }{q}}c +x+c
+}{q}}
+\vspace{-1em} % Move the next line further up
+$$
+which is visually similar to the series expansion
+$
+   \frac{x}{q-c}
+   = \frac{x}{q}\sum_{i=0}^\infty (\frac{c}{q})^i
+   %= x\frac{1+\frac{c+\frac{c^2 + \dots}{q}}{q}}{q}
+   = \frac{\frac{\frac{\dots+x}{q}c+x}{q}c+x}{q}.
+$
+It is natural to truncate this after $m$ steps for a $(c/q)^m$ approximation.
+The less intuitive part is that we need to add $x+c$ rather than $x$ at each step, to compensate for rounding down the intermediate divisions.
+
+\paragraph{Computing mod}
 We will now compute the $\bmod$ operation assuming that
 we have already computed $z=\floor{x/p}$. Then
 \begin{align}
@@ -696,7 +713,7 @@ directly, getting a perfect most-uniform map.
 \subsubsection{Related Algorithms}
 
 Modulus computation by Generalized Mersenne primes is widely studied in the Cryptography community.
-For example, four of the recommended primes in NIST's document ``Recommended Elliptic Curves for Federal Government Use'' are Generalized Mersenne.
+For example, four of the recommended primes in NIST's document ``Recommended Elliptic Curves for Federal Government Use''~\cite{nist} are Generalized Mersenne.
 Naturally, much work has been done on making computations with those primes fast.
 Articles like ``Simple Power Analysis on Fast Modular Reduction with Generalized Mersenne Prime for Elliptic Curve Cryptosystems''~\cite{sakai2006simple}
 give very specific algorithms such as Algorithm \ref{alg:solina}, for each of a number of well known such primes.
@@ -739,7 +756,7 @@ This algorithm, given in Algorithm \ref{alg:cch} modifies Crandall's algorithm~\
          \While{$q_i>0$}
             \State $t \gets q_i*c$
             \State $q_{i+1} \gets t \rs n$
-            \State $r_{i+1} \gets t \andtt {2^b -1}$
+            \State $r_{i+1} \gets t \andtt (2^b - 1)$
             \State $q\gets q+q_{i+1}$
             \State $r\gets r+r_{i+1}$
             \State $i\gets i+1$
