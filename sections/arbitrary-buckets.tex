@@ -54,8 +54,10 @@ are only uniform in $[2^b-1]$.
 
 The construction of $s$ and $i$ is presented in 
 Algorithm \ref{alg:b-bit-arb-r}.
-\begin{algorithm}
-   \caption{For key $x\in [u]$, compute $i(x)=i_x\in[r]$ and $s(x)=s_x\in\{-1,+1\}$.\rule{5ex}{0ex} Uses 4-universal $h:[u]\to [2^b]$.}
+\begin{algorithm}[H]
+   \caption{For key $x\in [u]$, compute $i(x)=i_x\in[r]$ and $s(x)=s_x\in\{-1,+1\}$.
+   \newline
+    Uses 4-universal $h:[u]\to [2^b]$.}
    \label{alg:b-bit-arb-r}
    \begin{algorithmic}
       \State $h_x\gets h(x)$
@@ -103,7 +105,7 @@ swap the sign of the sign-bit $s_x$ setting $s_x\gets 2a_x+1$ instead
 of $s_x\gets 1-2a_x$. The basic reason is that we have swapped the
 role of \texttt{0} and \texttt{1} in $a_x$.  The resulting algorithm
 is presented as Algorithm \ref{alg:Mersenne-arb-r}.
-\begin{algorithm}
+\begin{algorithm}[H]
    \caption{For key $x\in [u]$, compute $i(x)=i_x\in[r]$ and
       $s(x)=s_x\in\{-1,+1\}$.\rule{5ex}{0ex}
    Uses 4-universal $h:[u]\to [p]$ for Mersenne prime $p=2^b-1\geq u$.}
