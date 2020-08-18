@@ -7,7 +7,7 @@ with most uniform maps introduced in Section \ref{sec:most-uniform},
 and later we will show how it can be used in connection with the
 two-for-one hashing from Section \ref{sec:two-for-one}.
 
-\subsection{Collision probability with most uniform distributions}
+\subsection{Two-for-one hashing from uniform bits to arbitrary number of buckets}
 We have a hash function $h:U\to Q$, but we want hash values in $R$, so
 we need a map $\mu:Q\to R$, and then use $\mu\circ h$ as
 our hash function from $U$ to $R$. We normally assume that the hash values 
@@ -32,18 +32,20 @@ $\floor{q/r}=(q+a-r)/r$ balls to $a$ buckets. For a key $x\in [u]$, we
 thus have $r-a$ buckets hit with probability $(1+a/q)/r$ and
 $a$ buckets hit with probability $(1-(r-a)/q)/r$.
 The collision probability is then
-\begin{align}
-   \Pr[\mu(h(x))=&\mu(h(y))]= (r-a)((1+a/q)/r)^2+a((1-(r-a)r/q)/r)^2\nonumber\\
-                 &=\frac{(r-a)+(r-a)2a/q+(r-a)a^2/q^2+ a-a2(r-a)/p+a(r-a)^2/q^2}{r^2}\nonumber\\
-                 &=\frac{r +r a (r-a)/q^2}{r^2}=(1+a(r-a)/q^2)/r\leq \left(1+(r/(2q))^2\right)/r.\label{eq:coll-a}
-\end{align}
+\begin{equation}\begin{split}
+   \Pr[\mu(h(x))=&\mu(h(y))]= (r-a)((1+a/q)/r)^2+a((1-(r-a)r/q)/r)^2
+                 \\&=\frac{(r-a)+(r-a)2a/q+(r-a)a^2/q^2+ a-a2(r-a)/p+a(r-a)^2/q^2}{r^2}
+                 \\&=\frac{r +r a (r-a)/q^2}{r^2}
+                 \\&=(1+a(r-a)/q^2)/r
+                 \\&\le \left(1+(r/(2q))^2\right)/r.\label{eq:coll-a}
+\end{split}\end{equation}
 Note that the above calculation generalizes the one for \req{eq:coll} which
 had $a=1$. We will think of $(r/(2q))^2$ as the general relative rounding
 cost when we do not have any information about how $r$ divides $q$.
 
 \subsection{Two-for-one hashing from uniform bits to arbitrary number of buckets}
 We will now briefly discuss how would get the two-for-one hash
-functions in count sketches with an arbitrary number $r$ of bins based
+functions in count sketches with an arbitrary number $r$ of buckets based
 on a single $4$-universal hash function $h:[u]\to [2^b]$.  We want to
 construct the two hash functions $s:[u]\to\{-1,+1\}$ and
 $i:[u]\to[r]$. As usual the results with uniform $b$-bit strings will
@@ -90,7 +92,7 @@ the variance bound accordingly from $2F_2^2/r$ to
 
 \subsection{Two-for-one hashing from Mersenne primes to arbitrary number of buckets}
 We will now show how wan get the two-for-one hash functions in count
-sketches with an arbitrary number $r$ of bins based on a single
+sketches with an arbitrary number $r$ of buckets based on a single
 $4$-universal hash function $h:[u]\to [2^b-1]$.  Again we want to
 construct the two hash functions $s:[u]\to\{-1,+1\}$ and
 $i:[u]\to[r]$.  The construction will be the same as we had in
@@ -136,8 +138,9 @@ We conclude
    \Pr[i_x=0] &= (\ceil{2^{b-1}/r}2-1)/(2^{b}-1)
    \label{eq:prix0}
    \\
-   \Pr[i_x\neq 0] &\in
+   \Pr[i_x = i] &\in
    \{\floor{2^{b-1}/r}2/(2^{b}-1), \ceil{2^{b-1}/r}2/(2^{b}-1)\}
+   \mbox{ for $i \neq  0$}
    \label{eq:prixneq0}
    .
 \end{align}
