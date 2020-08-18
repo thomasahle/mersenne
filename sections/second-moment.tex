@@ -45,7 +45,7 @@ the following property.
 
 The case where we use a Mersenne prime for our hash function we
 have that $h$ is uniform in $[2^b - 1]$ and not in $[2^b]$, hence \Cref{prop:independence}
-is not satisfied. Instead we have \cref{eq:E} which is almost as good
+is not satisfied. Instead we have \cref{eq:E-0} which is almost as good
 and will replace \Cref{prop:independence} in the analysis for count sketch.
 Again, we have formalized this into an property.
 \begin{property}\label{prop:near-independence}
@@ -53,13 +53,15 @@ Again, we have formalized this into an property.
     and an expression \\$A(i_{x_0}, \ldots, i_{x_{j - 1}}, s_{x_1}, \ldots, s_{x_{j - 1}})$,
     which depends on $i_{x_0}, \ldots, i_{x_{j - 1}}$ and $s_{x_1}, \ldots, s_{x_{j - 1}}$
     but not on $s_{x_0}$. Then
-    \begin{align}\label{eq:near-independence}
+    \begin{align}
         \E[s_{x_0} A(i_{x_0}, \ldots, i_{x_{j - 1}}, s_{x_1}, \ldots, s_{x_{j - 1}})]
             = \frac1p \E[A(i_{x_0}, \ldots, i_{x_{j - 1}}, s_{x_1}, \ldots, s_{x_{j - 1}}) \mid i_{x_0} = t].
+         \label{eq:near-independence}
     \end{align}
     Furthermore, there exists $\delta$ such that for any key $x$, then
-    \begin{align}\label{eq:prob-special-value}
+    \begin{align}
         \Pr[i_x = l] \le (1 + \delta)/r \; .
+         \label{eq:prob-special-value}
     \end{align}
 \end{property}
 
@@ -130,8 +132,9 @@ values $s(x_1),\ldots,s(x_j)$ and $i(x_1),\ldots,i(x_j)$ are all
 independent and uniform in the desired domain. This was why we could
 use a single $k$-universal hash function $h:[u]\to[2^b]$ with
 $b>\ell$, and use it to construct $s:[u]\to\{-1,+1\}$ and
-$i:[u]\to[2^\ell]$ as described in Algorithm \ref{alg:h-and-s}
-(c.f. Lemma \ref{lem:b-bit-hashing}).
+$i:[u]\to[2^\ell]$ as described in Algorithm \ref{alg:h-and-s}.
+% This was removed from the introduction
+%(c.f. Lemma \ref{lem:b-bit-hashing}).
 
 \subsection{The analysis of two-for-one using Mersenne primes}
 We will now analyse the case where the functions $s : [u] \to \{1, -1\}$
