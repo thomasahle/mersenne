@@ -64,6 +64,7 @@ Again, we have formalized this into an property.
     \end{align}
 \end{property}
 
+
 Something something collisions.\todo{Write it properly}
 \begin{property}\label{prop:collision}
     There exists a value $a$ such that for distinct keys $x \neq y$,
@@ -132,7 +133,7 @@ $i:[u]\to[2^\ell]$ as described in Algorithm \ref{alg:h-and-s}
     $\eps$, then
     \begin{align}
         \E[X] &= F_2 + (F_1^2 - F_2)/p^2 \\
-        | \E[X] - F_2 | &\le (n - 1)/p^2 F_2 \\
+        | \E[X] - F_2 | &\le F_2 (n - 1)/p^2 \\
         \Var[X] &\le 2F_2^2/r + F_2^2 (2\eps/r + 4(1 + \delta)n / (rp^2) + n^2/p^4 - 2 /(rn))
     \end{align}
 \end{lemma}
@@ -259,7 +260,6 @@ We now use that $u/p \le (4/7)^2$ and get that
         \le (10 + (4/7)^2 - 4 (7/4)^2)/p^2
         \le 0 .
 \end{align*}
-This finishes the first part.
 
 \subsection{Two-for-one hashing from uniform bits to arbitrary number of buckets}
 We have a hash function $h:U\to Q$, but we want hash values in $R$, so
@@ -288,7 +288,7 @@ $a$ buckets hit with probability $(1-(r-a)/q)/r$.
 The collision probability is then
 \begin{equation}\begin{split}
     \Pr[\mu(h(x))=&\mu(h(y))]= (r-a)((1+a/q)/r)^2+a((1-(r-a)r/q)/r)^2
-        \\&=\frac{(r-a)+(r-a)2a/q+(r-a)a^2/q^2+ a-a2(r-a)/p+a(r-a)^2/q^2}{r^2}
+        \\&=\frac{(r-a)+(r-a)2a/q+(r-a)a^2/q^2+ a-a^2(r-a)/p+a(r-a)^2/q^2}{r^2}
         \\&=\frac{r +r a (r-a)/q^2}{r^2}
         \\&=(1+a(r-a)/q^2)/r
         \\&\le \left(1+(r/(2q))^2\right)/r.\label{eq:coll-a}
@@ -296,140 +296,3 @@ The collision probability is then
 Note that the above calculation generalizes the one for \req{eq:coll} which
 had $a=1$. We will think of $(r/(2q))^2$ as the general relative rounding
 cost when we do not have any information about how $r$ divides $q$.
-
-
-% \subsection{The real analysis of two-for-one using Mersenne primes}
-% We now consider the case where the functions $s:[u]\to\{-1,+1\}$ and
-% $i:[u]\to[2^\ell]$ are constructed as described in Algorithm
-% \ref{alg:h-and-s} from a single $k$-universal hash function
-% $h:[u]\to[2^b-1]$. Here $h$ could be implemented efficiently as
-% in Algorithm \ref{alg:Mersenne}. As noted earlier, the function
-% $i$ is the same as $h^r$ with $r=2^\ell$ in Section \ref{sec:power-of-two},
-% so it satisfies \req{eq:coll-ell<r-1}--\req{eq:coll}. Also, we
-% have the power of Lemma \ref{lem:remove-si} to handle the correlation
-% between $s$ and $i$.
-
-% As above, for notational convinience, we let $s_x$ denote $s(x)$ and $i_x$ denote $i(x)$. Also, recall that $n\leq u$ is the number of non-zero values
-% $f_x\neq 0$, $x\in [u]$.
-
-
-
-% \paragraph{Expectancy}
-% Recall from \req{eq:decomp} that
-% we have
-% \[X=F_2+Y\mbox{ where }Y=\sum_{x,y\in[u],x\neq y} s_x f_x[i_x=i_y]s_y f_y.\]
-% This equality holds regardless of random choices, hence regardless of
-% how $h$ and $s$ are implemented.
-
-% To bound $\E[Y]$ we study the expectancy of an arbitrary term, that is,
-% for some $x,y\in[u],x\neq y$, we study $\E[ s_x f_x[i_x=i_y]s_y f_y]$.
-% Using Lemma \ref{lem:remove-si}, we get 
-% \begin{align}
-%    \E[s_x f_x[i_x=i_y]s_y f_y]
-%    &=\E[f_x[i_x=i_y]s_y f_y\suchthat i_x=r-1]/p.\nonumber\\
-%    &=\E[s_y f_x[r-1=i_y]f_y]/p.\nonumber\\
-%    &=\E[f_x[r-1=i_y]f_y\suchthat i_y=r-1]/p^2.\nonumber\\
-%    &=\E[f_xf_y]/p^2=f_x f_y/p^2.\label{eq:E}
-% \end{align}
-% Thus
-% \[\E[Y]=\sum_{x,y\in[u],x\neq y} f_xf_y/p^2=(F_1^2-F_2)/p^2.\]
-% Trivially is the equality from \req{eq:E-F2-p}. For the upper bound, we note that 
-% \begin{equation}\label{eq:F1F2}
-%    F_1^2\leq nF_2 
-% \end{equation}
-% This follows because the ``variance'' over the $|f_x|$ is
-% $F_2-F_1^2/n=\sum_{x\in[u], f_x\neq 0}(f_x-F_1/n)^2\geq 0$.
-% Therefore
-% \[\E[Y]=(F_1^2-F_2)/p^2\leq F_2n/p^2.\]
-% This completes the proof of \req{eq:E-F2-p}.
-
-% \paragraph{Variance}
-% Same method is applied to the analysis of the variance, which is
-% \[\Var[X]=\Var[Y]\leq \E[Y^2]=
-%    \sum_{x,y,x',y'\in[u],x\neq y,x'\neq y'}\E[(s_x f_x[i_x=i_y]s_y f_y)
-% (s_{x'}f_{x'}[i_{x'}=i_{y'}]s_{y'} f_{y'})].\] 
-% Consider any term in the
-% sum. Suppose some key, say $x$, is unique in the sense that
-% $x\not\in\{y,x',y'\}$. Then we can apply Lemma \ref{lem:remove-si}.
-% Given that $x\neq y$
-% and $x'\neq y'$, we have either $2$ or $4$ such unique keys. If all
-% 4 keys are distinct, as in \req{eq:E}, we get
-% \begin{align*}
-%    \E[(s_x f_x[i_x=i_y]s_y f_y)&
-%    (s_{x'}f_{x'}[i_{x'}=i_{y'}]s_{y'} f_{y'})]\\
-%                                &=\E[(s_x f_x[i_x=i_y]s_y f_y])]\E[(s_{x'}f_{x'}[i_{x'}=i_{y'}]s_{y'} f_{y'})]\\
-%                                &=(f_x f_y/p^2)(f_{x'} f_{y'}/p^2)=f_x f_yf_{x'} f_{y'}/p^4.
-% \end{align*}
-% The expected sum over all such terms is thus bounded
-% as 
-% \begin{align}
-%    \sum_{{\rm distinct}\, x,y,x',y'\in[u]}&
-%    \E[(s_x f_x[i_x=i_y]s_y f_y)
-%    (s_{x'}f_{x'}[i_{x'}=i_{y'}]s_{y'} f_{y'})]\nonumber\\
-%                                           &=\sum_{{\rm distinct}\,x,y,x',y'\in[u]}
-%                                           f_xf_yf_{x'}f_{y'}/p^4<F_1^4/p^4\leq F_2^2 n^2/p^4.\label{eq:distinct}
-% \end{align}
-% The last inequalities 
-% used \req{eq:F1F2}. We also have to consider all the cases with two unique keys, e.g., $x$ 
-% and $x'$ unique while $y=y'$. Then using Lemma \ref{lem:remove-si} and \req{eq:coll-ell=r-1}, we get
-% \begin{align*}
-%    \E[(s_x f_x[i_x=i_y]s_y f_y)&(s_{x'}f_{x'}[i_{x'}=i_{y'}]s_{y'} f_{y'})]\\
-%                                &=f_xf_{x'}f_y^2\E[s_xs_{x'} [i_x=i_{x'}=i_y]]\\
-%                                &=f_xf_{x'}f_y^2\E[s_{x'} [r-1=i_{x'}=i_y]]/p\\
-%                                &=f_xf_{x'}f_y^2\E[r-1=i_y]/p^2\\
-%                                &<f_xf_{x'}f_y^2/(rp^2).
-% \end{align*}    
-% Summing over all terms with $x$ and $x'$ unique while $y=y'$, and
-% using \req{eq:F1F2} and $u\leq p$, we get 
-% \begin{align*}
-%    \sum_{{\rm distinct}\,x,x',y} f_xf_{x'}f_y^2 /(rp^2)&<
-%    F_1^2F_2/(rp^2)\leq F_2^2 n/(rp^2).
-% \end{align*}
-% There are four ways we can pick the two unique keys $a\in \{x,y\}$
-% and $b\in \{x',y'\}$, so we conclude that
-% \begin{equation}\label{eq:one-pair}
-%    \sum_{\begin{array}{c}x,y,x',y'\in[u], x\neq y, x'\neq y',\\
-%    {\rm two\ keys\ are\ unique}\end{array}}
-%    \E[(s_x f_x[i_x=i_y]s_y f_y)
-%    (s_{x'}f_{x'}[i_{x'}=i_{y'}]s_{y'} f_{y'})]\leq 4 F_2^2 n/(rp^2)
-% \end{equation}
-% Finally, we need to reconsider the terms with two pairs, that
-% is where $(x,y)=(x',y')$ or $(x,y)=(y',x')$. In
-% this case, $(s_x f_x[i_x=i_y]s_y f_y)
-% (s_{x'}f_{x'}[i_{x'}=i_{y'}]s_{y'} f_{y'})=f_x^2f_y^2[i_x=i_y]$.
-% By \req{eq:coll-ell<r-1} and \req{eq:coll-ell=r-1},  we 
-% get 
-% \begin{align}
-%    \sum_{\begin{array}{c}x,y,x',y'\in[u], x\neq y, x'\neq y',\\
-%    (x,y)=(x',y')\,\vee\,(x,y)=(y',x')\end{array}}
-%    &
-%    \E[(s_x f_x[i_x=i_y]s_y f_y)
-%    (s_{x'}f_{x'}[i_{x'}=i_{y'}]s_{y'} f_{y'})]\nonumber\\
-%    &=2\sum_{x,y\in[u],x\neq y}(f_x^2f_y^2)\Pr[i_x=i_y]\nonumber\\
-%    &=2\sum_{x,y\in[u],x\neq y}(f_x^2f_y^2)(1+r/p^2)/r\nonumber\\
-%    &=2(F_2^2-F_4)(1+r/p^2)/r\label{eq:two-pairs}
-%       \end{align}
-%       Adding up add \req{eq:distinct}, \req{eq:one-pair}, and
-%       \req{eq:two-pairs}, we get 
-%       \[\Var[Y]\leq 2(F_2^2-F_4)/r+F_2^2 (n^2/p^4+2/p^2+4 n/(rp^2)).\]
-%       We have defined our parameters to satisfy $2\leq r\leq u/2\leq (p+1)/4$
-%       where $r$, $u$, and $p+1$ are all powers of two. Also $n\leq u$, so it 
-%       follows that
-%       \begin{equation}
-%          n/p\leq u/n\geq\geq 7/4\textnormal{ and }p/r\geq 7/2.\label{eq:ratios}
-%       \end{equation}
-%       In particular, $(n/p)^2\leq(4/7)^2<0.33$, so we conclude
-%       that
-%       \begin{equation}\label{eq:var-good1}
-%          \Var[Y]<2(F_2^2-F_4)/r+F_2^2 (2.33+4 n/r)/p^2.
-%       \end{equation}
-%       Next we note that $F_4\geq F_2^2/n$ follows from \req{eq:F1F2} applied
-%       to vector of squared values $(f_0^2,\ldots,f_{u-1}^2)$. Combined
-%       with \req{eq:var-good1} and \req{eq:ratios}, we get
-%       \begin{align*}
-%          \Var[Y]&<2(F_2^2-F_4)/r+F_2^2 (2.33+4 n/r)/p^2\\
-%                 &\leq 2F_2^2/r+F_2^2(-2+2.33nr/p^2+4 n^2/p^2)\\
-%                 &<2F_2^2/r.
-%       \end{align*}
-%       This completes the proof of \req{eq:V-F2-p}  and hence
-%       of Theorem \ref{thm:h-and-s-p}.
