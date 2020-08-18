@@ -650,11 +650,11 @@ a small number of AC$^0$ instructions.
    $y=x\bmod p$ and $z=\floor{x/p}$}
    \begin{algorithmic}
       \State $\rhd$ First we compute $z=\floor{x/p}$
-      \State $x'=x+1$,
-      \State $z \gets(( x' \rs b)+x')\rs b$,
+      \State $x'=x+1$
+      \State $z \gets(( x' \rs b)+x')\rs b$
       %\State $y \gets x - (z \ls b) + z$.
-      \State $\rhd$ Next we compute $y=x\bmod p$ using $z=\floor{x/p}$
-      \State $y \gets (x + z) \andtt p $.
+      \State $\rhd$ Next we compute $y=x\bmod p$ given $z=\floor{x/p}$
+      \State $y \gets (x + z) \andtt p $
    \end{algorithmic}
 \end{algorithm}
 In Algorithm \ref{alg:div-simple}, we use
