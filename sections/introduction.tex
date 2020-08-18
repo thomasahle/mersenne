@@ -114,7 +114,7 @@ In the same vein, an old idea by
 Carter and Wegmen \cite{carter77universal} is to use a
 Mersenne prime for $p=2^b-1$,\footnote{e.g., $p=2^{61}-1$ for hashing 32-bit keys or
 $p=2^{89}-1$ for hashing 64-bit keys.}
-to speed up the computation of the $\mod p$ operations.
+to speed up the computation of the (mod $p$) operations.
 The point is that
 \begin{equation}
    y \bmod (2^b-1)
@@ -144,7 +144,7 @@ Note the proof by loop invariant in the comments.
    \caption{
       For $x\in [u]$, prime $p=2^b-1\geq 2u-1$,
       and $\vec a=(a_0,\ldots,a_{k-1})\in[p]^k$,
-      computes $y=h_{\vec a}(x)=\left(\sum_{i\in[q]}a_i x^i\right)\bmod p$
+      computes $y=h_{\vec a}(x)=\sum_{i\in[q]}a_i x^i\mod p$.
    }\label{alg:Mersenne}
    \begin{algorithmic}
       \State $y\gets a_{k-1}$
@@ -682,7 +682,7 @@ This is the method is shown in Algorithm \ref{alg:mod-generalized} and applied w
       $r=x \bmod p$.}
    \label{alg:mod-generalized}
    \begin{algorithmic}
-      \State $r \gets (x + z*c) \andtt 2^b-1$
+      \State $r \gets (x + z*c) \andtt (2^b-1)$
    \end{algorithmic}
 \end{algorithm}
 
@@ -699,8 +699,8 @@ However, for primes on the form $2^b-c$, $c>1$ this approach doesn't provide a m
 Instead we may use Algorithm \ref{alg:division-generalized} to compute
 $$\left\lfloor\frac{h(x)r}{2^b-c}\right\rfloor$$
 directly, getting a perfect most-uniform map.
-(Another alternative was to pre-compute $q = \lfloor2^b/p\rfloor$ and take
-$\floor{\frac{h(x)rq}{2^b}}$, however that requires larger words to store the product $h(x)rq$.)
+%(Another alternative was to pre-compute $q = \lfloor2^b/p\rfloor$ and take
+%$\floor{\frac{h(x)rq}{2^b}}$, however that requires larger words to store the product $h(x)rq$.)
 
 
 \subsubsection{Related Algorithms}
