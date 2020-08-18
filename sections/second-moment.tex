@@ -2,62 +2,63 @@
 %! TEX root = ../mersenne.tex
 
 
-\section{Analysis of second moment estimation using  Mersenne primes}\label{sec:analysis-two-for-one}
-In this section, we will prove Theorem \ref{thm:h-and-s-p}.  Thus we
-have $r=2^\ell>1$ and $u>r$ both powers of two and $p=2^b-1>u$ a
-Mersenne prime.
-
-Now let us set up the relevant variables for the basic count sketch.
-For each key $x\in [u]$, we have a value $f_x\in \Z$, and the
+\section{Analysis of second moment estimation using Mersenne primes}
+\label{sec:analysis-two-for-one}
+In this section, we will prove Theorem \ref{thm:h-and-s-p}---that a single Mersenne hash function works for Count Sketch.
+Recall that for each key $x\in [u]$, we have a value $f_x\in \Z$, and the
 goal was to estimate the second moment $F_2 = \sum_{x\in u}f_x^2$.
 
 We had two functions $i:[u]\to[r]$ and $s:[u]\to\{-1,+1\}$. 
 For notational convenience, we define $i_x=i(x)$ and $s_x=s(x)$.
-
+As before we have $r=2^\ell>1$ and $u>r$ both powers of two and $p=2^b-1>u$ a Mersenne prime.
 For each $i\in [r]$, we have a counter 
 $C_i=\sum_{x\in[u]} s_x f_x[i_x=i]$, and we define the 
 estimator $X=\sum_{i\in[k]} C_i^2$. We want to study how
 well it approximates $F_2$.
 We have 
-\begin{align*}
+\begin{align}
 X=\sum_{i\in[r]}\left( \sum_{x\in[u]}s_x f_x[i_x=i]\right)^2
 %=\sum_{i\in[r]}\sum_{x,y\in[u]}s_x s_y f_x f_y [i_x = i_y = i]
-%=\sum_{x,y\in[u]}s_x s_y f_x f_y[i_x=i_y]
-=\sum_{x\in[u]} f_x^2+\sum_{x,y\in[u],x\neq y} s_x s_y f_x f_y[i_x=i_y] .
-\end{align*}
-We write this as $X=F_2 + Y$ where $Y=\sum_{x,y\in[u],x\neq y} s_x s_y f_x f_y [i_x = i_y]$,
-and bound the error $Y$.
+=\sum_{x,y\in[u]}s_x s_y f_x f_y[i_x=i_y]
+=\sum_{x\in[u]} f_x^2+Y,
+\label{eq:decomp}
+\end{align}
+where $Y=\sum_{x,y\in[u],x\neq y} s_x s_y f_x f_y [i_x = i_y]$.
+The goal is thus to bound mean and variance of the error $Y$.
 
-As discussed in the introduction one of the critical steps in the analysis
-of count sketch in the classical case is \cref{eq:E-0}. We formalize this into
-the following property.
+As discussed in the introduction, one of the critical steps in the analysis of count sketch in the classical case is \cref{eq:E-0}.
+We formalize this into the following property:
 \begin{property}\label{prop:independence}
     For distinct keys $x_0, \ldots x_{j - 1}$, $j \le k$
     and an expression $A(i_{x_0}, \ldots, i_{x_{j - 1}}, s_{x_1}, \ldots, s_{x_{j - 1}})$,
     which depends on $i_{x_0}, \ldots, i_{x_{j - 1}}$ and $s_{x_1}, \ldots, s_{x_{j - 1}}$
-    but not on $s_{x_0}$. Then
+    but not on $s_{x_0}$
     \begin{align}
         \E[s_{x_0} A(i_{x_0}, \ldots, i_{x_{j - 1}}, s_{x_1}, \ldots, s_{x_{j - 1}})] = 0\; .
     \end{align}
 \end{property}
 
-The case where we use a Mersenne prime for our hash function we
-have that $h$ is uniform in $[2^b - 1]$ and not in $[2^b]$, hence \Cref{prop:independence}
-is not satisfied. Instead we have \cref{eq:E} which is almost as good
-and will replace \Cref{prop:independence} in the analysis for count sketch.
-Again, we have formalized this into an property.
-\begin{property}\label{prop:near-independence}
-    There exists $t \in [r]$ such that for distinct keys $x_0, \ldots x_{j - 1}$, $j \le k$
-    and an expression \\$A(i_{x_0}, \ldots, i_{x_{j - 1}}, s_{x_1}, \ldots, s_{x_{j - 1}})$,
-    which depends on $i_{x_0}, \ldots, i_{x_{j - 1}}$ and $s_{x_1}, \ldots, s_{x_{j - 1}}$
-    but not on $s_{x_0}$. Then
-    \begin{align}\label{eq:near-independence}
+The case where we use a Mersenne prime for our hash function we have that $h$ is uniform in $[2^b - 1]$ and not in $[2^b]$, hence \Cref{prop:independence} is not satisfied.
+Instead we have \cref{eq:E-0} which is almost as good, and will replace \Cref{prop:independence} in the analysis for count sketch.
+We formalize this as follows:
+\begin{property}[Sign Near Cancelation]\label{prop:near-independence}
+    Given $k, p$ and $\delta$,
+    there exists $t \in [r]$ such that for distinct keys $x_0, \ldots x_{j - 1}$, $j \le k$
+    and an expression $A(i_{x_0}, \ldots, i_{x_{j - 1}}, s_{x_1}, \dots, s_{x_{j - 1}})$,
+    which depends on $i_{x_0}, \ldots$
+    %, i_{x_{j - 1}}$
+    and $s_{x_1}, \ldots$,
+    %, s_{x_{j - 1}}$
+    but not on $s_{x_0}$,
+    \begin{align}
         \E[s_{x_0} A(i_{x_0}, \ldots, i_{x_{j - 1}}, s_{x_1}, \ldots, s_{x_{j - 1}})]
-            = \frac1p \E[A(i_{x_0}, \ldots, i_{x_{j - 1}}, s_{x_1}, \ldots, s_{x_{j - 1}}) \mid i_{x_0} = t].
-    \end{align}
-    Furthermore, there exists $\delta$ such that for any key $x$, then
-    \begin{align}\label{eq:prob-special-value}
-        \Pr[i_x = t] \le (1 + \delta)/r \; .
+            &= \frac1p \E[A(i_{x_0}, \ldots, i_{x_{j - 1}}, s_{x_1}, \ldots, s_{x_{j - 1}}) \mid i_{x_0} = t].
+         \label{eq:near-independence}
+            \\
+            \text{and}\quad
+    \Pr[i_x = t] &\le (1 + \delta)/r
+    \quad\text{for any key $x$}.
+         \label{eq:prob-special-value}
     \end{align}
 \end{property}
 
@@ -65,9 +66,9 @@ When the hash function $h$ is not uniform then it is not guaranteed that
 the collision probability is $1/r$, e.g., \eqref{eq:coll} showed that for
 Mersenne primes the collision probability is $(1 + (r - 1)/p^2)/r$. We
 formalize this into the following property.
-\begin{property}\label{prop:collision}
-    There exists a value $\eps$ such that for distinct keys $x \neq y$,
-    then
+\begin{property}[Low Collisions]\label{prop:collision}
+   We say a hash function has $(1+\eps)/r$-low collision probability, if
+    for distinct keys $x \neq y$,
     \begin{align}\label{eq:collision}
         \Pr[i_x = i_y] \le (1 + \eps)/r\; .
     \end{align}
@@ -89,8 +90,9 @@ where the number of buckets is not a power of two.
     \end{align}
 \end{lemma}
 \begin{proof}
-    We will first show that $\E[Y] = 0$ and hence that $\E[X] = F_2$. By
-    \Cref{prop:independence} we have that $\E[s_x s_y f_x f_y [i_x = i_y]] = 0$
+   Recall the decomposition $X=F_2+Y$ from \cref{eq:decomp}.
+    We will first show that $\E[Y] = 0$.
+    By \Cref{prop:independence} we have that $\E[s_x s_y f_x f_y [i_x = i_y]] = 0$
     for $x \neq y$ and thus $\E[Y] = \sum_{x,y\in[u],x\neq y} \E[s_x s_y f_x f_y [i_x = i_y]] = 0$.
 
     Now we want to bound the variance of $X$. We note that since $\E[Y] = 0$ and $X = F_2 + Y$ then
@@ -125,10 +127,11 @@ did not need $s$ and $i$ to be completely independent. All we needed
 was that for any $j\leq 4$ distinct keys $x_1,\ldots,x_j$, the hash
 values $s(x_1),\ldots,s(x_j)$ and $i(x_1),\ldots,i(x_j)$ are all
 independent and uniform in the desired domain. This was why we could
-use a single $k$-universal hash function $h:[u]\to[2^b]$ with
+use a single 4-universal hash function $h:[u]\to[2^b]$ with
 $b>\ell$, and use it to construct $s:[u]\to\{-1,+1\}$ and
-$i:[u]\to[2^\ell]$ as described in Algorithm \ref{alg:h-and-s}
-(c.f. Lemma \ref{lem:b-bit-hashing}).
+$i:[u]\to[2^\ell]$ as described in Algorithm \ref{alg:h-and-s}.
+% This was removed from the introduction
+%(c.f. Lemma \ref{lem:b-bit-hashing}).
 
 \subsection{The analysis of two-for-one using Mersenne primes}
 We will now analyse the case where the functions $s : [u] \to \{1, -1\}$
