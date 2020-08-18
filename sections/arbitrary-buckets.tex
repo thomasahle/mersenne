@@ -111,11 +111,11 @@ is presented as Algorithm \ref{alg:Mersenne-arb-r}.
    \begin{algorithmic}
       \State $h_x\gets h(x)+1$
       \Comment $h_x$ uses $b$ bits uniformly except $h_x\neq 0$
-      \State $j_x\gets h_x\andtt(2^{b-1}-1)
+      \State $j_x\gets h_x\andtt(2^{b-1}-1)$
       \Comment $j_x$ gets $b-1$ least significant bits of $h_x$
       \State $i_x\gets (r*j_x)\rs b-1$
       \Comment $i_x$ is quite uniform in $[r]$
-      \State $a_x\gets h_x\rs (b-1)
+      \State $a_x\gets h_x\rs (b-1)$
       \Comment $a_x$ gets the most significant bit of $h_x$
       \State $s_x\gets 1-2b_x$
       \Comment $s_x$ is quite uniform in $\{-1,+1\}$ and quite independent of $i_x$.
