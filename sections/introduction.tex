@@ -39,33 +39,93 @@
    \label{fig:bits}
 \end{figure}
 
-Hashing is often used in the sketching of high volume data streams, such as traffic through an Internet router, and then this speed is critical to keep up with the stream.
-%
-%
-While hashing with Mersenne primes has been used for more than 40 years by anyone who
+The classic way to implement $k$-universal hashing is to use a random
+degree $(k-1)$-polynomial over some prime field
+\cite{wegman81kwise}. Mersenne primes has been used for more than 40
+years by anyone who
 %, for $k>2$,
-wanted to implement k-universal hashing efficiently using standard portable code.
-Here we argue that uniform hash values from a Mersenne prime field with prime $p=2^b-1$
+wanted an effient implementation
+using standard portable code \cite{carter77universal}.
+
+The speed of hashing is important because it is often an inner-loop
+bottle-neck in data analysis. A good example is when hashing is used
+in the sketching of high volume data streams, such as traffic through
+an Internet router, and then this speed is critical to keep up with
+the stream. A running example in this paper is the classic second
+moment estimation using using 4-universal hashing in count sketches
+\cite{charikar04count-sketch}.
+
+
+In this paper, we argue that uniform hash values from a Mersenne prime field with prime $p=2^b-1$
 are not only fast to compute,
 but have special advantages different from any other prime field.
+We believe we are the first to notice that such values can largely be
+treated as uniform $b$-bit strings, that is, we can use the tool box
+of very simple and efficient tricks for uniform $b$-bit strings.  From
+$[2^b]$ we are missing $p$, the all \texttt1s value, but a careful
+analysis shows that the relative errors we get are in the order of
+$n/p^2$ or less (this is for our example with second moment
+estimation, but our analytic techniques are more general).
 
-We believe we are the first to notice that such values
-can largely be treated as uniform $b$-bit strings, that is, we can use
-the tool box of very simple and efficient tricks for uniform
-$b$-bit strings.
-From $[2^b]$ we are missing $p$, the all \texttt1s value, but a careful analysis shows that this has only minor effect on the quality of the outcome.
-To put our results in perspective, suppose we were hashing $n$ keys uniformly into $b$-bit strings.
-The probability that any of them hash to $p=2^b-1$ is at most $n/p$.
-This means the total variation between the two distributions is $n/p$ and any error probability we might have proved assuming uniform $b$-bit hash values is off by at most $n/p$.
+To put our results in perspective, suppose we were hashing $n$ keys
+uniformly into $b$-bit strings.  The probability that there exists one
+hashing to $p=2^b-1$ is at most $n/p$.  This means the total variation between
+the two distributions is $n/p$ and any error probability we might have
+proved assuming uniform $b$-bit hash values is off by at most $n/p$.
 %This may be good if $p/n$ is sufficiently large.
-\emph{In contrast, our analysis yields error probability that differs from the uniform case by $n/p^2$ or less!}
+\emph{In contrast, our analysis yields errors that differs from the uniform case by $n/p^2$ or less.}
 %This allows good error bounds even as we set $p$ close to $n$, which again means that half the word operations can saved.
-This means that we for a desired error can reduce the bit-length of the primes to less than half. This saves not only space. It typically means that we can speed up the multiplications with at least a factor 2.
+Loosely speaking, this means that we for a desired small error can reduce
+the bit-length of the primes to less than half. This saves not only
+space. It typically means that we can speed up the multiplications
+with at least a factor 2.
 
-Many of the ideas presented here would not apply at all if we had a prime $2^b-a$ with $a>1$, e.g., $a=3$, so our work is very particular to Mersenne primes.
-Primes on the form $2^b-a$ with $a>1$ are known as Pseudo-Mersenne Primes~\cite{van2014encyclopedia}, and are used when a Mersenne prime of a reasonable magnitude isn't available.
-Supplementing our main analysis, we provide a new algorithm for division and hashing with such numbers, which improves upon classical cryptographic work by Crandall~\cite{crandall1992method}.
+In this paper, we also provide a new fast branch-free code for
+division and modulus with Mersenne primes. Contrasting our analytic
+work, this code generalizes to so-called Pseudo-Mersenne
+primes~\cite{van2014encyclopedia} of the form $p=2^b-c$ for small
+$c$. Our new code is simpler and faster than the classical algorithm of
+Crandall~\cite{crandall1992method}. 
 
+\subsection{Hashing uniformly into $b$ bits?}
+A main point in this paper is that having hash values uniform in $[2^b-1]$
+is almost as good as having uniform $b$-bit strings, but of course,
+it would be even better if we just had uniform $b$-bit strings.
+
+We do have the fast multiply-shift scheme of Dietzfelbinger~\cite{dietzfel96universal}, that directly gives 2-universal
+hashing from $b$-bit strings to $\ell$-bit strings, but for $k>2$,
+there is no such fast $k$-universal hashing scheme that
+can be implemented with standard portable code.
+
+More recently it has been suggested to use carry-less multiplication
+for $k$-universal hashing into bit strings (see, e.g., Lamere
+\cite{Lamere14}) but contrasting the hashing with Mersenne primes,
+this is less standard (takes some work to get it to run on different
+computers) and slower (by about 30-50\% on the computers we tested).
+Morever, the code for different bit-lengths $b$ is quite different
+because we need quite different irreducible polynomials.
+
+Another alternative is to use tabulation based methods which are fast
+but use a lot of space \cite{Siegel04,Tho13:simple-simple}, that is,
+space $s=2^{\Omega(b)}$ to calculate $k$-universal hash function in
+constant time from $b$-bit keys to $\ell$-bit hash values. The large
+space can be problematic.
+
+A classic example where constant space hash
+functions are needed is in static two-level hash functions
+\cite{FKS84}.  To store n keys with constant access time, they n
+second level hash tables, each with its own hash function.  Another
+example is small sketches such as the count sketch
+\cite{charikar04count-sketch} discussed in this paper. Here we may
+want to store the hash function as part of the sketch, e.g., to query
+the value of a given key. Then the hash value has to be directly
+computable from the small representation, ruling out tabluation based
+methods.
+
+
+It can thus be problematic to get efficient $k$-universal hashing directly into
+$b$-bit strings, and this is why we in this paper analyze the
+hash values from Mersenne prime fields that are much easier to generate.
 
 \subsection{Polynomial hashing using Mersenne primes}
 
@@ -73,9 +133,13 @@ The $k$-universal hashing with a polynomial uses $O(k)$ space and $O(k)$ time
 to compute the hash value of a key. Siegel \cite{Siegel04} has proved that if we want $k$-universal hashing in time $t<k$, then we need to use space $u^{1/t}$.
 Such tabulation based methods are useful in many contexts (see survey \cite{Thorup17}, but not if we need small space.
 
-A classic example where constant space hash functions are needed is in static two-level hash functions \cite{FKS84}.
-To store n keys with constant access time, they n second level hash tables, each with its own  hash function.
-Another example is small sketches such as the count sketch \cite{XXX}\todo{What do we cite here?} discussed in this paper. Here we may want to store the hash function as part of the sketch, e.g., to query the value of a given key.
+A classic example where constant space hash functions are needed is in
+static two-level hash functions \cite{FKS84}.  To store n keys with
+constant access time, they n second level hash tables, each with its
+own hash function.  Another example is small sketches such as the
+count sketch \cite{charikar04count-sketch} discussed in this
+paper. Here we may want to store the hash function as part of the
+sketch, e.g., to query the value of a given key.
 
 
 \subsubsection{Preliminaries: Implementation of a Hash Function}
@@ -83,8 +147,8 @@ The classic definition of $k$-universal hashing
 goes back to Carter and Wegman~\cite{wegman81kwise}.
 \begin{definition}
    A random hash function $h:U\to R$ is $k$-universal if for $k$
-   distinct keys $x_0,\ldots,x_{k-1}\in U$, the values
-   $h(x_0),\ldots,h(x_{k-1})$ are uniform in $R^k$.
+   distinct keys $x_0,\ldots,x_{k-1}\in U$, the $k$-touple
+   $(h(x_0),\ldots,h(x_{k-1}))$ is uniform in $R^k$.
 \end{definition}
 \noindent
 Note that the definition also implies the values 
@@ -100,16 +164,16 @@ $h_{\vec a}:[p]\to[p]$,
    by 
 \[h_{\vec a}(x)=\sum_{x\in[k]}a_i x^i \mod p.\]
 %
-Generally, we are given a key domain $[u]$ and a smaller range $[r]$ for the hash values.
-It is natural to define
+Given a desired key domain $[u]$ and range $[r]$ for the hash values, we pick
+$p\geq \max\{u,r\}$ and define
 $h^r_{\vec a}:[u]\to[r]$ by
 \[h^r_{\vec a}(x)=h_{\vec a}(x)\bmod r.\]
-Assuming $p\geq \max\{u,r\}$, the hash values of $k$ distinct keys remain independent,
+The  hash values of $k$ distinct keys remain independent,
 while staying as close as possible to the uniform distribution on $[r]$.
 (This will turn out to be very important.)
 
 In terms of speed, the main bottleneck in the above approach is the mod operations.
-If we assume $r=2^\ell$, the $\bmod r$ operation above can be replaced by a binary AND: $x \bmod r = x \andtt r-1$.
+If we assume $r=2^\ell$, the $\bmod r$ operation above can be replaced by a binary {\sc and} (\texttt{\&}): $x \bmod r = x \andtt r-1$.
 In the same vein, an old idea by 
 Carter and Wegmen \cite{carter77universal} is to use a
 Mersenne prime for $p=2^b-1$,\footnote{e.g., $p=2^{61}-1$ for hashing 32-bit keys or
@@ -133,11 +197,11 @@ instead of the expensive modulo operation.
 
 The above completes our description of how Mersenne primes are
 normally used for fast computation of $k$-universal hash functions.
-We show an implementation in \cref{alg:Mersenne} with one further improvement:
+We show an implementation in \Cref{alg:Mersenne} below with one further improvement:
 By assuming that $p=2^b-1\geq 2u-1$
 (which is automatically satisfied in the typical case where $u$ is a power
 of two, e.g., $2^{32}$ or $2^{64}$)
-we can get away with only testing a possible off-by-one in \cref{eq:Mersenne} once, rather that at every loop.
+we can get away with only testing a possible off-by-one in \Cref{eq:Mersenne} once, rather that at every loop.
 Note the proof by loop invariant in the comments.
 
 \begin{algorithm}[H]
