@@ -80,6 +80,8 @@ For example, this means that if we stop the algorithm after $n-1$ steps, the err
    The last equality comes from $u_{n-i-1}$ being integer.
    Having thus bounded the errors, the proof is complete.
 \end{proof}
+We can also note that if the algorithm is repeated more than $n$ times, the error stays at 0, since 
+$\lceil (u_{n-i}-1)\frac{c}{q}\rceil = \lceil -\frac{c}{q}\rceil = 0$.
    %In particular, for $c=1$ and $x < q^2$ we have
    %$
    %\left\lfloor\frac{x}{q-1}\right\rfloor
