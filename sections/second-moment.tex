@@ -64,18 +64,25 @@ Again, we have formalized this into an property.
     \end{align}
 \end{property}
 
-
-Something something collisions.\todo{Write it properly}
+When the hash function $h$ is not uniform then it is not guaranteed that
+the collision probability is $1/r$, e.g., \eqref{eq:coll} showed that for
+Mersenne primes the collision probability is $(1 + (r - 1)/p^2)/r$. We
+formalize this into the following property.
 \begin{property}\label{prop:collision}
-    There exists a value $a$ such that for distinct keys $x \neq y$,
+    There exists a value $\eps$ such that for distinct keys $x \neq y$,
     then
     \begin{align}\label{eq:collision}
         \Pr[i_x = i_y] \le (1 + \eps)/r\; .
     \end{align}
 \end{property}
 
+\subsection{The analysis in the classic case}
 First, as a warm-up for later comparison, we analyse the simple classic
-case where \Cref{prop:independence} is satisfied.
+case where \Cref{prop:independence} is satisfied. We will actually consider
+a more general case here and assume that \Cref{prop:collision} is satisfied
+with $\eps$ not necessarily equal to $0$. This will be useful in
+\Cref{sec:arbitrary-buckets} where we will consider the case
+where the number of buckets is not a power of two.
 \begin{lemma}
     If \Cref{prop:independence} is satisfied for $k = 4$ and \Cref{prop:collision}
     is satisfied with $\eps$, then
@@ -126,7 +133,15 @@ $b>\ell$, and use it to construct $s:[u]\to\{-1,+1\}$ and
 $i:[u]\to[2^\ell]$ as described in Algorithm \ref{alg:h-and-s}
 (c.f. Lemma \ref{lem:b-bit-hashing}).
 
-
+\subsection{The analysis of tow-for-one using Mersenne primes}
+We will now analyse the case where the functions $s : [u] \to \{1, -1\}$
+and $i : [u] \to [2^l]$ are constructed as in \Cref{alg:Mersenne} from a
+single $k$-universal hash function $h : [u] \to [2^b - 1]$ where $2^b - 1$
+is a Mersenne prime. Now \Cref{prop:independence} is not satisfied but
+instead we have \Cref{prop:near-independence}. We will show that this does
+not change the expectation and variance too much. Similarly, to the
+analysis of the classical case we will analyse a slightly more general
+problem, which will be useful in \Cref{sec:arbitrary-buckets}.
 \begin{lemma}
     If \Cref{prop:near-independence} is satisfied with $t$
     and $\delta$ and \Cref{prop:collision} is satisfied with
@@ -234,12 +249,15 @@ $i:[u]\to[2^\ell]$ as described in Algorithm \ref{alg:h-and-s}
     This finishes the proof.
 \end{proof}
 
+We are now ready to prove \Cref{thm:h-and-s-p}.
+From \Cref{eq:remove-si} and \Cref{eq:coll-ell=r-1} we know
+that \Cref{prop:near-independence} is satisfied with $t = r - 1$
+and $\delta = -(r - 1)/p$, and \Cref{eq:coll} implies that
+\Cref{prop:collision} is satisfied with $\eps = (r - 1)/p^2$.
 
-We will use that we know that $2 \le r \le u/2 \le (p + 1)/4$ and $n \le u$.
+We know that $2 \le r \le u/2 \le (p + 1)/4$ and $n \le u$.
 This implies that $p \ge 7$ and that $n/p \le u/p \le 4/7$.
-
-\paragraph{Mersenne to power of two.} We then know that $\delta = -(r - 1)/p \le 0$ 
-and $\eps = (r - 1)/p^2 \le r/p^2$. We want to prove that
+We want to prove that
 $2\eps/r + 4(1 + \delta)n / (rp^2) + n^2/p^4 - 2/(rn) \le 0$ which would
 prove our result. We get that
 \begin{align*}
@@ -260,39 +278,40 @@ We now use that $u/p \le (4/7)^2$ and get that
         \le (10 + (4/7)^2 - 4 (7/4)^2)/p^2
         \le 0 .
 \end{align*}
+This finishes the proof of \Cref{thm:h-and-s-p}.
 
-\subsection{Two-for-one hashing from uniform bits to arbitrary number of buckets}
-We have a hash function $h:U\to Q$, but we want hash values in $R$, so
-we need a map $\mu:Q\to R$, and then use $\mu\circ h$ as
-our hash function from $U$ to $R$. We normally assume that the hash values 
-with $h$ are pairwise independent, that is, for any distinct $x$ and $y$,
-the hash values $h(x)$ and $h(y)$ are independent, but then 
-$\mu(h(x))$ and $\mu(h(y))$ are also independent. This means
-that the collision probability can be calculated
-as 
-\[\Pr[\mu(h(x))=\mu(h(y))]=\sum_{i\in R}\Pr[\mu(h(x))=\mu(h(y))=i]=\sum_{i\in R}\Pr[\mu(h(x)=i)]^2.\]
-This sum of squared probabilities attains is minimum value $1/|R|$
-exactly when $\mu(h(x))$ is uniform in $R$. 
+% \subsection{Two-for-one hashing from uniform bits to arbitrary number of buckets}
+% We have a hash function $h:U\to Q$, but we want hash values in $R$, so
+% we need a map $\mu:Q\to R$, and then use $\mu\circ h$ as
+% our hash function from $U$ to $R$. We normally assume that the hash values 
+% with $h$ are pairwise independent, that is, for any distinct $x$ and $y$,
+% the hash values $h(x)$ and $h(y)$ are independent, but then 
+% $\mu(h(x))$ and $\mu(h(y))$ are also independent. This means
+% that the collision probability can be calculated
+% as 
+% \[\Pr[\mu(h(x))=\mu(h(y))]=\sum_{i\in R}\Pr[\mu(h(x))=\mu(h(y))=i]=\sum_{i\in R}\Pr[\mu(h(x)=i)]^2.\]
+% This sum of squared probabilities attains is minimum value $1/|R|$
+% exactly when $\mu(h(x))$ is uniform in $R$. 
 
-Let $q=|Q|$ and $r=|R|$. Suppose that $h$ is $2$-universal. Then
-$h(x)$ is uniform in $Q$, and then we get the lowest collision
-probability with $\mu\circ h$ if $\mu$ is most uniform as defined in
-Section \ref{sec:most-uniform}, that is, the number of elements from
-$Q$ mapping to any $i\in[r]$ is either $\floor{q/r}$ or
-$\ceil{q/r}$. To calculate the collision probability,
-Let $a\in[r]$ be such that $r$ divides $q+a$. Then the map $\mu$ maps
-$\ceil{q/r}=(q+a)/r$ balls to $r-a$ buckets and
-$\floor{q/r}=(q+a-r)/r$ balls to $a$ buckets. For a key $x\in [u]$, we
-thus have $r-a$ buckets hit with probability $(1+a/q)/r$ and
-$a$ buckets hit with probability $(1-(r-a)/q)/r$.
-The collision probability is then
-\begin{equation}\begin{split}
-    \Pr[\mu(h(x))=&\mu(h(y))]= (r-a)((1+a/q)/r)^2+a((1-(r-a)r/q)/r)^2
-        \\&=\frac{(r-a)+(r-a)2a/q+(r-a)a^2/q^2+ a-a^2(r-a)/p+a(r-a)^2/q^2}{r^2}
-        \\&=\frac{r +r a (r-a)/q^2}{r^2}
-        \\&=(1+a(r-a)/q^2)/r
-        \\&\le \left(1+(r/(2q))^2\right)/r.\label{eq:coll-a}
-\end{split}\end{equation}
-Note that the above calculation generalizes the one for \req{eq:coll} which
-had $a=1$. We will think of $(r/(2q))^2$ as the general relative rounding
-cost when we do not have any information about how $r$ divides $q$.
+% Let $q=|Q|$ and $r=|R|$. Suppose that $h$ is $2$-universal. Then
+% $h(x)$ is uniform in $Q$, and then we get the lowest collision
+% probability with $\mu\circ h$ if $\mu$ is most uniform as defined in
+% Section \ref{sec:most-uniform}, that is, the number of elements from
+% $Q$ mapping to any $i\in[r]$ is either $\floor{q/r}$ or
+% $\ceil{q/r}$. To calculate the collision probability,
+% Let $a\in[r]$ be such that $r$ divides $q+a$. Then the map $\mu$ maps
+% $\ceil{q/r}=(q+a)/r$ balls to $r-a$ buckets and
+% $\floor{q/r}=(q+a-r)/r$ balls to $a$ buckets. For a key $x\in [u]$, we
+% thus have $r-a$ buckets hit with probability $(1+a/q)/r$ and
+% $a$ buckets hit with probability $(1-(r-a)/q)/r$.
+% The collision probability is then
+% \begin{equation}\begin{split}
+%     \Pr[\mu(h(x))=&\mu(h(y))]= (r-a)((1+a/q)/r)^2+a((1-(r-a)r/q)/r)^2
+%         \\&=\frac{(r-a)+(r-a)2a/q+(r-a)a^2/q^2+ a-a^2(r-a)/p+a(r-a)^2/q^2}{r^2}
+%         \\&=\frac{r +r a (r-a)/q^2}{r^2}
+%         \\&=(1+a(r-a)/q^2)/r
+%         \\&\le \left(1+(r/(2q))^2\right)/r.\label{eq:coll-a}
+% \end{split}\end{equation}
+% Note that the above calculation generalizes the one for \req{eq:coll} which
+% had $a=1$. We will think of $(r/(2q))^2$ as the general relative rounding
+% cost when we do not have any information about how $r$ divides $q$.
