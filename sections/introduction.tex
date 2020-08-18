@@ -14,13 +14,16 @@
       \foreach \x in {0,...,\figb}
          \draw (\x, 0) -- (\x, 6);
       % Most of the numbers
+      \pgfmathsetmacro{\figbthree}{\figb - 3}
+      \pgfmathsetmacro{\figbtwo}{\figb - 2}
+      \pgfmathsetmacro{\figbone}{\figb - 1}
       \foreach \y in {0,...,2}
-         \foreach \x in {0,...,\figb-3}
+         \foreach \x in {0,...,\figbthree}
             \node [draw=none] at (.5+\x,.5+\y) {1};
-      \foreach \x in {\figb-3,...,\figb-1}
+      \foreach \x in {\figbthree,...,\figbone}
          \node [draw=none] at (.5+\x,.5+3) {.};
       \foreach \y in {4,...,5}
-         \foreach \x in {0,...,\figb-2}
+         \foreach \x in {0,...,\figbtwo}
             \node [draw=none] at (.5+\x,.5+\y) {0};
       % The rest of the numbers
       \node [draw=none] at (.5+\figb-1,.5+0) {1};
