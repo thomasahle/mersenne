@@ -230,29 +230,29 @@ for Lemma \ref{lem:remove-si} for handling the sign-bit $s_x$.
 \begin{proof}
    The proof follows the same idea as that for Lemma \ref{lem:remove-si}.
    First we have
-   \[\E[B]=\E_{h_{x_1}\gets U([2^b]\setminus\{0\})}[B]=\E_{h_{x_1}\gets U[2^b]}[B]2^b/p-\E_{h_{x_1}=0}[B]/p.\]
-   With $h_{x_1}\gets U[2^b]$, the bit $a_{x_1}$ is uniform and 
+   \[\E[B]=\E_{h(x_1) \sim \unif([2^b]\setminus\{0\})}[B]=\E_{h(x_1) \sim \unif[2^b]}[B]2^b/p-\E[B \mid h(x_1)=0]/p.\]
+   With $h(x_1)\sim \unif[2^b]$, the bit $a_{x_1}$ is uniform and 
    independent of $j_{x_1}$, so $s_{x_1}\in\{-1,+1\}$ is uniform and 
    independent of $i_{x_1}$, and therefore 
-   \[\E_{h_{x_1}\gets U[2^b]}[s_{x_1}A]=0.\]
-   Moreover, $h_{x_1}=0$ implies $j_x={x_1}$, $i_{x_1}=0$, $a_{x_1}=0$,
+   \[\E_{h(x_1) \sim \unif[2^b]}[s_{x_1}A]=0.\]
+   Moreover, $h(x_1)=0$ implies $j_x={x_1}$, $i_{x_1}=0$, $a_{x_1}=0$,
    and $s_{x_1}=-1$,
    so 
-   \[\E[s_{x_1}A]=-\E_{h_{x_1}=0}[s_{x_1}A]/p=\E_{i_{x_1}=0}[A].\]
+   \[\E[s_{x_1}A]=-\E[s_{x_1}A \mid h(x_1)=0]/p=\E[A \mid i_{x_1}=0].\]
 \end{proof}
-We now consider our $F_2$ extimator
+We now consider our $F_2$ estimator
 \[X=\sum_{i\in[r]}\left( \sum_{x\in[u]}s_x f_x[i_x=i]\right)^2\!
    =F_2+Y\mbox{ where }Y=\sum_{x,y\in[u],x\neq y}
 s_x f_x[i_x=i_y]s_y f_y.\]
 Using Lemma \ref{lem:remove-si-r-dist} instead of Lemma
 \ref{lem:remove-si-r-dist} we get an almost identical calculation 
-of the expection $\E[Y]$ as
+of the expectation $\E[Y]$ as
 in Section \ref{sec:two-for-one} and with the same
 conclusion that 
 \begin{equation}\label{eq:E-Mersenne-arb-r}
    \E[Y]=(F_1^2-F_2)/p^2\leq (n-1)F_2/p^2.
 \end{equation}
-Therfore we still have the same bound \req{eq:E-F2-p} as in Theorem \ref{thm:h-and-s-p}.
+Therefore we still have the same bound \req{eq:E-F2-p} as in Theorem \ref{thm:h-and-s-p}.
 
 Concerning the variance, we have some more changes to the 
 calculations in Section \ref{sec:two-for-one}.
