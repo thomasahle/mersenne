@@ -78,7 +78,7 @@ int main() {
     init_randomness();
 
 
-    test_speed(10000000, 50);
+    test_speed(1e7, 200);
 
 #ifdef DEBUG
     cout << "Random bytes used: " << usedBytes << endl;
