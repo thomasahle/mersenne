@@ -2,13 +2,21 @@
 \section{Experiments}\label{sec:experiments}
 We perform experiments on fast implementations of Mersenne hashing (\Cref{alg:Mersenne}) and our Mersenne division algorithm (\Cref{alg:division-generalized}).
 
-TODO: What experiment?
+We tested \Cref{alg:Mersenne} against hashing over the finite field $GF(2^64)$.
+We have implemented hashing over the finite field $GF(2^64)$ by using the CLMUL instruction which is supported by AMD and Intel~\cite[].
+The CLMUL instruction calculates the carry-less multiplication between two number.
+More precisely, given two $b$-bit numbers $\alpha = \sum_{i = 0}^{b - 1} \alpha_i 2^i$ and $\beta = \sum_{i = 0}^{b - 1} \beta_i 2^i$
+the CLMUL instructions calculates $\gamma = \sum_{i = 0}^{2b - 2} \gamma_i 2^i$, where $\gamma_i = \bigoplus_{j = 0}^{j} \alpha_i \beta_{j - i}$.
+If we view $\alpha$ and $\beta$ as elements in $GF(2)[x]$ then the CLMUL instruction corresponds to polynomial multiplication.
+We can then calculate multiplication in a finite field, $GF(2^b)$, efficiently by noting that for any irreducible polynomial $p(x) \in GF(2)[x]$
+of degree $b$ then $GF(2^b)$ is isomorphic to $GF(2)[x] / p(x)$. If we choose $p(x)$ such that the degree of $p(x) - 2^{b}$ is at
+most $b/2$ then modulus $p(x)$ can be calculated using two CLMUL instructions.
 
 \begin{table}[H]
    \centering
    \begin{tabular}{c c}
       \begin{tabular}{r | r r}
-         $k$ & Mersenne       & Carryless \\
+         $k$ & Mersenne       & $Gf(2^64)$ \\
          \hline
          2 & 23.6 & \textbf{15.1} \\
          4 & \textbf{65.7} & \textbf{65.7} \\
@@ -18,7 +26,7 @@ TODO: What experiment?
       &
       \hspace{.5em}
       \begin{tabular}{r | r r}
-         $k$ & Mersenne       & Carryless \\
+         $k$ & Mersenne       & $Gf(2^64)$ \\
          \hline
          $2$ & 19.0           & \textbf{16.7} \\
          $4$ & \textbf{68.7}  & 68.8 \\
