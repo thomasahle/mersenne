@@ -71,6 +71,10 @@ void test_speed(uint32_t nr_trials, uint32_t nr_times) {
     output << "CarrylessFour: " << test_speed_function<carrylessfour_64>(nr_trials, nr_times, numbers) << endl;
     output << "PolyFour_exact: " << test_speed_function<polyfour_64_exact>(nr_trials, nr_times, numbers) << endl;
 
+    output << "PolyEight: " << test_speed_function<polyeight_64>(nr_trials, nr_times, numbers) << endl;
+    output << "CarrylessEight: " << test_speed_function<carrylesseight_64>(nr_trials, nr_times, numbers) << endl;
+    output << "PolyEight_exact: " << test_speed_function<polyeight_64_exact>(nr_trials, nr_times, numbers) << endl;
+
     output.close();
 }
 
@@ -78,7 +82,7 @@ int main() {
     init_randomness();
 
 
-    test_speed(1e7, 200);
+    test_speed(1e7, 50);
 
 #ifdef DEBUG
     cout << "Random bytes used: " << usedBytes << endl;
