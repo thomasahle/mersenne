@@ -2,7 +2,7 @@
 \section{Experiments}\label{sec:experiments}
 We perform experiments on fast implementations of Mersenne hashing (\Cref{alg:Mersenne}) and our Mersenne division algorithm (\Cref{alg:division-generalized}).
 
-TODO: What experiemnt?
+TODO: What experiment?
 
 \begin{table}[H]
    \centering
@@ -25,15 +25,20 @@ TODO: What experiemnt?
          $8$ & \textbf{187.4} & 246.8
       \end{tabular}
    \end{tabular}
-   \caption{Milliseconds for $10^7$ $k$-universal hashing operations on 64bit keys.
-      The standard deviation is less than $\pm10$ms.
-         On the left on Intel(R) Core(TM) i7-8850H @ 2.60GHz.
-      On the right on Intel(R) Core(TM) i7-86650U @ 1.9GHz.
+   \caption{Milliseconds for $10^7$ $k$-universal hashing operations on 64bit keys with $p=2^{89}-1$.
+      The standard deviation is less than $\pm1$ms.
+         On the left, Intel Core i7-8850H.
+         On the right, Intel Core i7-86650U.
    }
    \label{tab:hashing-experiments}
 \end{table}
 
-TODO: What is the conclusion?
+The results in \Cref{tab:hashing-experiments} show that our methods outperform Carryless Multiplication for larger $k$, while being slower for $k=2$.
+We note though that the multiply-shift scheme~\cite{dietzfel96universal} is better yet in that regime.
+For $k=4$, which we use for Count Sketch, the results are a tossup.
+However, we note that our methods are more portable than Carryless, and we keep the two-for-one advantages described in the article.
+
+\vspace{.5em} % Soft section break
 
 We tested \Cref{alg:division-generalized} against the state of the art modified Crandall's algorithm by Chung and Hasan (\Cref{alg:cch}), as well as the built in truncated division algorithm in the GNU MultiPrecision Library, GMP~\cite{granlund2010gnu}.
 
@@ -66,8 +71,8 @@ We tested \Cref{alg:division-generalized} against the state of the art modified 
    \end{tabular}
    \caption{Milliseconds for $10^7$ divisions of $2b$-bit numbers with $p=2^b-1$.
       The standard deviation is less than $\pm10$ms.
-         On the left on Intel(R) Core(TM) i7-8850H @ 2.60GHz.
-      On the right on Intel(R) Core(TM) i7-86650U @ 1.9GHz.
+         On the left, Intel Core i7-8850H.
+         On the right, Intel Core i7-86650U.
    }
    \label{tab:division-experiments}
 \end{table}
