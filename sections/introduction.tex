@@ -52,8 +52,8 @@ bottle-neck in data analysis. A good example is when hashing is used
 in the sketching of high volume data streams, such as traffic through
 an Internet router, and then this speed is critical to keep up with
 the stream. A running example in this paper is the classic second
-moment estimation using using 4-universal hashing in count sketches
-\cite{charikar04count-sketch}. The count sketches a linear maps that
+moment estimation using 4-universal hashing in count sketches
+\cite{charikar04count-sketch}. The Count Sketches are linear maps that
 statistically preserve the Euclidean norm. They are very popular in
 machine learning, where they adopted Count Sketches under the name
 Feature Hashing \cite{moody1989fast,weinberger2009feature}.
@@ -71,7 +71,7 @@ In a fortunate turn of events, we show that the small bias in our hash values (s
 To see this, suppose we were hashing $n$ keys uniformly into $b$-bit strings.
 The probability that there exists one hashing to $p=2^b-1$ is at most $n/p$.
 This means the total variation between the two distributions is $n/p$ and any error probability we might have proved assuming uniform $b$-bit hash values is off by at most $n/p$.
-\emph{In contrast, our analysis yields errors that differs from the uniform case by $n/p^2$ or less.}
+\emph{In contrast, our analysis yields errors that differ from the uniform case by $n/p^2$ or less.}
 %From $[2^b]$ we are missing $p$, the all \texttt1s value (see \Cref{fig:bits}), but a careful analysis shows that the relative errors we get are in the order of $n/p^2$ or less (this is for our example with second moment estimation, but our analytic techniques are more general).
 Loosely speaking, this means that we for a desired small error can reduce
 the bit-length of the primes to less than half. This saves not only
@@ -279,13 +279,14 @@ missing $p=2^b-1$. Now $p$ is the all \texttt{1}s, and
 $\mu(p) = r-1$.
 Therefore
 \begin{align}
-   \forall i < r-1:
+   \text{for $i < r-1$,}\quad
    \Pr[\mu(h(x))=i]
    &=\lceil p/r\rceil/p
    =((p+1)/r)/p
    =(1+1/p)/r
    \label{eq:coll-ell<r-1}
    \\
+   \text{and}\quad
      \Pr[\mu(h(x))=r-1]
    &=\lfloor p/r\rfloor/p=((p+1-r)/r)/p
    =(1-(r-1)/p)/r.
@@ -297,21 +298,21 @@ only has a relative error of $1/p$ from the uniform $1/r$.
 Combining \eqref{eq:coll-ell<r-1} and \eqref{eq:coll-ell=r-1} with
 pairwise independence, for any distinct keys $x,y\in [u]$, we show that the
 collision probability is bounded
-\begin{align*}
+\begin{align}
    \Pr[\mu(h(x))=\mu(h(y))]
-      =(r-1)((1+1/p)/r)^2+((1-(r-1)r/p)/r)^2
+      &=(r-1)((1+1/p)/r)^2+((1-(r-1)r/p)/r)^2 \nonumber
       %\\&= \frac{r +(r^2-r)/p^2}{r^2}
-      =(1+(r-1)/p^2)/r
+       \\&=(1+(r-1)/p^2)/r
       %\\& <(1+r/p^2)/r
    .\label{eq:coll}
-\end{align*}
+\end{align}
 We note that relative error $r/p^2$ is small as long as $p$ is
 large.
 
 %\paragraph{Mersenne Primes are Special}
 \vspace{.5em}
 
-There are many primes on the form $p=2^b-c$ for 
+There are many primes of the form $p=2^b-c$ for 
       If we had used an  arbitrary prime $p=2^b-c$, $c\in [1,2^{b-1})$.
 Recall that with $c=1$, we had our generic upper bound
 $\Pr[\mu(h(x))=i]\leq (1+1/p)/r$ for all $i\in[r]$
@@ -327,7 +328,7 @@ lands in $r-1$. In particular, for $c\in [2^{b-\ell}, 2^{b-1}-2^{b-\ell}]$,
 this is the $2^{b-\ell}$ versus $0$ elements --- a huge difference.
 When it comes to the maximal probability of hitting a bucket,
 we get $\Pr[\mu(h(x))=0]=2^{b-\ell}/p$.
-As an extreme case, when $\ell=1$ and $p=2^{b-1}+1$,\footnote{Primes on this form as called Fermat primes.
+As an extreme case, when $\ell=1$ and $p=2^{b-1}+1$,\footnote{Primes on this form are called Fermat primes.
    Performance wise, they work as well as Mersenne primes, but they have none of the properties we use in this paper.
 Besides, 65,537 is conjectured to be the largest such prime.}
 we get $\Pr[\mu(h(x))=0]=1-1/p$ and $\Pr[\mu(h(x))=1]=1/p$.
@@ -434,7 +435,7 @@ $h(x_0),\ldots,h(x_3)$ are independent. We can therefore use the
 $\ell$ least significant bits of $h(x)$ for $i(x)$ and the most
 significant bit of $h(x)$ for a bit $a(x)\in[2]$, and finally set
 $s(x)=1-2a(x)$. It is then easy to show that if $h$ is $k$-universal
-than $h$ satisfies \cref{eq:E-0}.
+then $h$ satisfies \cref{eq:E-0}.
 \begin{algorithm}[H]
    \caption{For key $x\in [u]$, compute $i(x)=i_x\in[2^\ell]$ and
       $s(x)=s_x\in\{-1,1\}$,\rule{5ex}{0ex}
@@ -473,7 +474,7 @@ Above we discussed how useful it would be with $k$-universal hashing
 mapping uniformly into $b$-bit strings. The issue was that the lack of
 efficient implementations with standard portable code if
 $k>2$. However, when $2^b-1$ is a Mersenne prime $p\geq u$, then we do
-have have the efficient computation from Algorithm \ref{alg:Mersenne}
+have the efficient computation from Algorithm \ref{alg:Mersenne}
 of a $k$-universal hash function $h:[u]\to[2^b-1]$. The hash values
 are $b$-bit integers, and they are uniformly distributed, except that
 we are missing the all \texttt{1}s value $p=2^b-1$. We want to
@@ -495,7 +496,7 @@ computation in Algorithm \ref{alg:Mersenne} requires that we use a
 Mersenne prime $2^b-1$ such that $u\leq 2^{b-1}$, and this is even if
 our final target is to produce just a single bit for the sign function
 $s:[u]\to\{-1,1\}$. We also know that $2^\ell<u$, for otherwise we
-get perfect results implementing $i:[u]\to[2^\ell]$ as the identify
+get perfect results implementing $i:[u]\to[2^\ell]$ as the identity
 function (perfect because it is collision free).  Thus we can assume
 $\ell<b$, hence that $h$ provides enough bits for both $s$ and $i$.
 
@@ -550,7 +551,7 @@ based on Mersenne primes performs almost perfectly:
 \begin{theorem}\label{thm:h-and-s-p}
    Let $r>1$ and $u>r$ be powers of two and let $p=2^b-1>u$ be a
    Mersenne prime.
-   Suppose with have a 4-universal hash function $h:[u]\to[2^b-1]$, e.g.,
+   Suppose we have a 4-universal hash function $h:[u]\to[2^b-1]$, e.g.,
    generated using Algorithm \ref{alg:Mersenne}. Suppose
    $i:[u]\to[r]$ and
    $s:[u]\to\{-1,1\}$ are constructed from $h$ as described in
@@ -595,7 +596,7 @@ is $\mu(x)=\floor{xr/q}$,
 which is also quite slow in general, but if $q=2^b$ is a power of two,
 it can be implemented as $\mu(x)=(xr)\rs\,b$ where 
 $\rs$ denotes right-shift. This would be yet another advantage 
-of of having $k$-universal hashing into $[2^b]$.
+of having $k$-universal hashing into $[2^b]$.
 
 Now, our interest is the case where $q$ is a Mersenne prime $p=2^b-1$. We want
 an efficient and most uniform map $\mu:[2^b-1]$ into any given $[r]$.
@@ -623,7 +624,7 @@ gives a most uniform map.
    The statement (i) is folklore and easy to prove, so we know that every
    $i\in[r]$ gets hit by $\floor {2^b/r}$ or $\ceil{2^b/r}$ elements from
    $[2^b]$. It is also clear that $\ceil{2^b/r}$ elements, including $0$,
-   maps to $0$. To prove (ii), we remove $0$ from $[2^b]$, 
+   map to $0$. To prove (ii), we remove $0$ from $[2^b]$, 
    implying that only
    $\ceil{2^b/r}-1$ elements map to $0$. For all positive integers $q$
    and $r$, $\ceil{(q+1)/r}-1=\floor{q/r}$, and we use this here with 
@@ -650,9 +651,9 @@ works very well in conjunction with the idea of splitting of hash values.
 
 
 
-\subsection{Branch-free division and modulo with (Pseudo) Mersenne Primes}\label{subsec:intro-division}
-%
-We even suggest a fast branch-free computation of $\bmod\,p$ for
+\subsection{Division and Modulo with (Pseudo) Mersenne Primes}\label{subsec:intro-division}
+
+We first a fast branch-free computation of $\bmod\,p$ for
 Mersenne primes $p=2^b-1$. The issue in Algorithm \ref{alg:Mersenne}
 is that the if-statement can be slow because of issues with branch
 prediction; for It implies that different statements are run for
@@ -697,13 +698,12 @@ arbitrary $x$, not only $x<2^{2b}$. Moreover, we will generalize
 to work for different kinds of primes generalizing Mersenne primes:
 \begin{description}
    \item[Pseudo-Mersenne Primes]
-      are primes on the form $2^b-c$, where is usually required that $c < 2^{\lfloor b/2\rfloor}$~\cite{van2014encyclopedia}.
+      are primes of the form $2^b-c$, where is usually required that $c < 2^{\lfloor b/2\rfloor}$~\cite{van2014encyclopedia}.
       Crandal patented a method for working with Pseudo-Mersenne Primes in 1992~\cite{crandall1992method},
       why those primes are also sometimes called ``Crandal-primes''.
       The method was formalized and extended by Jaewook Chung and Anwar Hasan in 2003~\cite{chung2003more}. The method we present is simpler with
       stronger guarantees and better practical performance.
       We provide a comparison with the Crandal-Chung-Hansan method in Section 4.
-      %also sometimes known as Crandall primes, are numbers on the form $2^n - c$ for a small odd $c$.
    \item[Generalized Mersenne Primes]
       also sometimes known as Solinas primes~\cite{Solinas2011}, are sparse numbers, that is $f(2^b)$ where $f(x)$ is a low-degree polynomial.
       Examples are the primes in NIST's document ``Recommended Elliptic Curves for Federal Government Use''~\cite{nist}:
@@ -737,7 +737,7 @@ where $c=1$ and $m=2$.
    \end{algorithmic}
 \end{algorithm}
 The proof that Algorithm \ref{alg:division-generalized} correctly computes
- $z=\floor{x/p}$ is provided in in Section \ref{sec:division}.
+ $z=\floor{x/p}$ is provided in Section \ref{sec:division}.
 Note that $m$ can be computed in advance from $p$, and there is no requirement that it is chosen as small as possible.
 For Mersenne and Solinas primes, the multiplication $z*c$ can be done very fast.
 
@@ -796,7 +796,7 @@ This is the method presented in Algorithm \ref{alg:mod-generalized} and applied 
 In Subsection~\ref{sec:most-uniform} we discussed how $\floor{\frac{h(x)r}{2^b-1}}$ provides a most uniform map from $[2^b-1]\to[r]$.
 To avoid the division step, we instead considered the map
 $\floor{\frac{(h(x)+1)r}{2^b}}$.
-However, for primes on the form $2^b-c$, $c>1$ this approach doesn't provide a most-uniform map.
+However, for primes of the form $2^b-c$, $c>1$ this approach doesn't provide a most-uniform map.
 %
 Instead we may use Algorithm \ref{alg:division-generalized} to compute
 $$\left\lfloor\frac{h(x)r}{2^b-c}\right\rfloor$$
@@ -884,7 +884,7 @@ In practice our method is 2-3 times faster. See \Cref{sec:experiments} for an em
 %Unfortunately there are only 45 of them known.
 %The most useful one perhaps being.
 %Heuristically there are $O(\log x)$ Mersenne primes up to $x$.
-%Trivia: Euler proved that an even number $n$ is perfect if and only if it is on the form $n=2^{q-1}M_q$, where $M_q=2^q-1$ is prime.
+%Trivia: Euler proved that an even number $n$ is perfect if and only if it is of the form $n=2^{q-1}M_q$, where $M_q=2^q-1$ is prime.
 %(Usually we know a number is perfect if its divisors sum to the number itself, e.g. $6=1+2+3$ or $28=1+2+4+7+14$.)
 
 

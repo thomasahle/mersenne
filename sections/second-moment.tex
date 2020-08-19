@@ -166,7 +166,7 @@ problem, which will be useful in \Cref{sec:arbitrary-buckets}.
             = F_2 + \sum_{x \neq y} \E[s_x s_y f_x f_y [i_x = i_y]]
             = F_2 + (F_1^2 - F_2)/p^2 .
     \end{align*}
-    Now we note that $0 \le F_1^2 \le n F_2$ by Cauchy-Schwartz, hence we get that
+    Now we note that $0 \le F_1^2 \le n F_2$ by Cauchy-Schwarz, hence we get that
     $| \E[X] - F_2 | \le (n - 1)/p^2$.
 
     Same method is applied to the analysis of the variance, which is
@@ -196,7 +196,7 @@ problem, which will be useful in \Cref{sec:arbitrary-buckets}.
             \\&\le F_1^4 /p^4
             \\&\le F_2^2 n^2/p^4.\label{eq:distinct}
     \end{split}\end{equation}
-    Where the last inequality used Cauchy-Schwartz. We also have to consider all the cases with
+    Where the last inequality used Cauchy-Schwarz. We also have to consider all the cases with
     two unique keys, e.g., $x$ and $x'$ unique while $y=y'$. Then using \cref{eq:near-independence}
     and \cref{eq:prob-special-value}, we get
     \begin{align*}
@@ -207,7 +207,7 @@ problem, which will be useful in \Cref{sec:arbitrary-buckets}.
             \\&\le f_x f_{x'} f_y^2(1 + \delta)/(rp^2).
     \end{align*}    
     Summing over all terms with $x$ and $x'$ unique while $y=y'$, and
-    using Cauchy-Schwartz and $u\leq p$, we get 
+    using Cauchy-Schwarz and $u\leq p$, we get 
     \begin{align*}
         \sum_{{\rm distinct}\,x,x',y} f_xf_{x'}f_y^2 (1 + \delta) /(rp^2) 
             \le F_1^2 F_2 (1 + \delta)/(rp^2)
@@ -253,7 +253,7 @@ We are now ready to prove \Cref{thm:h-and-s-p}.
     \begin{theorem}
         Let $r>1$ and $u>r$ be powers of two and let $p=2^b-1>u$ be a
         Mersenne prime.
-        Suppose with have a 4-universal hash function $h:[u]\to[2^b-1]$, e.g.,
+        Suppose we have a 4-universal hash function $h:[u]\to[2^b-1]$, e.g.,
         generated using Algorithm \ref{alg:Mersenne}. Suppose
         $i:[u]\to[r]$ and
         $s:[u]\to\{-1,1\}$ are constructed from $h$ as described in

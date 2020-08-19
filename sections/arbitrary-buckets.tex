@@ -45,7 +45,7 @@ had $a=1$. We will think of $(r/(2q))^2$ as the general relative rounding
 cost when we do not have any information about how $r$ divides $q$.
 
 \subsection{Two-for-one hashing from uniform bits to arbitrary number of buckets}
-We will now briefly discuss how would get the two-for-one hash
+We will now briefly discuss how we get the two-for-one hash
 functions in count sketches with an arbitrary number $r$ of buckets based
 on a single $4$-universal hash function $h:[u]\to [2^b]$.  We want to
 construct the two hash functions $s:[u]\to\{-1,1\}$ and
@@ -87,7 +87,7 @@ Now \Cref{lem:count-classic} give us $\E[X] = F_2$ and
 \end{equation}
 
 \subsection{Two-for-one hashing from Mersenne primes to arbitrary number of buckets}
-We will now show how wan get the two-for-one hash functions in count
+We will now show how to get the two-for-one hash functions in count
 sketches with an arbitrary number $r$ of buckets based on a single
 $4$-universal hash function $h:[u]\to [2^b-1]$.  Again we want to
 construct the two hash functions $s:[u]\to\{-1,1\}$ and
@@ -241,7 +241,7 @@ $(1 + (r/2^b)^2)/r$-low collision probability. We can then use
 \begin{theorem}\label{thm:h-and-s-p-arb-r}
    Let $u$ be a power of two, $1 < r \le u/2$, and let $p=2^b-1>u$ be a
    Mersenne prime.
-   Suppose with have a 4-universal hash function $h:[u]\to[2^b-1]$, e.g.,
+   Suppose we have a 4-universal hash function $h:[u]\to[2^b-1]$, e.g.,
    generated using \Cref{alg:Mersenne}. Suppose
    $i:[u]\to[r]$ and
    $s:[u]\to\{-1,1\}$ are constructed from $h$ as described in
@@ -255,7 +255,7 @@ $(1 + (r/2^b)^2)/r$-low collision probability. We can then use
    \end{align}
 \end{theorem}
 
-Now \Cref{lem:count-mersenne} give us \eqref{eq:E-F2-p-arb-r}
+Now \Cref{lem:count-mersenne} gives us \eqref{eq:E-F2-p-arb-r}
 and \eqref{eq:E-F2-p-com-arb-r}. Furthermore, we have that
 \begin{align*}
     \Var[X] 
