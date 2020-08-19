@@ -212,9 +212,9 @@ Lemma \ref{lem:ix-r-dist} above is all we need to know about the
 marginal distribution of $i_x$. However, we also need a replacement
 for Lemma \ref{lem:remove-si} for handling the sign-bit $s_x$.
 \begin{lemma}\label{lem:remove-si-r-dist} Consider distinct keys
-   $x_1,\ldots,x_j$, $j\leq k$ and an expression $B=s_{x_1}A$ where $A$
-   depends on $i_{x_1},\ldots,i_{x_j}$ and $s_{x_2},\ldots,s_{x_j}$ but not
-   $s_{x_1}$. 
+   $x_0,\ldots,x_{j - 1}$, $j\leq k$ and an expression $B=s_{x_0}A$ where $A$
+   depends on $i_{x_0},\ldots,i_{x_{j - 1}}$ and $s_{x_1},\ldots,s_{x_{j - 1}}$ but not
+   $s_{x_0}$. 
    Then
    \begin{equation}\label{eq:remove-si-r-dist}
       \E[s_xA]=\E[A \mid i_x=0]/p.
@@ -223,15 +223,15 @@ for Lemma \ref{lem:remove-si} for handling the sign-bit $s_x$.
 \begin{proof}
    The proof follows the same idea as that for Lemma \ref{lem:remove-si}.
    First we have
-   \[\E[B]=\E_{h(x_1) \sim \unif([2^b]\setminus\{0\})}[B]=\E_{h(x_1) \sim \unif[2^b]}[B]2^b/p-\E[B \mid h(x_1)=0]/p.\]
-   With $h(x_1)\sim \unif[2^b]$, the bit $a_{x_1}$ is uniform and 
-   independent of $j_{x_1}$, so $s_{x_1}\in\{-1,1\}$ is uniform and 
-   independent of $i_{x_1}$, and therefore 
-   \[\E_{h(x_1) \sim \unif[2^b]}[s_{x_1}A]=0.\]
-   Moreover, $h(x_1)=0$ implies $j_x={x_1}$, $i_{x_1}=0$, $a_{x_1}=0$,
-   and $s_{x_1}=-1$,
+   \[\E[B]=\E_{h(x_0) \sim \unif([2^b]\setminus\{0\})}[B]=\E_{h(x_0) \sim \unif[2^b]}[B]2^b/p-\E[B \mid h(x_0)=0]/p.\]
+   With $h(x_0)\sim \unif[2^b]$, the bit $a_{x_0}$ is uniform and 
+   independent of $j_{x_0}$, so $s_{x_1}\in\{-1,1\}$ is uniform and 
+   independent of $i_{x_0}$, and therefore 
+   \[\E_{h(x_0) \sim \unif[2^b]}[s_{x_0}A]=0.\]
+   Moreover, $h(x_0)=0$ implies $j_x={x_0}$, $i_{x_0}=0$, $a_{x_0}=0$,
+   and $s_{x_0}=-1$,
    so 
-   \[\E[s_{x_1}A]=-\E[s_{x_1}A \mid h(x_1)=0]/p=\E[A \mid i_{x_1}=0].\]
+   \[\E[s_{x_0}A]=-\E[s_{x_0}A \mid h(x_0)=0]/p=\E[A \mid i_{x_0}=0].\]
 \end{proof}
 
 From \Cref{lem:remove-si-r-dist} and \eqref{eq:ix=0} we have \nameref{prop:near-independence}
@@ -239,7 +239,7 @@ with $\Pr[i_x = 0] \le (1 + r/2^b)/r$, and \eqref{eq:ix=iy} implies that we have
 $(1 + (r/2^b)^2)/r$-low collision probability. We can then use
 \Cref{lem:count-mersenne} to prove the following result.
 \begin{theorem}\label{thm:h-and-s-p-arb-r}
-   Let $u>r$ be powers of two, $1 < r \le u/2$, and let $p=2^b-1>u$ be a
+   Let $u$ be a power of two, $1 < r \le u/2$, and let $p=2^b-1>u$ be a
    Mersenne prime.
    Suppose with have a 4-universal hash function $h:[u]\to[2^b-1]$, e.g.,
    generated using \Cref{alg:Mersenne}. Suppose

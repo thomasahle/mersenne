@@ -343,9 +343,9 @@ hashing using a Mersenne prime $2^b-1$ delivers a better-than-expected
 approximation.
 
 Let $h:U\to [2^b]$ be $k$-universal. By definition this
-means that if we have $j\leq k$ distinct keys $x_1,\ldots,x_j$, then
-$(h(x_1),\ldots,h(x_j))$ is uniform in $[2^b]^j\equiv [2]^{bj}$,
-so this means that \emph{all} the bits in $h(x_1),\ldots,h(x_j)$ are
+means that if we have $j\leq k$ distinct keys $x_0,\ldots,x_{j - 1}$, then
+$(h(x_0),\ldots,h(x_{j - 1}))$ is uniform in $[2^b]^j\equiv [2]^{bj}$,
+so this means that \emph{all} the bits in $h(x_0),\ldots,h(x_{j - 1})$ are
 independent and uniform. We can use this to split our $b$-bit hash
 values into smaller segments, and sometimes use them as if
 they were the output of universally computed hash functions.
@@ -414,21 +414,21 @@ function.
 The analysis behind \eqref{eq:E-F2} and \eqref{eq:V-F2} does not quite
 require $i:[u]\to[r]$ and $s:[u]\to\{-1,1\}$ to be independent.
 It suffices that the hash values are uniform and that for any
-given set of $j\leq 4$ distinct keys $x_1,\ldots,x_j$, the $2j$ hash
-values $i(x_1),\ldots,i(x_j),s(x_1),\ldots,s(x_j)$ are independent.
+given set of $j\leq 4$ distinct keys $x_0,\ldots,x_{j - 1}$, the $2j$ hash
+values $i(x_0),\ldots,i(x_{j - 1}),s(x_0),\ldots,s(x_{j - 1})$ are independent.
 A critical step in the analysis is that if
-$A$ depends on $i(x_1),\ldots,i(x_j),s(x_2),\ldots,s(x_j)$, but
-not on $s(x_1)$, then
+$A$ depends on $i(x_0),\ldots,i(x_{j - 1}),s(x_1),\ldots,s(x_{j - 1})$, but
+not on $s(x_0)$, then
 \begin{equation}\label{eq:E-0}
   \E[s(x_0) A] = 0 .
 \end{equation}
-This follows because $\E[s(x_1)]=0$ by uniformity of $s(x_1)$ and because $s(x_1)$ is independent of $A$.
+This follows because $\E[s(x_0)]=0$ by uniformity of $s(x_0)$ and because $s(x_0)$ is independent of $A$.
 
 
 Assuming that $r=2^\ell$ is a power of two, we can easily construct
 $i:[u]\to[r]$ and $s:[u]\to\{-1,1\}$ using a single $4$-universal
 hash function $h:[u]\to[2^b]$ where $b>\ell$. Recall that all the bits in
-$h(x_1),\ldots,h(x_4)$ are independent. We can therefore use the
+$h(x_0),\ldots,h(x_3)$ are independent. We can therefore use the
 $\ell$ least significant bits of $h(x)$ for $i(x)$ and the most
 significant bit of $h(x)$ for a bit $a(x)\in[2]$, and finally set
 $s(x)=1-2a(x)$. It is then easy to show that if $h$ is $k$-universal
@@ -501,46 +501,46 @@ $\ell<b$, hence that $h$ provides enough bits for both $s$ and $i$.
 We now consider the effect of the hash values from $h$ being uniform
 in $[2^b-1]$ instead of in $[2^b]$. Suppose we want to compute the
 expected value of an expression $B$ depending only on the independent
-hash values $h(x_1),\ldots,h(x_j)$ of $j\leq k$ distinct keys
-$x_1,\ldots,x_j$.
+hash values $h(x_0),\ldots,h(x_{j - 1})$ of $j\leq k$ distinct keys
+$x_0,\ldots,x_{j - 1}$.
 
-Our generic idea is to play with the distribution of $h(x_1)$ while
+Our generic idea is to play with the distribution of $h(x_0)$ while
 leaving the distributions of the other independent hash values
-$h(x_2)\ldots,h(x_j)$ unchanged, that is, they remain uniform in
-$[2^b-1]$. We will consider having $h(x_1)$ uniformly distributed in
-$[2^b]$, denoted $h(x_1) \sim \unif[2^b]$, but then we later have to
-subtract the ``fake'' case where $h(x_1)=p=2^b-1$.  Making the
-distribution of $h(x_1)$ explicit, we get
+$h(x_0)\ldots,h(x_{j - 1})$ unchanged, that is, they remain uniform in
+$[2^b-1]$. We will consider having $h(x_0)$ uniformly distributed in
+$[2^b]$, denoted $h(x_0) \sim \unif[2^b]$, but then we later have to
+subtract the ``fake'' case where $h(x_0)=p=2^b-1$.  Making the
+distribution of $h(x_0)$ explicit, we get
 \begin{equation}\begin{split}
-  \E_{h(x_1) \sim \unif[p]}[B]&=\sum_{y\in[p]}\E[B \mid h(x_1)=y]/p
-                            \\&=\sum_{y\in[2^b]}\E[B \mid h(x_1)=y]/p - \E[B \mid h(x_1)=p]/p
-                            \\ &=\E_{h(x_1) \sim \unif[2^b]}[B](p+1)/p - \E[B \mid h(x_1)=p]/p.\label{eq:play-with-dist}
+  \E_{h(x_0) \sim \unif[p]}[B]&=\sum_{y\in[p]}\E[B \mid h(x_0)=y]/p
+                            \\&=\sum_{y\in[2^b]}\E[B \mid h(x_0)=y]/p - \E[B \mid h(x_0)=p]/p
+                            \\ &=\E_{h(x_0) \sim \unif[2^b]}[B](p+1)/p - \E[B \mid h(x_0)=p]/p.\label{eq:play-with-dist}
 \end{split}\end{equation}
 Let us now apply this idea our situation where $i:[u]\to[2^\ell]$ and
 $s:[u]\to\{-1,1\}$ are constructed from $h$ as described in Algorithm
 \ref{alg:h-and-s}. We will prove
-\begin{lemma}\label{lem:remove-si}  Consider distinct keys $x_1,\ldots,x_j$, $j\leq k$ and an expression $B=s(x_1)A$ where $A$
-   depends on $i(x_1),\ldots,i(x_j)$ and $s(x_2),\ldots,s(x_j)$ but not
-   $s(x_1)$. Then
+\begin{lemma}\label{lem:remove-si}  Consider distinct keys $x_0,\ldots,x_{j - 1}$, $j\leq k$ and an expression $B=s(x_0)A$ where $A$
+   depends on $i(x_0),\ldots,i(x_{j - 1})$ and $s(x_1),\ldots,s(x_{j - 1})$ but not
+   $s(x_0)$. Then
    \begin{equation}\label{eq:remove-si}
-      \E[s(x_1)A]=\E[A\mid i(x_1)=2^\ell-1]/p.
+      \E[s(x_0)A]=\E[A\mid i(x_0)=2^\ell-1]/p.
    \end{equation}
 \end{lemma}
 \begin{proof}
-When $h(x_1) \sim \unif[2^b]$, then $s(x_1)$ is uniform
-in $\{-1,1\}$ and independent of $i(x_1)$. The remaining
-$(i(x_i),s(x_i))$, $i>1$, are independent of $s(x_1)$ because they
-are functions of $h(x_i)$ which is independent of $h(x_1)$, so
+When $h(x_0) \sim \unif[2^b]$, then $s(x_0)$ is uniform
+in $\{-1,1\}$ and independent of $i(x_0)$. The remaining
+$(i(x_i),s(x_i))$, $i\ge 1$, are independent of $s(x_0)$ because they
+are functions of $h(x_i)$ which is independent of $h(x_0)$, so
 we conclude that 
-\[\E_{h(x) \sim \unif[2^b]}[s(x_1)A]=0\]
-Finally, when $h(x_1)=p$, we get $s(x_1)=-1$ and $i(x_1)=2^\ell-1$, 
+\[\E_{h(x) \sim \unif[2^b]}[s(x_0)A]=0\]
+Finally, when $h(x_0)=p$, we get $s(x_0)=-1$ and $i(x_0)=2^\ell-1$, 
 so applying \eqref{eq:play-with-dist}, we conclude
 that 
-\[\E[s(x_1)A] = -\E[s(x_1) A \mid h(x_1) = p]/p = \E[A \mid i(x)=2^\ell-1]/p.\]
+\[\E[s(x_0)A] = -\E[s(x_0) A \mid h(x_0) = p]/p = \E[A \mid i(x_0)=2^\ell-1]/p.\]
 \end{proof}
 Above \eqref{eq:remove-si} is our replacement for \eqref{eq:E-0}, that is,
 when the hash values from $h$ are uniform in $[2^b-1]$ instead of
-in $[2^b]$, then $\E[s(x_1)B]$ is reduced by $\E[B \mid i(x)=2^\ell-1]/p$.
+in $[2^b]$, then $\E[s(x_0)B]$ is reduced by $\E[B \mid i(x_0)=2^\ell-1]/p$.
 For large $p$, this is a small additive error. Using this in a careful
 analysis, we will show that our fast second moment estimation 
 based on Mersenne primes performs almost perfectly:
