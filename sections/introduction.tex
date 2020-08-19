@@ -310,13 +310,14 @@ collision probability is bounded
 We note that relative error $r/p^2$ is small as long as $p$ is
 large.
 
-We now consider what would happen with our bit-selection if
-we had used an  arbitrary prime $p=2^b-c$, $c\in [1,2^{b-1})$.
+\paragraph{$c=1$ is important.}
+There are some natural alternatives to the above idea, but none of them turns out to work with bit-selection:
+
+      If we had used an  arbitrary prime $p=2^b-c$, $c\in [1,2^{b-1})$.
 Recall that with $c=1$, we had our generic upper bound
 $\Pr[\mu(h(x))=i]\leq (1+1/p)/r$ for all $i\in[r]$
-
 Now suppose $c\neq 1$, and let's see what happens if we select
-the $\ell$ least respectivily most significant bits. If
+the $\ell$ least respectively most significant bits. If
 we pick the least significant bits with $y\mapsto y\andtt(r-1)$
 then we get a generic upper bound of $(1+c/p)/r$, which is not
 too bad for small $c$.
@@ -327,9 +328,11 @@ $[p]$ map to $0$ while only $\max\{0,2^{b-\ell}-c\}$
 lands in $r-1$. In particular, for $c\in [2^{b-\ell}, 2^{b-1}-2^{b-\ell}]$,
 this is the $2^{b-\ell}$ versus $0$ elements --- a huge difference.
 When it comes to the maximal probability of hitting a bucket,
-we get $\Pr[\mu(h(x))=0]=2^{b-\ell}/p$. As an extreme case, when $\ell=1$
-and $p=2^{b-1}+1$, we get $\Pr[\mu(h(x))=0]=1-1/p$ and $\Pr[\mu(h(x))=1]=1/p$.
-
+we get $\Pr[\mu(h(x))=0]=2^{b-\ell}/p$.
+As an extreme case, when $\ell=1$ and $p=2^{b-1}+1$,\footnote{Primes on this form as called Fermat primes.
+   Performance wise, they work as well as Mersenne primes, but they have none of the properties we use in this paper.
+Besides, 65,537 is conjectured to be the largest such prime.}
+we get $\Pr[\mu(h(x))=0]=1-1/p$ and $\Pr[\mu(h(x))=1]=1/p$.
 
 \subsection{Two-for-one hash functions in second moment estimation}
 In this section we discuss how we can get several hash functions for
