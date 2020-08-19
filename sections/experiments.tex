@@ -3,7 +3,7 @@
 We perform experiments on fast implementations of Mersenne hashing (\Cref{alg:Mersenne}) and our Mersenne division algorithm (\Cref{alg:division-generalized}).
 All code is available in our repository\\\href{https://github.com/thomasahle/mersenne/}{github.com/thomasahle/mersenne} and compiled with \texttt{gcc -O3}.
 
-We tested \Cref{alg:Mersenne} against hashing over the finite field $GF(2^{64})$.
+We tested \Cref{alg:Mersenne} against hashing over the finite fields $GF(2^{64})$ and $GF(2^{32})$.
 The later is implemented, following Lemire~\cite{lemire2014strongly}, using the ``Carry-less multiplication' instruction, CLMUL, supported by AMD and Intel processors~\cite{GUERON2010549}.\footnote{
 More precisely, given two $b$-bit numbers $\alpha = \sum_{i = 0}^{b - 1} \alpha_i 2^i$ and $\beta = \sum_{i = 0}^{b - 1} \beta_i 2^i$
 the CLMUL instructions calculates $\gamma = \sum_{i = 0}^{2b - 2} \gamma_i 2^i$, where $\gamma_i = \bigoplus_{j = 0}^{j} \alpha_i \beta_{j - i}$.
@@ -11,7 +11,7 @@ If we view $\alpha$ and $\beta$ as elements in $GF(2)[x]$ then the CLMUL instruc
 We can then calculate multiplication in a finite field, $GF(2^b)$, efficiently by noting that for any irreducible polynomial $p(x) \in GF(2)[x]$
 of degree $b$ then $GF(2^b)$ is isomorphic to $GF(2)[x] / p(x)$. If we choose $p(x)$ such that the degree of $p(x) - 2^{b}$ is at
 most $b/2$ then modulus $p(x)$ can be calculated using two CLMUL instructions.
-For $GF(2^{64})$ we use the polynomial $p(x) = x^{64} + x^4 + x^3 + x + 1$.
+For $GF(2^{64})$ we use the polynomial $p(x) = x^{64} + x^4 + x^3 + x + 1$ and for $GF(2^{32})$ we use the polynomial $p(x) = x^{32} + x^7 + x^6 + x^2 + 1$.
 }
 %
 We hash a large number of $64$-bit keys into $[p]$ for $p=2^{89}-1$ using $k$-universal hashing for $k \in \{2, 4, 8\}$.
