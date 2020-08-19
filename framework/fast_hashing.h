@@ -131,9 +131,9 @@ void polyfour_64_exact::init() {
 __uint128_t polyfour_64_exact::operator()(uint64_t x) {
     __uint128_t h = fast_large_mult_mod(m_a, m_b, x);
     h = fast_large_mult_mod(h, m_c, x);
-    h = fast_large_mult_mod(h, m_d, x);
-    __uint128_t tmp = h + 1;
-    return (h + (((tmp >> 89) + tmp) >> 89)) & m_p;
+    return fast_large_mult_mod_exact(h, m_d, x);
+    // __uint128_t tmp = h + 1;
+    // return (h + (((tmp >> 89) + tmp) >> 89)) & m_p;
     // return (uint64_t)h;
 }
 
