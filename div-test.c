@@ -79,8 +79,8 @@ void our_method(mpz_t x, mp_bitcnt_t b, int m, mpz_t z) {
   start = clock();\
   for (int i = 0; i < REPS; i++) {\
      F; \
-     mpz_add(s, s, q);\
      mpz_add_ui(x, x0, i);\
+     mpz_add(s, s, q);\
   }\
   diff = clock() - start;\
   msec = diff * 1000 / CLOCKS_PER_SEC;\
@@ -148,14 +148,12 @@ int main2(){
 int main(){
    // For making tables
   mpz_t x;
-  mpz_init(x);
+
   mpz_t r;
-  mpz_init(r);
   mpz_t q;
-  mpz_init(q);
 
   mpz_t x0;
-  mpz_init(x0);
+
   gmp_randstate_t state;
   gmp_randinit_default(state);
 
@@ -166,6 +164,10 @@ int main(){
   printf("NOP, Crand, Us, Gnu\n");
 
   for (mp_bitcnt_t b = 32; b <= 1024; b *= 2) {
+     mpz_init2(r, 4*b);
+     mpz_init2(q, 4*b);
+     mpz_init2(x0, 4*b);
+     mpz_init2(x, 4*b);
      mpz_urandomb(x0, state, 2*b);
      int m = 2;
      printf("b = %d, ", b);
@@ -179,13 +181,14 @@ int main(){
         rep);
 
      mpz_t q0;
-     mpz_init(q0);
+     mpz_init2(q0, 4*b);
      mpz_t r0;
-     mpz_init(r0);
+     mpz_init2(r0, 4*b);
      mpz_t t;
-     mpz_init(t);
+     mpz_init2(t, 4*b);
      mpz_t p;
-     mpz_init_set_ui(p, 1);
+     mpz_init2(p, 2*b);
+     mpz_set_ui(p, 1);
      mpz_mul_2exp(p, p, b);
      mpz_sub_ui(p, p, 1);
      timeit_table(
@@ -201,5 +204,13 @@ int main(){
         rep);
 
      printf("\n");
+     mpz_clear(r);
+     mpz_clear(q);
+     mpz_clear(q0);
+     mpz_clear(r0);
+     mpz_clear(t);
+     mpz_clear(p);
+     mpz_clear(x);
+     mpz_clear(x0);
    }
 }
