@@ -4,8 +4,7 @@ We perform experiments on fast implementations of Mersenne hashing (\Cref{alg:Me
 All code is available in our repository\\\href{https://github.com/thomasahle/mersenne/}{github.com/thomasahle/mersenne}.
 
 We tested \Cref{alg:Mersenne} against hashing over the finite field $GF(2^{64})$.
-We have implemented hashing over the finite field $GF(2^{64})$ by using the CLMUL instruction which is supported by AMD and Intel~\cite{GUERON2010549}.
-The CLMUL instruction calculates the carry-less multiplication between two number.
+The later is implemented, following Lemire~\cite{lemire2014strongly}, using the ``Carry-less multiplication' instruction, CLMUL, supported by AMD and Intel processors~\cite{GUERON2010549}.\footnote{
 More precisely, given two $b$-bit numbers $\alpha = \sum_{i = 0}^{b - 1} \alpha_i 2^i$ and $\beta = \sum_{i = 0}^{b - 1} \beta_i 2^i$
 the CLMUL instructions calculates $\gamma = \sum_{i = 0}^{2b - 2} \gamma_i 2^i$, where $\gamma_i = \bigoplus_{j = 0}^{j} \alpha_i \beta_{j - i}$.
 If we view $\alpha$ and $\beta$ as elements in $GF(2)[x]$ then the CLMUL instruction corresponds to polynomial multiplication.
@@ -13,11 +12,14 @@ We can then calculate multiplication in a finite field, $GF(2^b)$, efficiently b
 of degree $b$ then $GF(2^b)$ is isomorphic to $GF(2)[x] / p(x)$. If we choose $p(x)$ such that the degree of $p(x) - 2^{b}$ is at
 most $b/2$ then modulus $p(x)$ can be calculated using two CLMUL instructions.
 For $GF(2^{64})$ we use the polynomial $p(x) = x^{64} + x^4 + x^3 + x + 1$.
-
-We hash $64$-bit keys and test the speed of $k$-universal hashing for $k \in \{2, 4, 8\}$.
-We use the Mersenne prime $p = 2^89 - 1$ and we have to implement multiplication between
-$89$-bit and $64$-bit numbers. This is implemented by two multiplications between to $64$-bit
-numbers with $128$-bit output.
+}
+%
+We hash a large number of $64$-bit keys into $[p]$ for $p=2^{89}-1$ using $k$-universal hashing for $k \in \{2, 4, 8\}$.
+%Note that we need $p\ge 2^{64}$ to support any range 
+Since the intermediate values of our calculations take up to $64 + 89$ bits, all computations of \Cref{alg:Mersenne} are done with 128-bit output registers.
+%We use the Mersenne prime $p = 2^{89} - 1$ and we have to implement multiplication between
+%$89$-bit and $64$-bit numbers. This is implemented by two multiplications between to $64$-bit
+%numbers with $128$-bit output.
 
 \begin{table}[H]
    \centering
