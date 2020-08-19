@@ -50,6 +50,9 @@ Since the intermediate values of our calculations take up to $64 + 89$ bits, all
    \label{tab:hashing-experiments}
 \end{table}
 
+We perform the same experiment with $p=2^{61}-1$.
+This allows us to do multiplications without splitting into multiple words, at the cost of a slightly shorter key range.
+
 \begin{table}[H]
    \centering
    \begin{tabular}{c c}
@@ -79,11 +82,11 @@ Since the intermediate values of our calculations take up to $64 + 89$ bits, all
    \label{tab:hashing-experiments2}
 \end{table}
 
-The results in \Cref{tab:hashing-experiments} show that our methods outperform carry-less Multiplication for larger $k$, while being slower for $k=2$.
+The results in \Cref{tab:hashing-experiments} and \Cref{tab:hashing-experiments2} show that our methods outperform carry-less Multiplication for larger $k$, while being slower for $k=2$.
 We note though that the multiply-shift scheme~\cite{dietzfel96universal} is better yet in that regime.
-For $k=4$, which we use for Count Sketch, the results are a tossup.
-However, we note that our methods are more portable than carry-less, and we keep the two-for-one advantages described in the article.
-For $k = 8$, using a Mersenne prime is significantly faster.
+For $k=4$, which we use for Count Sketch, the results are a toss-up for $p=2^{89}-1$, but the Mersenne primes are much faster for $p=2^{61}-1$.
+We also note that our methods are more portable than carry-less, and we keep the two-for-one advantages described in the article.
+%For $k = 8$, using a Mersenne prime is significantly faster.
 \vspace{.5em} % Soft section break
 
 We tested \Cref{alg:division-generalized} against the state of the art modified Crandall's algorithm by Chung and Hasan (\Cref{alg:cch}), as well as the built in truncated division algorithm in the GNU MultiPrecision Library, GMP~\cite{granlund2010gnu}.
