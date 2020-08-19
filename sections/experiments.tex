@@ -2,7 +2,35 @@
 \section{Experiments}\label{sec:experiments}
 We perform experiments on fast implementations of Mersenne hashing (\Cref{alg:Mersenne}) and our Mersenne division algorithm (\Cref{alg:division-generalized}).
 
-\vspace{2em}\todo{Insert hashing experiments here}
+
+\begin{table}[H]
+   \centering
+   \begin{tabular}{c c}
+      \begin{tabular}{r | r r}
+         $k$ & Mersenne       & Carryless \\
+         \hline
+         2 & 23.6 & \textbf{15.1} \\
+         4 & \textbf{65.7} & \textbf{65.7} \\
+         8 & \textbf{178.4} & 242.4 \\
+      \end{tabular}
+      \hspace{.5em}
+      &
+      \hspace{.5em}
+      \begin{tabular}{r | r r}
+         $k$ & Mersenne       & Carryless \\
+         \hline
+         $2$ & 19.0           & \textbf{16.7} \\
+         $4$ & \textbf{68.7}  & 68.8 \\
+         $8$ & \textbf{187.4} & 246.8
+      \end{tabular}
+   \end{tabular}
+   \caption{Milliseconds for $10^7$ $k$-universal hashing operations.
+      The standard deviation is less than $\pm10$ms.
+         On the left on Intel(R) Core(TM) i7-8850H @ 2.60GHz.
+      On the right on Intel(R) Core(TM) i7-86650U @ 1.9GHz.
+   }
+\end{table}
+
 
 We tested \Cref{alg:division-generalized} against the state of the art modified Crandall's algorithm by Chung and Hasan (\Cref{alg:cch}), as well as the built in truncated division algorithm in the GNU MultiPrecision Library, GMP~\cite{granlund2010gnu}.
 
@@ -43,18 +71,7 @@ We tested \Cref{alg:division-generalized} against the state of the art modified 
 
 The results in \Cref{tab:division-experiments} show that our method always outperforms the modified Crandall's algorithm, which itself outperforms GMP's division at larger bit-lengths.
 At shorter bit-lengths it is mostly a toss-up between our method and GMP's.
-We note that our code for this experiment is implemented entirely in GMP, which includes some overhead that could perhaps be avoided in an implementation closer to the metal.
 
-\begin{table}[H]
-   \centering
-   \begin{tabular}{c c}
-      \begin{tabular}{r | r r}
-         $k$ & Mersenne       & Carryless \\
-         \hline
-         $2$ & 19.0           & \textbf{16.7} \\
-         $4$ & \textbf{68.7}  & 68.8 \\
-         $8$ & \textbf{187.4} & 246.8
-      \end{tabular}
-      
-   \end{tabular}
-\end{table}
+We note that our code for this experiment is implemented entirely in GMP, which includes some overhead that could perhaps be avoided in an implementation closer to the metal.
+This is 
+
