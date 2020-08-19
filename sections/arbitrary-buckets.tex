@@ -77,20 +77,13 @@ The difference relative to Algorithm \ref{alg:h-and-s} is the computation
 of $i_x$ where we now first pick out the $(b-1)$-bit string $j_x$ from
 $h_x$, and then apply the most uniform map $(rj_x)\rs (b-1)$
 to get $i_x$. This does not affect $s_x$ which remains independent
-of $i_x$. 
-
-We now have to study the effect on our estimate error
-\[Y=X-F_2\sum_{x,y\in[u],x\neq y} s_x f_x[i_x=i_y]s_y f_y.\]
-The expectation is exactly as before. The only
-change is in the analysis of the variance where
-we before had each $i_x$ uniform in $[r]=[2^\ell]$, hence
-$\Pr[i_x=i_y]=1/r$. Now have values uniform in $[2^{b-1}]$ mapped
-most uniformly to $[r]$ for an arbitrary $r$. Then by \req{eq:coll-a},
-we get $\Pr[i_x=i_y]=\left(1+(r/(2q))^2\right)/r$ where $q=2^{b-1}$. 
-This increases
-the variance bound accordingly from $2F_2^2/r$ to
+of $i_x$, hence we still have \nameref{prop:independence}.
+But $i_x$ is no longer uniform in $[r]$ and only most uniform
+so by \eqref{eq:coll-a} we have $(1 + (r/2^b)^2)/r$-low collision probability.
+Now \Cref{lem:count-classic} give us $\E[X] = F_2$ and
 \begin{equation}\label{eq:Var-b-bit-arb-r}
-   \Var[X]=\Var[Y]\leq 2F_2^2\left(1+(r/2^b)^2\right)/r.
+   \Var[X] \le 2(F_2^2 - F_4)\left(1+(r/2^b)^2\right)/r
+      \le 2 F_2^2\left(1 + (r/2^b)^2 \right)/r .
 \end{equation}
 
 \subsection{Two-for-one hashing from Mersenne primes to arbitrary number of buckets}
