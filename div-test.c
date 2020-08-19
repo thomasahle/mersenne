@@ -89,6 +89,7 @@ void our_method(mpz_t x, mp_bitcnt_t b, int m, mpz_t z) {
 }\
 
 int main2(){
+   // For doing a single `b` and with stddev
   mpz_t x;
   mpz_init(x);
   mpz_t r;
@@ -145,6 +146,7 @@ int main2(){
 
 
 int main(){
+   // For making tables
   mpz_t x;
   mpz_init(x);
   mpz_t r;
