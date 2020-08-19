@@ -296,7 +296,7 @@ Therefore
 Thus $\Pr[\mu(h(x))=i]\leq (1+1/p)/r$ for all $i\in[r]$. This upper-bound
 only has a relative error of $1/p$ from the uniform $1/r$.
 
-Combining \req{eq:coll-ell<r-1} and \req{eq:coll-ell=r-1} with
+Combining \eqref{eq:coll-ell<r-1} and \eqref{eq:coll-ell=r-1} with
 pairwise independence, for any distinct keys $x,y\in [u]$, we show that the
 collision probability is bounded
 \begin{equation}\begin{split}  
@@ -414,7 +414,7 @@ are generally slow to compute, so, aiming to save roughly a factor 2
 in speed, a tempting idea is to compute them both using a single hash
 function.
 
-The analysis behind \req{eq:E-F2} and \req{eq:V-F2} does not quite
+The analysis behind \eqref{eq:E-F2} and \eqref{eq:V-F2} does not quite
 require $i:[u]\to[r]$ and $s:[u]\to\{-1,1\}$ to be independent.
 It suffices that the hash values are uniform and that for any
 given set of $j\leq 4$ distinct keys $x_1,\ldots,x_j$, the $2j$ hash
@@ -486,7 +486,7 @@ described in Algorithm \ref{alg:h-and-s}. As usual, we assume $2^\ell>1$.
 Since $i_x$ and $s_x$ are
 both obtained by selection of bits from $h_x$, we know from Section
 \ref{sec:power-of-two} that each of them have close to uniform
-distributions. However, we need a good replacement for \req{eq:E-0}
+distributions. However, we need a good replacement for \eqref{eq:E-0}
 which besides uniformity, requires $i_x$ and $s_x$ to be independent,
 and this is certainly not the case.
 
@@ -537,11 +537,11 @@ are functions of $h(x_i)$ which is independent of $h(x_1)$, so
 we conclude that 
 \[\E_{h(x) \sim \unif[2^b]}[s(x_1)A]=0\]
 Finally, when $h(x_1)=p$, we get $s(x_1)=-1$ and $i(x_1)=2^\ell-1$, 
-so applying \req{eq:play-with-dist}, we conclude
+so applying \eqref{eq:play-with-dist}, we conclude
 that 
 \[\E[s(x_1)A] = -\E[s(x_1) A \mid h(x_1) = p]/p = \E[A \mid i(x)=2^\ell-1]/p.\]
 \end{proof}
-Above \req{eq:remove-si} is our replacement for \req{eq:E-0}, that is,
+Above \eqref{eq:remove-si} is our replacement for \eqref{eq:E-0}, that is,
 when the hash values from $h$ are uniform in $[2^b-1]$ instead of
 in $[2^b]$, then $\E[s(x_1)B]$ is reduced by $\E[B \mid i(x)=2^\ell-1]/p$.
 For large $p$, this is a small additive error. Using this in a careful
@@ -564,7 +564,7 @@ based on Mersenne primes performs almost perfectly:
       \Var[X]&< 2(F_2^2-F_4)/r+F_2^2 (2.33+4 n/r)/p^2<2F_2^2/r.\label{eq:V-F2-p}
    \end{align}
 \end{theorem}
-The difference from \req{eq:E-F2} and \req{eq:V-F2} 
+The difference from \eqref{eq:E-F2} and \eqref{eq:V-F2} 
 is negligible when $p$ is large. Theorem \ref{thm:h-and-s-p} will be
 proved in Section \ref{sec:analysis-two-for-one}.
 
@@ -605,7 +605,7 @@ Our simple solution is to define
    \mu(x)=\floor{(x+1)r/2^b}=((x+1)r)\rs b.
 \end{equation}
 Lemma \ref{lem:most-uniform} (iii) below 
-states that \req{eq:most-uniform} indeed
+states that \eqref{eq:most-uniform} indeed
 gives a most uniform map. 
 \begin{lemma}\label{lem:most-uniform} Let $r$ and $b$ be positive integers.
    %, and let $x\in [2^b-1]$.
@@ -641,7 +641,7 @@ using $x\mapsto ((x+c)r)\rs  b$, for in this general case,
 the number of elements hashing to $0$ is $\ceil {2^b/r}-c$, or $0$ if
 $c\geq \floor {2^b/r}$.
 One may try many other hash functions $(c_1 x r+ c_2 x+ c_3 r + c_4) \rs b$ similarly without any luck.
-Our new uniform map from \req{eq:most-uniform} is thus very specific to Mersenne prime fields.
+Our new uniform map from \eqref{eq:most-uniform} is thus very specific to Mersenne prime fields.
 For general $c\ge 2$ we provide a scheme using two shifts in
 Section \ref{sec:pseudo-arbitrary}.
 

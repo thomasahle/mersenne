@@ -117,7 +117,7 @@ This will come in useful in \Cref{sec:arbitrary-buckets} where we will consider 
     The inequality follows by \Cref{prop:collision}.
 \end{proof}
 %Something something finish this part\todo{Write this properly}
-%This completes the proof of \req{eq:V-F2}.
+%This completes the proof of \eqref{eq:V-F2}.
 In the above analysis, we
 did not need $s$ and $i$ to be completely independent. All we needed
 was that for any $j\leq 4$ distinct keys $x_1,\ldots,x_j$, the hash
@@ -239,8 +239,8 @@ problem, which will be useful in \Cref{sec:arbitrary-buckets}.
             \\&=2\sum_{x,y\in[u],x\neq y} f_x^2f_y^2 (1 + \eps)/r
             \\&=2(F_2^2 - F_4)(1 + \eps)/r .\label{eq:two-pairs}
     \end{split}\end{equation}
-    Adding up add \req{eq:distinct}, \req{eq:one-pair}, and
-    \req{eq:two-pairs}, we get 
+    Adding up add \eqref{eq:distinct}, \eqref{eq:one-pair}, and
+    \eqref{eq:two-pairs}, we get 
     \begin{align*}
         \Var[Y]
             &\le 2(1 + \eps)(F_2^2 - F_4)/r + F_2^2(4(1 + \delta) n / (rp^2) + n^2/p^4)
@@ -308,7 +308,7 @@ We now use that $u/p \le (4/7)^2$ and get that
         \le (10 + (4/7)^2 - 4 (7/4)^2)/p^2
         \le 0 .
 \end{align*}
-This finishes the proof of \eqref{eq:V-F2-p} and thus also \Cref{thm:h-and-s-p}.
+This finishes the proof of \eqref{eq:V-F2-p} and thus also of \Cref{thm:h-and-s-p}.
 
 % \subsection{Two-for-one hashing from uniform bits to arbitrary number of buckets}
 % We have a hash function $h:U\to Q$, but we want hash values in $R$, so
@@ -342,6 +342,6 @@ This finishes the proof of \eqref{eq:V-F2-p} and thus also \Cref{thm:h-and-s-p}.
 %         \\&=(1+a(r-a)/q^2)/r
 %         \\&\le \left(1+(r/(2q))^2\right)/r.\label{eq:coll-a}
 % \end{split}\end{equation}
-% Note that the above calculation generalizes the one for \req{eq:coll} which
+% Note that the above calculation generalizes the one for \eqref{eq:coll} which
 % had $a=1$. We will think of $(r/(2q))^2$ as the general relative rounding
 % cost when we do not have any information about how $r$ divides $q$.

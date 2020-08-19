@@ -30,19 +30,16 @@
 \usepackage{nameref}
 \usepackage{cleveref}
 %\usepackage[ruled,vlined,commentsnumbered,titlenotnumbered]{algorithm2e}
-\newcommand{\suchthat}{\mathrel{}\mathclose{}\ifnum\currentgrouptype=16\middle\fi\vert\mathopen{}\mathrel{}}
 
 \DeclareMathOperator*{\E}{E}
 \DeclareMathOperator*{\Var}{Var}
 
-\newcommand{\ppmod}{\rule{-1.5ex}{0ex}\pmod}
 \newcommand{\floor}[1]{\lfloor {#1} \rfloor}
 \newcommand{\bfloor}[1]{\big\lfloor {#1} \big\rfloor}
 \newcommand{\bbfloor}[1]{\bigg\lfloor {#1} \bigg\rfloor}
 \newcommand{\ceil}[1]{\lceil {#1}\rceil}
 \newcommand{\Prp}[1]{\Pr\left[{#1} \right]}
 \newcommand{\Ep}[1]{{\E}\left[{#1} \right]}
-\newcommand{\req}[1]{(\ref{#1})}
 \newcommand\eps\varepsilon
 \newcommand\Z{\mathbb Z}
 
@@ -57,13 +54,6 @@
 \newtheorem {exercise}[question]{Exercise}
 
 \newcommand{\unif}{\mathcal{U}}
-
-
-% Eva's comments in a different colour
-\usepackage{color}
-\usepackage{xcolor}
-\newcommand{\er}[1]{\textcolor{blue}{#1}}
-\newcommand{\erdel}[1]{\textcolor{LightGreen}{#1}}
 
 % Drawing
 \newcommand{\andtt}{ \mathbin{\texttt{\&}} }
