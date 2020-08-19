@@ -66,10 +66,12 @@ void test_speed(uint32_t nr_trials, uint32_t nr_times) {
     output << "PolyTwo: " << test_speed_function<polytwo_64>(nr_trials, nr_times, numbers) << endl;
     output << "CarrylessTwo: " << test_speed_function<carrylesstwo_64>(nr_trials, nr_times, numbers) << endl;
     output << "PolyTwo_exact: " << test_speed_function<polytwo_64_exact>(nr_trials, nr_times, numbers) << endl;
+    cout << endl;
 
     output << "PolyFour: " << test_speed_function<polyfour_64>(nr_trials, nr_times, numbers) << endl;
     output << "CarrylessFour: " << test_speed_function<carrylessfour_64>(nr_trials, nr_times, numbers) << endl;
     output << "PolyFour_exact: " << test_speed_function<polyfour_64_exact>(nr_trials, nr_times, numbers) << endl;
+    cout << endl;
 
     output << "PolyEight: " << test_speed_function<polyeight_64>(nr_trials, nr_times, numbers) << endl;
     output << "CarrylessEight: " << test_speed_function<carrylesseight_64>(nr_trials, nr_times, numbers) << endl;

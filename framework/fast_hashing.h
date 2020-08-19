@@ -143,8 +143,9 @@ void polytwo_64_exact::init() {
 
 __uint128_t polytwo_64_exact::operator()(uint64_t x) {
     __uint128_t h = fast_large_mult_mod(m_a, m_b, x);
-    __uint128_t tmp = h + 1;
-    return (h + (((tmp >> 89) + tmp) >> 89)) & m_p;
+    return h & -((__int128_t)(h - m_p) >> 89);
+    // __uint128_t tmp = h + 1;
+    // return (h + (((tmp >> 89) + tmp) >> 89)) & m_p;
 }
 
 /* ***************************************************
@@ -174,8 +175,9 @@ __uint128_t polyfour_64_exact::operator()(uint64_t x) {
     __uint128_t h = fast_large_mult_mod(m_a, m_b, x);
     h = fast_large_mult_mod(h, m_c, x);
     h = fast_large_mult_mod(h, m_d, x);
-    __uint128_t tmp = h + 1;
-    return (h + (((tmp >> 89) + tmp) >> 89)) & m_p;
+    return h & -((__int128_t)(h - m_p) >> 89);
+    // __uint128_t tmp = h + 1;
+    // return (h + (((tmp >> 89) + tmp) >> 89)) & m_p;
 }
 
 /* ***************************************************
@@ -217,8 +219,9 @@ __uint128_t polyeight_64_exact::operator()(uint64_t x) {
     h = fast_large_mult_mod(h, m_f, x);
     h = fast_large_mult_mod(h, m_g, x);
     h = fast_large_mult_mod(h, m_h, x);
-    __uint128_t tmp = h + 1;
-    return (h + (((tmp >> 89) + tmp) >> 89)) & m_p;
+    return h & -((__int128_t)(h - m_p) >> 89);
+    // __uint128_t tmp = h + 1;
+    // return (h + (((tmp >> 89) + tmp) >> 89)) & m_p;
 }
 
 /* ***************************************************
