@@ -60,7 +60,7 @@ Feature Hashing \cite{moody1989fast,weinberger2009feature}.
 
 In this paper, we argue that uniform hash values from a Mersenne prime
 field with prime $p=2^b-1$ are not only fast to compute, but have
-special advantages different from any other prime field.  We believe
+special advantages different from any other finite field.  We believe
 we are the first to notice that such values can largely be treated as
 uniform $b$-bit strings, that is, we can use the tool box of very
 simple and efficient tricks for uniform $b$-bit strings.
@@ -84,6 +84,8 @@ work, this code generalizes to so-called Pseudo-Mersenne
 primes~\cite{van2014encyclopedia} of the form $p=2^b-c$ for small
 $c$. Our new code is simpler and faster than the classical algorithm of
 Crandall~\cite{crandall1992method}. 
+%
+%We provide experiments of both algorithms in \Cref{sec:experiments}.
 
 \subsection{Hashing uniformly into \texorpdfstring{$b$}{b} bits?}\label{sec:b-bit?}
 A main point in this paper is that having hash values uniform in $[2^b-1]$
@@ -99,7 +101,7 @@ More recently it has been suggested to use carry-less multiplication
 for $k$-universal hashing into bit strings (see, e.g., Lamere
 \cite{Lamere14}) but contrasting the hashing with Mersenne primes,
 this is less standard (takes some work to get it to run on different
-computers) and slower (by about 30-50\% on the computers we tested).
+computers) and slower (by about 30-50\% for larger $k$ on the computers we tested in \Cref{sec:experiments}).
 Moreover, the code for different bit-lengths $b$ is quite different
 because we need quite different irreducible polynomials.
 
@@ -117,12 +119,12 @@ example is small sketches such as the Count Sketch
 \cite{charikar04count-sketch} discussed in this paper. Here we may
 want to store the hash function as part of the sketch, e.g., to query
 the value of a given key. Then the hash value has to be directly
-computable from the small representation, ruling out tabluation based
+computable from the small representation, ruling out tabulation based
 methods (see further explanation at the end of \Cref{sec:count-sketch}).
 
 
 It can thus be problematic to get efficient $k$-universal hashing directly into
-$b$-bit strings, and this is why we in this paper analyze the
+$b$-bit strings, and this is why we in this paper analyse the
 hash values from Mersenne prime fields that are much easier to generate.
 
 \subsection{Polynomial hashing using Mersenne primes}
@@ -145,7 +147,7 @@ The classic definition of $k$-universal hashing
 goes back to Carter and Wegman~\cite{wegman81kwise}.
 \begin{definition}
    A random hash function $h:U\to R$ is $k$-universal if for $k$
-   distinct keys $x_0,\ldots,x_{k-1}\in U$, the $k$-touple
+   distinct keys $x_0,\ldots,x_{k-1}\in U$, the $k$-tuple
    $(h(x_0),\ldots,h(x_{k-1}))$ is uniform in $R^k$.
 \end{definition}
 \noindent
@@ -493,7 +495,7 @@ computation in Algorithm \ref{alg:Mersenne} requires that we use a
 Mersenne prime $2^b-1$ such that $u\leq 2^{b-1}$, and this is even if
 our final target is to produce just a single bit for the sign function
 $s:[u]\to\{-1,1\}$. We also know that $2^\ell<u$, for otherwise we
-get perfect results implementing $i:[u]\to[2^\ell]$ as the identifty
+get perfect results implementing $i:[u]\to[2^\ell]$ as the identify
 function (perfect because it is collision free).  Thus we can assume
 $\ell<b$, hence that $h$ provides enough bits for both $s$ and $i$.
 
@@ -837,7 +839,11 @@ Division by Mersenne primes is a less common task, but a number of well known di
 
 
 The state of the art appears to be the modified Crandall Algorithm by Chung and Hasan~\cite{chung2006low}.
-This algorithm, given in Algorithm \ref{alg:cch} modifies Crandall's algorithm~\cite{crandall1992method} from 1992 to compute division as well as modulo for generalized $2^b-c$ Mersenne primes.
+This algorithm, given in Algorithm \ref{alg:cch} modifies Crandall's algorithm~\cite{crandall1992method} from 1992 to compute division as well as modulo for generalized $2^b-c$ Mersenne primes.\footnote{
+   Chung and Hasan also has an earlier, simpler algorithm from 2003~\cite{chung2003more},
+   but it appears to give the wrong result for many simple cases.
+   This appears in part to be because of a lack of the ``clean up'' while-loop at the end of Algorithm \ref{alg:cch}.
+}
 \begin{algorithm}[H]
    \caption{Crandall, Chung, Hassan algorithm. For $p=2^b-c$, computes $q, r$ such that $x = qp+r$ and $r<p$.}
    \label{alg:cch}
@@ -870,10 +876,8 @@ This corresponds roughly to the requirement $x < 2^b (2^b/c)^s$, similar to ours
 %
 Unfortunately the algorithm ends up doing double work, by computing the quotient and remainder concurrently.
 The algorithm also suffers from the extra while loop for ``cleaning up'' the computations after the main loop.
+In practice our method is 2-3 times faster. See \Cref{sec:experiments} for an empirical comparison.
 %
-Chung and Hasan also has an earlier, simpler algorithm from 2003~\cite{chung2003more},
-but it appears to give the wrong result for many simple cases.
-This appears to be because of a lack of the ``clean up'' while loop at the end of Algorithm \ref{alg:cch}.
 
 
 % On the number of Mersenne Primes:
