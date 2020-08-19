@@ -17,3 +17,20 @@
       On Intel(R) Core(TM) i7-8850H CPU @ 2.60GHz.
    }
 \end{table}
+
+\begin{table}[H]
+   \centering
+   \begin{tabular}{ r | r r r }
+      $b$ & Crandall & \Cref{alg:division-generalized} & GMP \\
+      \hline
+      32 & 578 & 313 & 281\\
+      64 & 656 & 297 & 218\\
+      128 & 875 & 313 & 344\\
+      256 & 859 & 421 & 750\\
+      512 & 1031 & 391 & 1297\\
+      1024 & 1328 & 547 & 3094\\
+   \end{tabular}
+   \caption{Milliseconds for $10^7$ divisions of $2b$-bit numbers with $p=2^b-1$.
+      On Intel(R) Core(TM) i7-86650U CPU @ 1.9GHz.
+   }
+\end{table}
