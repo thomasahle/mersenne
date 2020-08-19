@@ -48,7 +48,7 @@ cost when we do not have any information about how $r$ divides $q$.
 We will now briefly discuss how would get the two-for-one hash
 functions in count sketches with an arbitrary number $r$ of buckets based
 on a single $4$-universal hash function $h:[u]\to [2^b]$.  We want to
-construct the two hash functions $s:[u]\to\{-1,+1\}$ and
+construct the two hash functions $s:[u]\to\{-1,1\}$ and
 $i:[u]\to[r]$. As usual the results with uniform $b$-bit strings will
 set the bar that we later compare with when from $h$ we get hash values that
 are only uniform in $[2^b-1]$.
@@ -56,7 +56,7 @@ are only uniform in $[2^b-1]$.
 The construction of $s$ and $i$ is presented in 
 Algorithm \ref{alg:b-bit-arb-r}.
 \begin{algorithm}[H]
-   \caption{For key $x\in [u]$, compute $i(x)=i_x\in[r]$ and $s(x)=s_x\in\{-1,+1\}$.
+   \caption{For key $x\in [u]$, compute $i(x)=i_x\in[r]$ and $s(x)=s_x\in\{-1,1\}$.
    \newline
     Uses 4-universal $h:[u]\to [2^b]$.}
    \label{alg:b-bit-arb-r}
@@ -70,7 +70,7 @@ Algorithm \ref{alg:b-bit-arb-r}.
       \State $a_x\gets h_x\rs (b-1)$
       \Comment $a_x$ gets the most significant bit of $h_x$
       \State $s_x\gets (a_x\ls 1)-1$
-      \Comment $s_x$ is uniform in $\{-1,+1\}$ and independent of $i_x$.
+      \Comment $s_x$ is uniform in $\{-1,1\}$ and independent of $i_x$.
    \end{algorithmic}
 \end{algorithm}
 The difference relative to Algorithm \ref{alg:h-and-s} is the computation
@@ -97,7 +97,7 @@ the variance bound accordingly from $2F_2^2/r$ to
 We will now show how wan get the two-for-one hash functions in count
 sketches with an arbitrary number $r$ of buckets based on a single
 $4$-universal hash function $h:[u]\to [2^b-1]$.  Again we want to
-construct the two hash functions $s:[u]\to\{-1,+1\}$ and
+construct the two hash functions $s:[u]\to\{-1,1\}$ and
 $i:[u]\to[r]$.  The construction will be the same as we had in
 Algorithm \ref{alg:b-bit-arb-r} when $h$ returned uniform values in
 $[2^b]$ with the change that we set $h_x\gets h(x)+1$, so that it
@@ -108,7 +108,7 @@ role of \texttt{0} and \texttt{1} in $a_x$.  The resulting algorithm
 is presented as Algorithm \ref{alg:Mersenne-arb-r}.
 \begin{algorithm}[H]
    \caption{For key $x\in [u]$, compute $i(x)=i_x\in[r]$ and
-      $s(x)=s_x\in\{-1,+1\}$.\rule{5ex}{0ex}
+      $s(x)=s_x\in\{-1,1\}$.\rule{5ex}{0ex}
    Uses 4-universal $h:[u]\to [p]$ for Mersenne prime $p=2^b-1\geq u$.}
    \label{alg:Mersenne-arb-r}
    \begin{algorithmic}
@@ -121,7 +121,7 @@ is presented as Algorithm \ref{alg:Mersenne-arb-r}.
       \State $a_x\gets h_x\rs (b-1)$
       \Comment $a_x$ gets the most significant bit of $h_x$
       \State $s_x\gets 1-(a_x\ls1)$
-      \Comment $s_x$ is quite uniform in $\{-1,+1\}$ and quite independent of $i_x$.
+      \Comment $s_x$ is quite uniform in $\{-1,1\}$ and quite independent of $i_x$.
    \end{algorithmic}
 \end{algorithm}
 The rest of Algorithm \ref{alg:Mersenne-arb-r} is exactly like 
@@ -232,7 +232,7 @@ for Lemma \ref{lem:remove-si} for handling the sign-bit $s_x$.
    First we have
    \[\E[B]=\E_{h(x_1) \sim \unif([2^b]\setminus\{0\})}[B]=\E_{h(x_1) \sim \unif[2^b]}[B]2^b/p-\E[B \mid h(x_1)=0]/p.\]
    With $h(x_1)\sim \unif[2^b]$, the bit $a_{x_1}$ is uniform and 
-   independent of $j_{x_1}$, so $s_{x_1}\in\{-1,+1\}$ is uniform and 
+   independent of $j_{x_1}$, so $s_{x_1}\in\{-1,1\}$ is uniform and 
    independent of $i_{x_1}$, and therefore 
    \[\E_{h(x_1) \sim \unif[2^b]}[s_{x_1}A]=0.\]
    Moreover, $h(x_1)=0$ implies $j_x={x_1}$, $i_{x_1}=0$, $a_{x_1}=0$,

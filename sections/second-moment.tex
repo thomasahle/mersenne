@@ -8,7 +8,7 @@ In this section, we will prove Theorem \ref{thm:h-and-s-p}---that a single Merse
 Recall that for each key $x\in [u]$, we have a value $f_x\in \Z$, and the
 goal was to estimate the second moment $F_2 = \sum_{x\in u}f_x^2$.
 
-We had two functions $i:[u]\to[r]$ and $s:[u]\to\{-1,+1\}$. 
+We had two functions $i:[u]\to[r]$ and $s:[u]\to\{-1,1\}$. 
 For notational convenience, we define $i_x=i(x)$ and $s_x=s(x)$.
 As before we have $r=2^\ell>1$ and $u>r$ both powers of two and $p=2^b-1>u$ a Mersenne prime.
 For each $i\in [r]$, we have a counter 
@@ -76,7 +76,7 @@ We formalize this into the following property.
 
 \subsection{The analysis in the classic case}
 First, as a warm-up for later comparison, we analyse the
-case where \Cref{prop:independence} is satisfied, but
+case where we have Sign Cancellation, but
 the collision probability bound is only $(1+\eps)/r$.
 This will come in useful in \Cref{sec:arbitrary-buckets} where we will consider the case of an arbitrary number of buckets, not necessarily a power of two.
 \begin{lemma}
@@ -125,13 +125,13 @@ was that for any $j\leq 4$ distinct keys $x_1,\ldots,x_j$, the hash
 values $s(x_1),\ldots,s(x_j)$ and $i(x_1),\ldots,i(x_j)$ are all
 independent and uniform in the desired domain. This was why we could
 use a single 4-universal hash function $h:[u]\to[2^b]$ with
-$b>\ell$, and use it to construct $s:[u]\to\{-1,+1\}$ and
+$b>\ell$, and use it to construct $s:[u]\to\{-1, 1\}$ and
 $i:[u]\to[2^\ell]$ as described in Algorithm \ref{alg:h-and-s}.
 % This was removed from the introduction
 %(c.f. Lemma \ref{lem:b-bit-hashing}).
 
 \subsection{The analysis of two-for-one using Mersenne primes}
-We will now analyse the case where the functions $s : [u] \to \{1, -1\}$
+We will now analyse the case where the functions $s : [u] \to \{-1, 1\}$
 and $i : [u] \to [2^l]$ are constructed as in \Cref{alg:Mersenne} from a
 single $k$-universal hash function $h : [u] \to [2^b - 1]$ where $2^b - 1$
 is a Mersenne prime.
@@ -272,10 +272,13 @@ We are now ready to prove \Cref{thm:h-and-s-p}.
     \addtocounter{lemma}{-1}
 \endgroup
 
-From \Cref{eq:remove-si} and \Cref{eq:coll-ell=r-1} we know
-that \Cref{prop:near-independence} is satisfied with $t = r - 1$
-and $\delta = -(r - 1)/p$, and \Cref{eq:coll} implies that
-\Cref{prop:collision} is satisfied with $\eps = (r - 1)/p^2$.
+From \Cref{eq:remove-si} and \Cref{eq:coll-ell=r-1} we have
+Sign Near Cancellation with $
+    \Pr[i_x = 2^b - 1] \le (1 - (r - 1)/p)/r$
+   and \Cref{eq:coll} $(1 + (r - 1)/p^2)/r$-low collision probability
+% that \Cref{prop:near-independence} is satisfied with $t = r - 1$
+% and $\delta = -(r - 1)/p$, and \Cref{eq:coll} implies that
+% \Cref{prop:collision} is satisfied with $\eps = (r - 1)/p^2$.
 Now \Cref{lem:count-mersenne} give us \eqref{eq:E-F2-p}
 and \eqref{eq:E-F2-p-com}. Furthermore, we have that
 \begin{align*}

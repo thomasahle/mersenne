@@ -418,7 +418,7 @@ $s(x)=1-2a(x)$. It is then easy to show that if $h$ is $k$-universal
 than $h$ satisfies \cref{eq:E-0}.
 \begin{algorithm}[H]
    \caption{For key $x\in [u]$, compute $i(x)=i_x\in[2^\ell]$ and
-      $s(x)=s_x\in\{-1,+1\}$,\rule{5ex}{0ex}
+      $s(x)=s_x\in\{-1,1\}$,\rule{5ex}{0ex}
    using $h:[u]\to [2^b]$ where $b>\ell$.}
    \label{alg:h-and-s}
    \begin{algorithmic}
@@ -429,7 +429,7 @@ than $h$ satisfies \cref{eq:E-0}.
       \State $a_x\gets h_x\rs (b-1)$
       \Comment $a_x$ gets the most significant bit of $h_x$
       \State $s_x\gets 1-(a_x\ls1)$
-      \Comment $a_x\in[2]$ is converted to a sign $s_x\in\{-1,+1\}$
+      \Comment $a_x\in[2]$ is converted to a sign $s_x\in\{-1,1\}$
    \end{algorithmic}
 \end{algorithm}
 % \begin{lemma}\label{lem:b-bit-hashing} Suppose $h:[u]\to[2^b]$ is $k$-universal. Let
@@ -511,7 +511,7 @@ $s:[u]\to\{-1,1\}$ are constructed from $h$ as described in Algorithm
 \end{lemma}
 \begin{proof}
 When $h(x_1) \sim \unif[2^b]$, then $s(x_1)$ is uniform
-in $\{-1,+1\}$ and independent of $i(x_1)$. The remaining
+in $\{-1,1\}$ and independent of $i(x_1)$. The remaining
 $(i(x_i),s(x_i))$, $i>1$, are independent of $s(x_1)$ because they
 are functions of $h(x_i)$ which is independent of $h(x_1)$, so
 we conclude that 
