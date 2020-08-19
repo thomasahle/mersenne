@@ -26,15 +26,6 @@ void crandall(mpz_t x, mp_bitcnt_t b, mpz_t q, mpz_t r,
   }
 }
 
-void gnu_method(mpz_t x, mp_bitcnt_t b, mpz_t q) {
-  mpz_t t;
-  mpz_init(t);
-  mpz_set_ui(t, 1);
-  mpz_mul_2exp(t, t, b);
-  mpz_sub_ui(t, t, 1);
-  mpz_tdiv_q(q, x, t);
-}
-
 // mp_bitcnt_t is always an unsigned long
 void our_method(mpz_t x, mp_bitcnt_t b, int m, mpz_t z) {
    // Note, this function will replace x with x+1
@@ -88,7 +79,7 @@ void our_method(mpz_t x, mp_bitcnt_t b, int m, mpz_t z) {
   printf("%d ", msec);\
 }\
 
-int main(){
+int main2(){
    // For doing a single `b` and with stddev
   mpz_t x;
   mpz_init(x);
@@ -145,7 +136,7 @@ int main(){
 }
 
 
-int main2(){
+int main(){
    // For making tables
   mpz_t x;
 
