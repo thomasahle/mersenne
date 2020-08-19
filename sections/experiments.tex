@@ -1,36 +1,45 @@
 %! TEX root = ../mersenne.tex
 \section{Experiments}
+We perform experiments on fast implementations of Mersenne hashing (\Cref{alg:Mersenne}) and our Mersenne division algorithm (\Cref{alg:division-generalized}).
+
+
 
 \begin{table}[H]
    \centering
-   \begin{tabular}{ r | r r r }
-      $b$ & Crandall & \Cref{alg:division-generalized} & GMP \\
-      \hline
-      32 & 396 & 138 & 149\\
-      64 & 381 & 142 & 161\\
-      128 & 564 & 157 & 239\\
-      256 & 433 & 187 & 632\\
-      512 & 687 & 291 & 1215\\
-      1024 & 885 & 358 & 2802
-   \end{tabular}
-   \caption{Milliseconds for $10^7$ divisions of $2b$-bit numbers with $p=2^b-1$.
-      On Intel(R) Core(TM) i7-8850H CPU @ 2.60GHz.
-   }
-\end{table}
+   \begin{tabular}{ c c }
+      \begin{tabular}{ r | r r r }
+         $b$ & Crandall & \Cref{alg:division-generalized} & GMP \\
+         \hline
+         32 & 396 & \textbf   {138}  & 149\\
+         64 & 381 &   \textbf {142}  & 161\\
+         128 & 564 &  \textbf {157}  & 239\\
+         256 & 433 &  \textbf {187}  & 632\\
+         512 & 687 &  \textbf {291}  & 1215\\
+         1024 & 885 & \textbf {358}  & 2802
+      \end{tabular}
+      \hspace{.5em}
+      &
+      \hspace{.5em}
+      \begin{tabular}{ r | r r r }
+         $b$ & Crandall & \Cref{alg:division-generalized} & GMP \\
+         \hline
+         32 & 578 & 313 & \textbf {281}\\
+         64 & 656 & 297 & \textbf {218}\\
+         128 & 875 & \textbf      {313} & 344\\
+         256 & 859 & \textbf      {421} & 750\\
+         512 & 1031 & \textbf     {391} & 1297\\
+         1024 & 1328 & \textbf    {547} & 3094\\
+   %   32 & 438 & 172 & 125\\
+   %   64 & 422 & 172 & 141\\
+   %   128 & 578 & 188 & 235\\
+   %   256 & 454 & 219 & 469\\
+   %   512 & 703 & 297 & 938\\
+   %   1024 & 875 & 391 & 2172\\
 
-\begin{table}[H]
-   \centering
-   \begin{tabular}{ r | r r r }
-      $b$ & Crandall & \Cref{alg:division-generalized} & GMP \\
-      \hline
-      32 & 438 & 172 & 125\\
-      64 & 422 & 172 & 141\\
-      128 & 578 & 188 & 235\\
-      256 & 454 & 219 & 469\\
-      512 & 703 & 297 & 938\\
-      1024 & 875 & 391 & 2172\\
+      \end{tabular}
    \end{tabular}
    \caption{Milliseconds for $10^7$ divisions of $2b$-bit numbers with $p=2^b-1$.
-      On Intel(R) Core(TM) i7-86650U CPU @ 1.9GHz.
+         On the left on Intel(R) Core(TM) i7-8850H @ 2.60GHz.
+      On the right on Intel(R) Core(TM) i7-86650U @ 1.9GHz.
    }
 \end{table}
