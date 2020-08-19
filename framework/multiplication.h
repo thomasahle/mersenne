@@ -11,7 +11,6 @@
 #define _MULTIPLICATION_H_
 
 #include <x86intrin.h>
-#include <bits/stdc++.h>
 
 #ifdef DEBUG
 #include <cassert>
