@@ -2,3 +2,7 @@ Before running code, remember to make a dist/ folder.
 
 Compiling on Mac:
 (clang|gcc) carryless.cpp -std=c++11 -march=native -lc++ -O3
+
+Running div-test.c:
+gcc div-test.c -lgmp -Ofast
+./a.out 2> /dev/null | python3 subnop.py

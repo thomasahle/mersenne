@@ -1,0 +1,19 @@
+%! TEX root = ../mersenne.tex
+\section{Experiments}
+
+\begin{table}[H]
+   \centering
+   \begin{tabular}{ r | r r r }
+      $b$ & Crandall & \Cref{alg:division-generalized} & GMP \\
+      \hline
+      32 & 396 & 138 & 149\\
+      64 & 381 & 142 & 161\\
+      128 & 564 & 157 & 239\\
+      256 & 433 & 187 & 632\\
+      512 & 687 & 291 & 1215\\
+      1024 & 885 & 358 & 2802
+   \end{tabular}
+   \caption{Milliseconds for $10^7$ divisions of $2b$-bit numbers with $p=2^b-1$.
+      On Intel(R) Core(TM) i7-8850H CPU @ 2.60GHz.
+   }
+\end{table}
