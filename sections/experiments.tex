@@ -25,7 +25,7 @@ Since the intermediate values of our calculations take up to $64 + 89$ bits, all
    \centering
    \begin{tabular}{c c}
       \begin{tabular}{r | r r}
-         $k$ & Mersenne       & $Gf(2^{64})$ \\
+         $k$ & \Cref{alg:Mersenne}       & $GF(2^{64})$-Hashing \\
          \hline
          2 & 23.6 & \textbf{15.1} \\
          4 & \textbf{65.7} & \textbf{65.7} \\
@@ -35,7 +35,7 @@ Since the intermediate values of our calculations take up to $64 + 89$ bits, all
       &
       \hspace{.5em}
       \begin{tabular}{r | r r}
-         $k$ & Mersenne       & $Gf(2^{64})$ \\
+         $k$ & \Cref{alg:Mersenne}       & $GF(2^{64})$-Hashing \\
          \hline
          $2$ & 19.0           & \textbf{16.7} \\
          $4$ & \textbf{68.7}  & 68.8 \\
@@ -48,6 +48,35 @@ Since the intermediate values of our calculations take up to $64 + 89$ bits, all
          On the right, Intel Core i7-86650U.
    }
    \label{tab:hashing-experiments}
+\end{table}
+
+\begin{table}[H]
+   \centering
+   \begin{tabular}{c c}
+      \begin{tabular}{r | r r}
+         $k$ & \Cref{alg:Mersenne}       & $GF(2^{64})$-Hashing \\
+         \hline
+         2& 13.6 & \textbf{13.0} \\
+         4& \textbf{31.6} & 60.3 \\
+         8&\textbf{88.0} & 218.7
+      \end{tabular}
+      \hspace{.5em}
+      &
+      \hspace{.5em}
+      \begin{tabular}{r | r r}
+         $k$ & \Cref{alg:Mersenne}       & $GF(2^{64})$-Hashing \\
+         \hline
+         $2$ & 19.0           & \textbf{16.7} \\
+         $4$ & \textbf{68.7}  & 68.8 \\
+         $8$ & \textbf{187.4} & 246.8
+      \end{tabular}
+   \end{tabular}
+   \caption{Milliseconds for $10^7$ $k$-universal hashing operations on 64bit keys with $p=2^{61}-1$.
+      The standard deviation is less than $\pm1$ms.
+         On the left, Intel Core i7-8850H.
+         On the right, Intel Core i7-86650U.
+   }
+   \label{tab:hashing-experiments2}
 \end{table}
 
 The results in \Cref{tab:hashing-experiments} show that our methods outperform carry-less Multiplication for larger $k$, while being slower for $k=2$.
