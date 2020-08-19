@@ -1,5 +1,5 @@
 %! TEX root = ../mersenne.tex
-\section{Experiments}
+\section{Experiments}\label{sec:experiments}
 We perform experiments on fast implementations of Mersenne hashing (\Cref{alg:Mersenne}) and our Mersenne division algorithm (\Cref{alg:division-generalized}).
 
 \vspace{2em}\todo{Insert hashing experiments here}
@@ -30,11 +30,11 @@ We tested \Cref{alg:division-generalized} against the state of the art modified 
          128 & 578 &      \textbf{188} & 235\\
          256 & 454 &      \textbf{219} & 469\\
          512 & 703 &      \textbf{297} & 938\\
-         1024 & 875 &     \textbf{391} & 2172\\
-
+         1024 & 875 &     \textbf{391} & 2172
       \end{tabular}
    \end{tabular}
    \caption{Milliseconds for $10^7$ divisions of $2b$-bit numbers with $p=2^b-1$.
+      The standard deviation is less than $\pm10$ms.
          On the left on Intel(R) Core(TM) i7-8850H @ 2.60GHz.
       On the right on Intel(R) Core(TM) i7-86650U @ 1.9GHz.
    }

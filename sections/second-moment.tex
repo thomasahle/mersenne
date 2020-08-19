@@ -309,39 +309,3 @@ We now use that $u/p \le (4/7)^2$ and get that
         \le 0 .
 \end{align*}
 This finishes the proof of \eqref{eq:V-F2-p} and thus also of \Cref{thm:h-and-s-p}.
-
-% \subsection{Two-for-one hashing from uniform bits to arbitrary number of buckets}
-% We have a hash function $h:U\to Q$, but we want hash values in $R$, so
-% we need a map $\mu:Q\to R$, and then use $\mu\circ h$ as
-% our hash function from $U$ to $R$. We normally assume that the hash values 
-% with $h$ are pairwise independent, that is, for any distinct $x$ and $y$,
-% the hash values $h(x)$ and $h(y)$ are independent, but then 
-% $\mu(h(x))$ and $\mu(h(y))$ are also independent. This means
-% that the collision probability can be calculated
-% as 
-% \[\Pr[\mu(h(x))=\mu(h(y))]=\sum_{i\in R}\Pr[\mu(h(x))=\mu(h(y))=i]=\sum_{i\in R}\Pr[\mu(h(x)=i)]^2.\]
-% This sum of squared probabilities attains is minimum value $1/|R|$
-% exactly when $\mu(h(x))$ is uniform in $R$. 
-
-% Let $q=|Q|$ and $r=|R|$. Suppose that $h$ is $2$-universal. Then
-% $h(x)$ is uniform in $Q$, and then we get the lowest collision
-% probability with $\mu\circ h$ if $\mu$ is most uniform as defined in
-% Section \ref{sec:most-uniform}, that is, the number of elements from
-% $Q$ mapping to any $i\in[r]$ is either $\floor{q/r}$ or
-% $\ceil{q/r}$. To calculate the collision probability,
-% Let $a\in[r]$ be such that $r$ divides $q+a$. Then the map $\mu$ maps
-% $\ceil{q/r}=(q+a)/r$ balls to $r-a$ buckets and
-% $\floor{q/r}=(q+a-r)/r$ balls to $a$ buckets. For a key $x\in [u]$, we
-% thus have $r-a$ buckets hit with probability $(1+a/q)/r$ and
-% $a$ buckets hit with probability $(1-(r-a)/q)/r$.
-% The collision probability is then
-% \begin{equation}\begin{split}
-%     \Pr[\mu(h(x))=&\mu(h(y))]= (r-a)((1+a/q)/r)^2+a((1-(r-a)r/q)/r)^2
-%         \\&=\frac{(r-a)+(r-a)2a/q+(r-a)a^2/q^2+ a-a^2(r-a)/p+a(r-a)^2/q^2}{r^2}
-%         \\&=\frac{r +r a (r-a)/q^2}{r^2}
-%         \\&=(1+a(r-a)/q^2)/r
-%         \\&\le \left(1+(r/(2q))^2\right)/r.\label{eq:coll-a}
-% \end{split}\end{equation}
-% Note that the above calculation generalizes the one for \eqref{eq:coll} which
-% had $a=1$. We will think of $(r/(2q))^2$ as the general relative rounding
-% cost when we do not have any information about how $r$ divides $q$.
