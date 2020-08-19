@@ -295,20 +295,21 @@ only has a relative error of $1/p$ from the uniform $1/r$.
 Combining \req{eq:coll-ell<r-1} and \req{eq:coll-ell=r-1} with
 pairwise independence, for any distinct keys $x,y\in [u]$, we show that the
 collision probability is bounded
-\begin{equation}\begin{split}  
+\begin{align*}
    \Pr[\mu(h(x))=\mu(h(y))]
       =(r-1)((1+1/p)/r)^2+((1-(r-1)r/p)/r)^2
       %\\&= \frac{r +(r^2-r)/p^2}{r^2}
       =(1+(r-1)/p^2)/r
       %\\& <(1+r/p^2)/r
-   .\label{eq:coll}
-\end{split}\end{equation}
+   .%\label{eq:coll}
+\end{align*}
 We note that relative error $r/p^2$ is small as long as $p$ is
 large.
 
-\paragraph{$c=1$ is important.}
-There are some natural alternatives to the above idea, but none of them turns out to work with bit-selection:
+%\paragraph{Mersenne Primes are Special}
+\vspace{.5em}
 
+There are many primes on the form $p=2^b-c$ for 
       If we had used an  arbitrary prime $p=2^b-c$, $c\in [1,2^{b-1})$.
 Recall that with $c=1$, we had our generic upper bound
 $\Pr[\mu(h(x))=i]\leq (1+1/p)/r$ for all $i\in[r]$
@@ -317,7 +318,6 @@ the $\ell$ least respectively most significant bits. If
 we pick the least significant bits with $y\mapsto y\andtt(r-1)$
 then we get a generic upper bound of $(1+c/p)/r$, which is not
 too bad for small $c$.
-
 Now let's pick the most significant bits with $y\mapsto y\rs (b-\ell)$.
 If $c\leq 2^{b-1}-2^{b-\ell}$, then $2^{b-\ell}$ elements from
 $[p]$ map to $0$ while only $\max\{0,2^{b-\ell}-c\}$
@@ -567,8 +567,8 @@ is negligible when $p$ is large. Theorem \ref{thm:h-and-s-p} will be
 proved in Section \ref{sec:analysis-two-for-one}.
 
 Recall our discussion from the end of Section
-\ref{sec:power-of-two}. If we instead had used a the $b$-bit prime
-$p=2^{b-1}+1$, then the signbit $a_x$ would be extremely biased with
+\ref{sec:power-of-two}. If we instead had used the $b$-bit prime
+$p=2^{b-1}+1$, then the sign-bit $a_x$ would be extremely biased with
 $\Pr[a_x=0]=1-1/p$ while $\Pr[a_x=1]=1/p$, leading to extremely poor
 performance.
 
