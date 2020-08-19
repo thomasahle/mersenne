@@ -53,19 +53,21 @@ in the sketching of high volume data streams, such as traffic through
 an Internet router, and then this speed is critical to keep up with
 the stream. A running example in this paper is the classic second
 moment estimation using using 4-universal hashing in count sketches
-\cite{charikar04count-sketch}.
+\cite{charikar04count-sketch}. The count sketches a linear maps that
+statistically preserve the Euclidean norm. They are very popular in
+machine learning, where they adopted count sketches under the new name
+feature hashing \cite{WDLSA09}.
 
-
-In this paper, we argue that uniform hash values from a Mersenne prime field with prime $p=2^b-1$
-are not only fast to compute,
-but have special advantages different from any other prime field.
-We believe we are the first to notice that such values can largely be
-treated as uniform $b$-bit strings, that is, we can use the tool box
-of very simple and efficient tricks for uniform $b$-bit strings.  From
-$[2^b]$ we are missing $p$, the all \texttt1s value, but a careful
-analysis shows that the relative errors we get are in the order of
-$n/p^2$ or less (this is for our example with second moment
-estimation, but our analytic techniques are more general).
+In this paper, we argue that uniform hash values from a Mersenne prime
+field with prime $p=2^b-1$ are not only fast to compute, but have
+special advantages different from any other prime field.  We believe
+we are the first to notice that such values can largely be treated as
+uniform $b$-bit strings, that is, we can use the tool box of very
+simple and efficient tricks for uniform $b$-bit strings.  From $[2^b]$
+we are missing $p$, the all \texttt1s value, but a careful analysis
+shows that the relative errors we get are in the order of $n/p^2$ or
+less (this is for our example with second moment estimation, but our
+analytic techniques are more general).
 
 To put our results in perspective, suppose we were hashing $n$ keys
 uniformly into $b$-bit strings.  The probability that there exists one
@@ -87,7 +89,7 @@ primes~\cite{van2014encyclopedia} of the form $p=2^b-c$ for small
 $c$. Our new code is simpler and faster than the classical algorithm of
 Crandall~\cite{crandall1992method}. 
 
-\subsection{Hashing uniformly into $b$ bits?}
+\subsection{Hashing uniformly into $b$ bits?}\label{sec:b-bit?}
 A main point in this paper is that having hash values uniform in $[2^b-1]$
 is almost as good as having uniform $b$-bit strings, but of course,
 it would be even better if we just had uniform $b$-bit strings.
@@ -120,7 +122,7 @@ example is small sketches such as the count sketch
 want to store the hash function as part of the sketch, e.g., to query
 the value of a given key. Then the hash value has to be directly
 computable from the small representation, ruling out tabluation based
-methods.
+methods (see further explanation at the end of \Cref{sec:count-sketch}).
 
 
 It can thus be problematic to get efficient $k$-universal hashing directly into
@@ -343,7 +345,7 @@ values into smaller segments, and sometimes use them as if
 they were the output of universally computed hash functions.
 We illustrate this idea below in the context of the second moment estimation.
 
-\subsubsection{Second moment estimation}
+\subsubsection{Second moment estimation}\label{sec:count-sketch}
 We now review the second moment estimation of streams based on count
 sketches \cite{charikar04count-sketch} (which are based on the
 celebrated second moment AMS-estimator from \cite{alon96frequency})
@@ -353,9 +355,8 @@ total value of key $x\in[u]$ is
 \[f_x=\sum_{i\in[n],x_i=x} \Delta_i.\]
 We let $n\leq u$ be  the number of non-zero values
 $f_x\neq 0$, $x\in [u]$. Often $n$ is much smaller than $u$.
-We define the $m$th moment to be the $m$-norm to $m$th power,
-$F_m^m = \sum_{x\in [u]}f_y^m$. The goal here is to
-estimate the second moment $F_2^2 = \sum_{x\in [u]}f_x^2$. 
+We define the $m$th moment $F_m = \sum_{x\in [u]}f_y^m$. The goal here is to
+estimate the second moment $F_2 = \sum_{x\in [u]}f_x^2=\|f\|^2_2$. 
 
 \begin{algorithm}[H]
    \caption{\label{alg:count-sketch} Count Sketch. Uses a
@@ -376,15 +377,27 @@ estimate the second moment $F_2^2 = \sum_{x\in [u]}f_x^2$.
 \end{algorithm}
 The standard analysis \cite{charikar04count-sketch} shows that 
 \begin{align}
-   \E[X]&= \| f\|_2^2 \label{eq:E-F2}\\
-   \Var[X]&=2(\| f\|_2^4 - \| f\|_4^4)/r<2\| f\|_2^4/r \label{eq:V-F2}
+   \E[X]&= F_2 \label{eq:E-F2}\\
+   \Var[X]&=2(F_2^2 - F_4)/r<2F_2^2/r \label{eq:V-F2}
 \end{align}
-By Chebyshev's inequality, this implies
-\[\Pr[|X-\| f\|_2^2|\geq \eps \| f\|_2^2]\leq \Var[X]/(\eps \| f\|_2^2)^2<
-2/(k\eps^2).\]
-With $t=8/\eps^2$, the error probability is below 1/4.
-To reduce the error probability, we can use the standard trick of making $r$ independent experiments and return the median estimate.
-Using Chernoff bounds, the probability that the median deviates by more than $\eps \|f\|_2^2$ is bounded by $\exp(-r/12)$.
+As $r$ grows we see that $X$ concentrates around $F_2=\|f\|^2_2$. Here
+$X=\sum_{i\in[r]} C[i]^2=\|C\|^2_2$. Now $C$ is a randomized 
+function of $f$, and as $r$ grows, we get $\|C(f)\|^2_2\approx\|f\|^2_2$,
+implying $\|C(f)\|_2\approx\|f\|_2$, that is, the Euclidean norm is
+roughly preserved by the count sketch. However, the count sketch
+is also a linear function, so Euclidean distances are preserved, that
+is, for any $f,g\in \Z^u$,
+\[\|f-g\|_2\approx \|C(f-g)\|_2=\|C(f)-C(g)\|_2.\]
+Thus, when we want to find close vectors, we can just work with the
+much smaller count sketches. This is crusial to machine learning,
+where they adopted count sketches under the new name feature hashing
+\cite{WDLSA09}.
+
+In \Cref{sec:b-bit?} we mentioned that the count sketch $C$ can also
+be used to estime any single value $f_x$. To do this, we use
+the unbiased estimator $X_x=s(x)C[i(x)]$. This is yet another standard use
+of count sketch \cite{charikar04count-sketch}. It requires
+direct access to both the sketch $C$ and the two hash functions $s$ and $i$.
 
 \subsubsection{Two-for-one hash functions with \texorpdfstring{$b$}{b}-bit hash values}
 As the count sketch is described above,
@@ -408,8 +421,8 @@ not on $s(x_1)$, then
 This follows because $\E[s(x_1)]=0$ by uniformity of $s(x_1)$ and because $s(x_1)$ is independent of $A$.
 
 
-Assuming that $t=2^\ell$ is a power of two, we can easily construct
-$i:[u]\to[t]$ and $s:[u]\to\{-1,1\}$ using a single $4$-universal
+Assuming that $r=2^\ell$ is a power of two, we can easily construct
+$i:[u]\to[r]$ and $s:[u]\to\{-1,1\}$ using a single $4$-universal
 hash function $h:[u]\to[2^b]$ where $b>\ell$. Recall that all the bits in
 $h(x_1),\ldots,h(x_4)$ are independent. We can therefore use the
 $\ell$ least significant bits of $h(x)$ for $i(x)$ and the most
@@ -761,7 +774,7 @@ This is the method presented in Algorithm \ref{alg:mod-generalized} and applied 
 
 %In the case $x\le 2^{2b}$ and $c=1$, we get the simplified Algorithm \ref{alg:div-simple} described above: $ \left\lfloor\frac{x}{2^n-1}\right\rfloor = (x+1 \rs n)+x+1 \rs n$.
 
-\subsubsection{Application to arbitrary number of buckets}\label{sec:pseudo-arbitrary}
+\subsection{Application to arbitrary number of buckets}\label{sec:pseudo-arbitrary}
 In Subsection~\ref{sec:most-uniform} we discussed how $\floor{\frac{h(x)r}{2^b-1}}$ provides a most uniform map from $[2^b-1]\to[r]$.
 To avoid the division step, we instead considered the map
 $\floor{\frac{(h(x)+1)r}{2^b}}$.
@@ -777,6 +790,7 @@ directly, getting a perfect most-uniform map.
 \subsubsection{Related Algorithms}
 
 Modulus computation by Generalized Mersenne primes is widely used in the Cryptography community.
+For example, four of the recommended primes in NIST's document ``Recommended Elliptic Curves for Federal Government Use''~\cite{nist} are Generalized Mersenne.
 Naturally, much work has been done on making computations with those primes fast.
 Articles like ``Simple Power Analysis on Fast Modular Reduction with Generalized Mersenne Prime for Elliptic Curve Cryptosystems''~\cite{sakai2006simple}
 give very specific algorithms \emph{for each} of a number of well known such primes.
@@ -843,11 +857,9 @@ The algorithm also suffers from the extra while loop for ``cleaning up'' the com
 
 
 
-
 Chung and Hasan also has an earlier, simpler algorithm from 2003~\cite{chung2003more},
 but it appears to give the wrong result for many simple cases.
 This appears to be because of a lack of the ``clean up'' while loop at the end of Algorithm \ref{alg:cch}.
-
 
 
 % On the number of Mersenne Primes:
