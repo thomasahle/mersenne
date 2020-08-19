@@ -100,7 +100,7 @@ for $k$-universal hashing into bit strings (see, e.g., Lamere
 \cite{Lamere14}) but contrasting the hashing with Mersenne primes,
 this is less standard (takes some work to get it to run on different
 computers) and slower (by about 30-50\% on the computers we tested).
-Morever, the code for different bit-lengths $b$ is quite different
+Moreover, the code for different bit-lengths $b$ is quite different
 because we need quite different irreducible polynomials.
 
 Another alternative is to use tabulation based methods which are fast
@@ -251,7 +251,7 @@ values in the range $[r]$ where $r=2^\ell$ is a power of two. We will
 often refer to the hash values in $[r]$ as buckets so that we are
 hashing keys to buckets. The point will be that all bits are
 symmetric, hence that we can select any $\ell$ bits for the
-bucketting. As we will discuss in the end, this symmetry fails badly
+bucketing. As we will discuss in the end, this symmetry fails badly
 with other primes.
 %Avoiding a degenerate case, we assume $r>1$. In particular this implies that $r$ does not divide our prime $p$.
 
@@ -392,14 +392,14 @@ implying $\|C(f)\|_2\approx\|f\|_2$, that is, the Euclidean norm is
 statistically preserved by the Count Sketch. However, the Count Sketch
 is also a linear function, so Euclidean distances are statistically
 preserved, that is, for any $f,g\in \Z^u$,
-\[\|f-g\|_2\approx \|C(f-g)\|_2=\|C(f)-C(g)\|_2\snorm{.
+\[\|f-g\|_2\approx \|C(f-g)\|_2=\|C(f)-C(g)\|_2.\]
 Thus, when we want to find close vectors, we can just work with the
 much smaller Count Sketches. This is crucial to machine learning,
 where they adopted Count Sketches under the new name feature hashing
 }\cite{WDLSA09}.
 
 In \Cref{sec:b-bit?} we mentioned that the count sketch $C$ can also
-be used to estime any single value $f_x$. To do this, we use
+be used to estimate any single value $f_x$. To do this, we use
 the unbiased estimator $X_x=s(x)C[i(x)]$. This is yet another standard use
 of count sketch \cite{charikar04count-sketch}. It requires
 direct access to both the sketch $C$ and the two hash functions $s$ and $i$.
@@ -844,8 +844,8 @@ This algorithm, given in Algorithm \ref{alg:cch} modifies Crandall's algorithm~\
    \label{alg:cch}
    \begin{algorithmic}
       %\Procedure{Divide}{x, n, c}
-         \State $q_0 \gets x \rs n $
-         \State $r_0 \gets x \andtt 2^b-1$
+         \State $q_0 \gets x \rs n$
+         \State $r_0 \gets x \andtt (2^b-1)$
          \State $q \gets q_0, r\gets r_0$
          \State $i \gets 0$
          \While{$q_i>0$}
