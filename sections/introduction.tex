@@ -82,7 +82,7 @@ the bit-length of the primes to less than half. This saves not only
 space. It typically means that we can speed up the multiplications
 with at least a factor 2.
 
-In this paper, we also provide a new fast branch-free code for
+In this paper, we also provide a fast, simple and branch-free algorithm for
 division and modulus with Mersenne primes. Contrasting our analytic
 work, this code generalizes to so-called Pseudo-Mersenne
 primes~\cite{van2014encyclopedia} of the form $p=2^b-c$ for small
@@ -248,56 +248,59 @@ We stress that while this is a particularly fast implementation of Mersenne prim
 %the all \texttt{1}s value $2^b-1$). 
 
 
-
-
-
-\subsubsection{Good bucketing with powers of two}\label{sec:power-of-two}
-As a first illustration of the advantage that we get using a
-Mersenne prime $p=2^b-1$, consider the case mentioned above where we
-want hash values in the range $[r]$ where $r=2^\ell$ is a power of
-two. We will often refer to the hash values in $[r]$ as buckets so
-that we are hashing keys to buckets.
+\subsubsection{Selecting arbitrary bits for bucketing}\label{sec:power-of-two}
+As a first illustration of the advantage that we get using a Mersenne
+prime $p=2^b-1$, consider the case mentioned above where we want hash
+values in the range $[r]$ where $r=2^\ell$ is a power of two. We will
+often refer to the hash values in $[r]$ as buckets so that we are
+hashing keys to buckets. The point will be that all bits are
+symmetric, hence that we can select any $\ell$ bits for the
+bucketting. As we will discuss in the end, this symmetry fails badly
+with other primes.
 %Avoiding a degenerate case, we assume $r>1$. In particular this implies that $r$ does not divide our prime $p$.
+
+More formally, let $\mu:[2^b]\to[2^\ell]$ be any map that selects
+$\ell$ distinct bits, that is, for some $0\leq j_1<\cdots<j_{\ell}<b$,
+$\mu(y)=y_{j_1}\cdots y_{j_\ell}$. For example, if $j_i=i-1$, then we
+are selecting the most significant bits, and then $\mu$ can be
+implemented as $y\mapsto y\rs (b-\ell)$. Alternatively, if $j_i=b-i$,
+then we are selecting the least significant bits, and then $\mu$ can
+be implemented as $y\mapsto y\andtt (2^\ell-1)=y\andtt (r-1)$.
+
 
 We assume a $k$-universal hash function $h:[u]\to[p]$, e.g.,
 the one from \Cref{alg:Mersenne}. To get hash values in $[r]$,
-we defined $h^r:[u]\to[r]$ by
-\[h^r(x)=h(x)\bmod r=h(x)\andtt (r-1).\]
-As discussed previously, the hash values of up to $k$ distinct keys remain
-independent with $h^r$. The issue is that hash values from 
-$h^r$ are not quite uniform in $[r]$.
+we use $\mu\circ h$. Since $\mu$ is deterministic,
+the hash values of up to $k$ distinct keys remain
+independent with $\mu\circ h$. The issue is that hash values from 
+$\mu\circ h$ are not quite uniform in $[r]$.
 
 Recall that for any key $x$, we have $h(x)$ uniformly distributed in $[2^b-1]$.
 This is the uniform distribution on $b$-bit strings except that we are
 missing $p=2^b-1$. Now $p$ is the all \texttt{1}s, and 
-$p \bmod r = p\andtt (r-1) = r-1$.
+$\mu(p) = r-1$.
 Therefore
 \begin{align}
-   \Pr[h^r(x)=i]
+   \forall i < r-1:
+   \Pr[\mu(h(x))=i]
    &=\lceil p/r\rceil/p
    =((p+1)/r)/p
    =(1+1/p)/r
-   \quad
-   \text{for any $i < r-1$,}
    \label{eq:coll-ell<r-1}
    \\
-   \text{while}\quad
-   \Pr[h^r(x)=r-1]
+     \Pr[\mu(h(x))=r-1]
    &=\lfloor p/r\rfloor/p=((p+1-r)/r)/p
    =(1-(r-1)/p)/r.
    \label{eq:coll-ell=r-1}
 \end{align}
-Thus $\Pr[h^r(x)=i]\leq (1+1/p)/r$ for all $i\in[r]$. This upper-bound
-only has a relative error of $1/p$ from the uniform $1/r$. For
-comparison, if we had used a prime of the form $p=2^b-a$ and $a<r$, then
-we would only get an upper bound of $(1+a/p)/r$.
-%Below we return to a Mersenne prime $p=2^b-1$
+Thus $\Pr[\mu(h(x))=i]\leq (1+1/p)/r$ for all $i\in[r]$. This upper-bound
+only has a relative error of $1/p$ from the uniform $1/r$.
 
 Combining \req{eq:coll-ell<r-1} and \req{eq:coll-ell=r-1} with
 pairwise independence, for any distinct keys $x,y\in [u]$, we show that the
 collision probability is bounded
 \begin{equation}\begin{split}  
-   \Pr[h^r(x)=h^r(y)]
+   \Pr[\mu(h(x))=\mu(h(y))]
       =(r-1)((1+1/p)/r)^2+((1-(r-1)r/p)/r)^2
       %\\&= \frac{r +(r^2-r)/p^2}{r^2}
       =(1+(r-1)/p^2)/r
@@ -307,21 +310,25 @@ collision probability is bounded
 We note that relative error $r/p^2$ is small as long as $p$ is
 large.
 
-\subsubsection{Selecting arbitrary bits from the hash value}
-Interestingly, the above analysis holds no matter which $\ell$ bits we use when mapping the hash values from $[2^b-1]$ to $[2^\ell]$.
-Let $\mu:[2^b]\to[2^\ell]$ be any map defined by selecting $\ell$ bits from a $b$-bit string.
-Above we used $\mu(y)=y\bmod 2^\ell=y\andtt  (2^\ell-1)$, selecting the $\ell$ least significant bits, but we could also use $\mu(y)=\floor{y/2^{b-\ell}}=y\rs (b-\ell)$ selecting the $\ell$ most significant bits.
-The basic point is that a uniform distribution on $[2^b]$ maps to a uniform distribution on $[2^\ell]$.
-We are only missing the all \texttt1s value $p=2^b-1$ which maps to $2^\ell-1$ regardless of which $\ell$ bits we select, so our equations \req{eq:coll-ell<r-1}--\req{eq:coll} hold no matter which $\ell$ bits we select for $h^r$.
+We now consider what would happen with our bit-selection if
+we had used an  arbitrary prime $p=2^b-c$, $c\in [1,2^{b-1})$.
+Recall that with $c=1$, we had our generic upper bound
+$\Pr[\mu(h(x))=i]\leq (1+1/p)/r$ for all $i\in[r]$
 
-The fact that it doesn't matter which $\ell$ bits we select is only
-true because we use a Mersenne prime $p=2^b-1$. Suppose we used some
-other $b$-bit prime $p=2^b-a$ where $2^{b-\ell}<a<2^{b-1}$. If we
-select the $\ell$ most signifiant bits, then $0$ elements from $[p]$
-map to $2^\ell-1$ while $2^{b-\ell}$ elements from $[p]$ map to $0$. However,
-with the $\ell$ least significant bits, we have $\floor{p/2^\ell}$ or
-$\ceil{p/2^\ell}$ elements from $[p]$ mapping to each element in
-$[2^\ell]$, so the maximal difference is 1.
+Now suppose $c\neq 1$, and let's see what happens if we select
+the $\ell$ least respectivily most significant bits. If
+we pick the least significant bits with $y\mapsto y\andtt(r-1)$
+then we get a generic upper bound of $(1+c/p)/r$, which is not
+too bad for small $c$.
+
+Now let's pick the most significant bits with $y\mapsto y\rs (b-\ell)$.
+If $c\leq 2^{b-1}-2^{b-\ell}$, then $2^{b-\ell}$ elements from
+$[p]$ map to $0$ while only $\max\{0,2^{b-\ell}-c\}$
+lands in $r-1$. In particular, for $c\in [2^{b-\ell}, 2^{b-1}-2^{b-\ell}]$,
+this is the $2^{b-\ell}$ versus $0$ elements --- a huge difference.
+When it comes to the maximal probability of hitting a bucket,
+we get $\Pr[\mu(h(x))=0]=2^{b-\ell}/p$. As an extreme case, when $\ell=1$
+and $p=2^{b-1}+1$, we get $\Pr[\mu(h(x))=0]=1-1/p$ and $\Pr[\mu(h(x))=1]=1/p$.
 
 
 \subsection{Two-for-one hash functions in second moment estimation}
@@ -381,12 +388,12 @@ The standard analysis \cite{charikar04count-sketch} shows that
    \Var[X]&=2(F_2^2 - F_4)/r<2F_2^2/r \label{eq:V-F2}
 \end{align}
 As $r$ grows we see that $X$ concentrates around $F_2=\|f\|^2_2$. Here
-$X=\sum_{i\in[r]} C[i]^2=\|C\|^2_2$. Now $C$ is a randomized 
-function of $f$, and as $r$ grows, we get $\|C(f)\|^2_2\approx\|f\|^2_2$,
+$X=\sum_{i\in[r]} C[i]^2=\|C\|^2_2$. Now $C$ is a randomized function
+of $f$, and as $r$ grows, we get $\|C(f)\|^2_2\approx\|f\|^2_2$,
 implying $\|C(f)\|_2\approx\|f\|_2$, that is, the Euclidean norm is
-roughly preserved by the count sketch. However, the count sketch
-is also a linear function, so Euclidean distances are preserved, that
-is, for any $f,g\in \Z^u$,
+statistically preserved by the count sketch. However, the count sketch
+is also a linear function, so Euclidean distances are statistically
+preserved, that is, for any $f,g\in \Z^u$,
 \[\|f-g\|_2\approx \|C(f-g)\|_2=\|C(f)-C(g)\|_2.\]
 Thus, when we want to find close vectors, we can just work with the
 much smaller count sketches. This is crusial to machine learning,
@@ -561,16 +568,28 @@ The difference from \req{eq:E-F2} and \req{eq:V-F2}
 is negligible when $p$ is large. Theorem \ref{thm:h-and-s-p} will be
 proved in Section \ref{sec:analysis-two-for-one}.
 
+Recall our discussion from the end of Section
+\ref{sec:power-of-two}. If we instead had used a the $b$-bit prime
+$p=2^{b-1}+1$, then the signbit $a_x$ would be extremely biased with
+$\Pr[a_x=0]=1-1/p$ while $\Pr[a_x=1]=1/p$, leading to extremely poor
+performance.
+
 
 \subsection{Arbitrary number of buckets}\label{sec:most-uniform}
-We now consider the general case where we want to hash into a set of buckets $R$ whose size is not a power of two.
-Suppose we have a $2$-universal hash function $h:U\to Q$.
-We will compose $h$ with a map $\mu:Q\to R$, and use $\mu\circ h$ as a hash function from $U$ to $R$.
-Let $q=|Q|$ and $r=|R|$.
-We want the map $\mu$ to be \emph{most uniform} in the sense that for bucket $i\in R$, the number of elements from $Q$ mapping to $i$ is either $\floor{q/r}$ or $\ceil{q/r}$.
-Then the uniformity of hash values with $h$ implies for any key $x$ and bucket $i\in R$ \[\floor{q/r}/q\leq \Pr[\mu(h(x))=i]\leq \ceil{q/r}/q.\]
-Below we typically have $Q=[q]$ and $R=[r]$.
-A standard example of a most uniform map $\mu:[q]\to[r]$ is $\mu(x)=x\bmod r$ which the one used above when we defined $h^r:[u]\to[r]$, but as we mentioned before, the modulo operation is quite slow unless $r$ is a power of two.
+We now consider the general case where we want to hash into a set of
+buckets $R$ whose size is not a power of two.  Suppose we have a
+$2$-universal hash function $h:U\to Q$.  We will compose $h$ with a
+map $\mu:Q\to R$, and use $\mu\circ h$ as a hash function from $U$ to
+$R$.  Let $q=|Q|$ and $r=|R|$.  We want the map $\mu$ to be \emph{most
+  uniform} in the sense that for bucket $i\in R$, the number of
+elements from $Q$ mapping to $i$ is either $\floor{q/r}$ or
+$\ceil{q/r}$.  Then the uniformity of hash values with $h$ implies for
+any key $x$ and bucket $i\in R$ \[\floor{q/r}/q\leq
+\Pr[\mu(h(x))=i]\leq \ceil{q/r}/q.\] Below we typically have $Q=[q]$
+and $R=[r]$.  A standard example of a most uniform map $\mu:[q]\to[r]$
+is $\mu(x)=x\bmod r$ which the one used above when we defined
+$h^r:[u]\to[r]$, but as we mentioned before, the modulo operation is
+quite slow unless $r$ is a power of two.
 
 Another example of a most uniform map $\mu:[q]\to[r]$ 
 is $\mu(x)=\floor{xr/q}$,
@@ -844,19 +863,17 @@ This algorithm, given in Algorithm \ref{alg:cch} modifies Crandall's algorithm~\
             \State $r\gets r-t$
             \State $q\gets q+1$
          \EndWhile
-         \State\textbf{return} $q$
+         %\State\textbf{return} $q$
       %\EndProcedure
    \end{algorithmic}
 \end{algorithm}
 The authors state that for $2n+\ell$ bit input, Algorithm \ref{alg:cch}
 requires at most $s$ iterations of the first loop, if $c < 2^{((s-1)n-\ell)/s}$.
 This corresponds roughly to the requirement $x < 2^b (2^b/c)^s$, similar to ours.
-
+%
 Unfortunately the algorithm ends up doing double work, by computing the quotient and remainder concurrently.
 The algorithm also suffers from the extra while loop for ``cleaning up'' the computations after the main loop.
-
-
-
+%
 Chung and Hasan also has an earlier, simpler algorithm from 2003~\cite{chung2003more},
 but it appears to give the wrong result for many simple cases.
 This appears to be because of a lack of the ``clean up'' while loop at the end of Algorithm \ref{alg:cch}.
