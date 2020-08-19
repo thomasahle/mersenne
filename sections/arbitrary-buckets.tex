@@ -40,7 +40,7 @@ The collision probability is then
                  \\&=(1+a(r-a)/q^2)/r
                  \\&\le \left(1+(r/(2q))^2\right)/r.\label{eq:coll-a}
 \end{split}\end{equation}
-Note that the above calculation generalizes the one for \req{eq:coll} which
+Note that the above calculation generalizes the one for \eqref{eq:coll} which
 had $a=1$. We will think of $(r/(2q))^2$ as the general relative rounding
 cost when we do not have any information about how $r$ divides $q$.
 
@@ -95,9 +95,9 @@ $i:[u]\to[r]$.  The construction will be the same as we had in
 Algorithm \ref{alg:b-bit-arb-r} when $h$ returned uniform values in
 $[2^b]$ with the change that we set $h_x\gets h(x)+1$, so that it
 becomes uniform in $[2^b]\setminus\{0\}$. It is also convenient to
-swap the sign of the sign-bit $s_x$ setting $s_x\gets 2a_x+1$ instead
-of $s_x\gets 1-2a_x$. The basic reason is that we have swapped the
-role of \texttt{0} and \texttt{1} in $a_x$.  The resulting algorithm
+swap the sign of the sign-bit $s_x$ setting $s_x\gets 2a_x - 1$ instead
+of $s_x\gets 1-2a_x$. The basic reason is that this makes the analysis
+cleaner. The resulting algorithm
 is presented as Algorithm \ref{alg:Mersenne-arb-r}.
 \begin{algorithm}[H]
    \caption{For key $x\in [u]$, compute $i(x)=i_x\in[r]$ and
@@ -151,7 +151,7 @@ uniform distribution on $[2^{b-1}]$.
 
 With
 more careful calculations, we can get some nicer bounds
-that we shall later.
+that we shall later use.
 \begin{lemma}\label{lem:ix-r-dist} For any distinct $x,y\in [u]$, 
    \begin{align}
       \Pr[i_x=0]&\le(1+r/2^b)/r\label{eq:ix=0}\\
@@ -159,8 +159,8 @@ that we shall later.
    \end{align}
 \end{lemma}
 \begin{proof}
-   The proof of \req{eq:ix=0} is a simple calculation.
-   Using \req{eq:prix0} and the fact $\ceil{2^{b-1}/r}\le(2^{b-1}+r-1)/r$ we have
+   The proof of \eqref{eq:ix=0} is a simple calculation.
+   Using \eqref{eq:prix0} and the fact $\ceil{2^{b-1}/r}\le(2^{b-1}+r-1)/r$ we have
    \begin{align*}
       \Pr[i_x=0]&\le (2(2^{b-1}+r-1)/r)-1)/(2^{b}-1)\\
                 %&=((2^b+r-2)/r)/(2^b-1)\\
@@ -217,7 +217,7 @@ for Lemma \ref{lem:remove-si} for handling the sign-bit $s_x$.
    $s_{x_1}$. 
    Then
    \begin{equation}\label{eq:remove-si-r-dist}
-      \E[s_xA]=\E[A\suchthat i_x=0]/p.
+      \E[s_xA]=\E[A \mid i_x=0]/p.
    \end{equation}
 \end{lemma}
 \begin{proof}
@@ -233,68 +233,177 @@ for Lemma \ref{lem:remove-si} for handling the sign-bit $s_x$.
    so 
    \[\E[s_{x_1}A]=-\E[s_{x_1}A \mid h(x_1)=0]/p=\E[A \mid i_{x_1}=0].\]
 \end{proof}
-We now consider our $F_2$ estimator
-\[X=\sum_{i\in[r]}\left( \sum_{x\in[u]}s_x f_x[i_x=i]\right)^2\!
-   =F_2+Y\mbox{ where }Y=\sum_{x,y\in[u],x\neq y}
-s_x f_x[i_x=i_y]s_y f_y.\]
-Using Lemma \ref{lem:remove-si-r-dist} instead of Lemma
-\ref{lem:remove-si-r-dist} we get an almost identical calculation 
-of the expectation $\E[Y]$ as
-in Section \ref{sec:two-for-one} and with the same
-conclusion that 
-\begin{equation}\label{eq:E-Mersenne-arb-r}
-   \E[Y]=(F_1^2-F_2)/p^2\leq (n-1)F_2/p^2.
-\end{equation}
-Therefore we still have the same bound \req{eq:E-F2-p} as in Theorem \ref{thm:h-and-s-p}.
 
-Concerning the variance, we have some more changes to the 
-calculations in Section \ref{sec:two-for-one}.
-We still start with
-\[\Var[X]=\Var[Y]\leq \E[Y^2]=
-   \sum_{x,y,x',y'\in[u],x\neq y,x'\neq y'}\E[(s_x f_x[i_x=i_y]s_y f_y)
-(s_{x'}f_{x'}[i_{x'}=i_{y'}]s_{y'} f_{y'})].\] 
-For terms with 4 distinct keys, we still get the same expectation
-as in Section \ref{sec:two-for-one}, so their
-total contribution to the variance is still the $F_2^2 n^2/p^4$ from
-\req{eq:distinct}
+From \Cref{lem:remove-si-r-dist} and \eqref{eq:ix=0} we have \nameref{prop:near-independence}
+with $\Pr[i_x = 0] \le (1 + r/2^b)/r$, and \eqref{eq:ix=iy} implies that we have
+$(1 + (r/2^b)^2)/r$-low collision probability. We can then use
+\Cref{lem:count-mersenne} to prove the following result.
+\begin{theorem}\label{thm:h-and-s-p-arb-r}
+   Let $u>r$ be powers of two, $1 < r \le u/2$, and let $p=2^b-1>u$ be a
+   Mersenne prime.
+   Suppose with have a 4-universal hash function $h:[u]\to[2^b-1]$, e.g.,
+   generated using \Cref{alg:Mersenne}. Suppose
+   $i:[u]\to[r]$ and
+   $s:[u]\to\{-1,1\}$ are constructed from $h$ as described in
+   \Cref{alg:Mersenne-arb-r}. Using this $i$ and $s$ 
+   in the Count Sketch Algorithm \ref{alg:count-sketch}, the second moment 
+   estimate $X=\sum_{i\in[k]} C_i^2$ satisfies:
+   \begin{align}
+      \E[X] &= F_2+(F_1^2-F_2)/p^2, \label{eq:E-F2-p-arb-r}\\
+      | \E[X] - F_2 | &\le F_2 (n - 1)/p^2, \label{eq:E-F2-p-com-arb-r}\\
+      \Var[X]&< 2(1 + (r/2^b)^2)F_2^2/r.\label{eq:V-F2-p-arb-r}
+   \end{align}
+\end{theorem}
 
-However, for the terms with two unique keys and one pair of identical
-keys, the factor $\E[i_x=r-1]<1/r$ gets replaced with $\E[i_x=0]$
-which by \req{eq:ix=0} in Lemma \ref{lem:ix-r-dist} is bound by
-$(1+r/2^b)/r$. As a result, for the total contribution of these terms,
-we have to multiply the $4 F_2^2 n/(rp^2)$ from \req{eq:one-pair} by
-$(1+r/2^b)$, so they now sum up to
-\begin{equation}\label{eq:one-pair'}
-   4 (1+r/2^b) F_2^2 n/(rp^2)
-\end{equation}
-Finally, for the terms with two pairs of identical keys, $\Pr[i_x=i_y]$ was bounded
-by $(1+1/p)/r$, which is replaced by the bound $\left(1+(r/2^b)^2\right)/r$, so
-so 
-\begin{align}
-   2\sum_{x,y\in[u],x\neq y}&(f_x^2f_y^2)\Pr[i_x=i_y]\nonumber\\
-                            &=2\sum_{x,y\in[u],x\neq y}(f_x^2f_y^2)(1+(r/2^b)^2)/k\nonumber\\
-                            &=2(F_2^2-F_4)(1+(r/2^b)^2)/k\nonumber\\
-                            &\leq 2(1-1/n)F_2^2(1+(r/2^b)^2)/k\label{eq:two-pairs'}
-\end{align}
-Adding it all up, we have proved that 
-\[\Var[Y]\leq F_2^2 n^2/p^4+2(1-1/n)F_2^2(1+(r/2^b)^2)/r+4(1+r/2^b)F_2^2 n/(rp^2).\]
-We want the argue that we get the same variance bound as we had in 
-\req{eq:Var-b-bit-arb-r} with uniform $b$-bit hash values; namely that
-\begin{equation}\label{eq:Var-Mersenne-arb-r}
-   \Var[Y]\leq 2\left(1+(r/2^b)^2\right)F_2^2/r.
-\end{equation}
-which follows if 
-\[ru^3/p^4+4(1+r/2^b)n^2/p^2\leq 2.\]
-Recall that $2\leq k<u\leq (p+1)/2$. Since $u$ is a power of two,
-$u\geq 4$. We conclude $n/p\leq u/p\leq 4/7$, $r/p\leq 3/7$, and
-$p+1\geq 8$. Therefore the left-hand side is bounded by
-$(3/7)(4/7)^3+4(1+2/8)(4/7)^2<1.8<2$.  This completes the proof of
-\req{eq:Var-Mersenne-arb-r}. The basic conclusion is that both with
-$r$ is a power of two and when $r$ is arbitrary, we get the same
-variance bounds with Mersenne primes as we did with uniform $b$-bit
-strings. The only difference is the small error in expectation from
-\req{eq:E-Mersenne-arb-r}. Relative to the correct value $F_2$, the
-relative error in the expectation is by a factor of at most
-$n/p^2$ which is insignificant when $p$ is large.
+Now \Cref{lem:count-mersenne} give us \eqref{eq:E-F2-p-arb-r}
+and \eqref{eq:E-F2-p-com-arb-r}. Furthermore, we have that
+\begin{align*}
+    \Var[X] 
+        &\le 2F_2^2/r + F_2^2 (2\eps/r + 4(1 + \delta)n / (rp^2) + n^2/p^4 - 2 /(rn))
+        \\&= 2(1 + (r/2^b)^2)F_2^2/r + F_2^2(4(1 + r/2^b)n/(r p^2) + n^2/p^4 - 2/(rn)) 
+        \\&\le 2(1 + (r/2^b)^2)F_2^2/r + F_2^2(4(1 + r/p)n/(r p^2) + n^2/p^4 - 2/(rn)) .
+\end{align*}
+
+We know that $2 \le r \le u/2 \le (p + 1)/4$ and $n \le u$.
+This implies that $p \ge 7$ and that $n/p \le u/p \le 4/7$.
+If we can prove that $4(1 + r/p)n / (rp^2) + n^2/p^4 - 2 / (rn) \le 0$ then
+we have the result. We have that
+\begin{align*}
+   4(1 + r/p)n / (rp^2) + n^2/p^4 - 2 / (rn)
+      &= 4 n/(rp^2) + 4 n /(p^3) + n^2/p^4 - 2/(rn)
+      \\&\le 4u/(rp^2) + 4u/(p^3) + u^2/p^4 - 2/(ru) .
+\end{align*}
+Again we note that $4u/(r p^2) - 2/(ru) = (2u^2 - p^2)/(u p^2 r) \le 0$
+since $u \le (p + 1)/2$ so it maximized when $r = u/2$. We then get
+that
+\begin{align*}
+   4u/(r p^2) + 4u/(p^3) + u^2/p^4 - 2/(ru)
+      \le 8/p^2 + 4u/(p^3) + u^2/p^4 - 4/u^2 .
+\end{align*}
+We now use that $u/p \le (4/7)^2$ and get that
+\begin{align*}
+   8/p^2 + 4u/(p^3) + u^2/p^4 - 4/u^2 .
+      \le (8 + 4 (4/7) + (4/7)^2 - 4 (7/4)^2)/p^2
+      \le 0 .
+\end{align*}
+This finishes the proof of \eqref{eq:V-F2-p-arb-r} and thus also of \Cref{thm:h-and-s-p-arb-r}.
+
+% We want to prove that
+% $2/p^2 + 4n/(r p^2) + n^2/p^4 - 2/(rn) \le 0$ which would
+% prove our result. We get that
+% \begin{align*}
+%     2/p^2 + 4n/(r p^2) + n^2/p^4 - 2/(rn)
+%         \le 2/p^2 + 4u/(r p^2) + u^2/p^4 - 2/(ru) .
+% \end{align*}
+% Now we note that $4u/(r p^2) - 2/(ru) = (2u^2 - p^2)/(u p^2 r) \le 0$
+% since $u \le (p + 1)/2$ so it maximized when $r = u/2$. We then get
+% that
+% \begin{align*}
+%     2/p^2 + 4u/(r p^2) + u^2/p^4 - 2/(ru)
+%         \le 2/p^2 + 8/p^2 + u^2 / p^4 - 4/u^2 .
+% \end{align*}
+% We now use that $u/p \le (4/7)^2$ and get that
+% \begin{align*}
+%     2/p^2 + 8/p^2 + u^2 / p^4 - 4/u^2
+%         \le (10 + (4/7)^2 - 4 (7/4)^2)/p^2
+%         \le 0 .
+% \end{align*}
+% This finishes the proof of \eqref{eq:V-F2-p} and thus also \Cref{thm:h-and-s-p}.
+
+% We now consider our $F_2$ estimator
+% \[X=\sum_{i\in[r]}\left( \sum_{x\in[u]}s_x f_x[i_x=i]\right)^2\!
+%    =F_2+Y\mbox{ where }Y=\sum_{x,y\in[u],x\neq y}
+% s_x f_x[i_x=i_y]s_y f_y.\] 
+% Using Lemma \ref{lem:remove-si-r-dist} instead of Lemma
+% \ref{lem:remove-si-r-dist} we get an almost identical calculation 
+% of the expectation $\E[Y]$ as
+% in Section \ref{sec:two-for-one} and with the same
+% conclusion that 
+% \begin{equation}\label{eq:E-Mersenne-arb-r}
+%    \E[Y]=(F_1^2-F_2)/p^2\leq (n-1)F_2/p^2.
+% \end{equation}
+% Therefore we still have the same bound \eqref{eq:E-F2-p} as in Theorem \ref{thm:h-and-s-p}.
+
+% Concerning the variance, we have some more changes to the 
+% calculations in Section \ref{sec:two-for-one}.
+% We still start with
+% \[\Var[X]=\Var[Y]\leq \E[Y^2]=
+%    \sum_{x,y,x',y'\in[u],x\neq y,x'\neq y'}\E[(s_x f_x[i_x=i_y]s_y f_y)
+% (s_{x'}f_{x'}[i_{x'}=i_{y'}]s_{y'} f_{y'})].\] 
+% For terms with 4 distinct keys, we still get the same expectation
+% as in Section \ref{sec:two-for-one}, so their
+% total contribution to the variance is still the $F_2^2 n^2/p^4$ from
+% \eqref{eq:distinct}
+
+% However, for the terms with two unique keys and one pair of identical
+% keys, the factor $\E[i_x=r-1]<1/r$ gets replaced with $\E[i_x=0]$
+% which by \eqref{eq:ix=0} in Lemma \ref{lem:ix-r-dist} is bound by
+% $(1+r/2^b)/r$. As a result, for the total contribution of these terms,
+% we have to multiply the $4 F_2^2 n/(rp^2)$ from \eqref{eq:one-pair} by
+% $(1+r/2^b)$, so they now sum up to
+% \begin{equation}\label{eq:one-pair'}
+%    4 (1+r/2^b) F_2^2 n/(rp^2)
+% \end{equation}
+% Finally, for the terms with two pairs of identical keys, $\Pr[i_x=i_y]$ was bounded
+% by $(1+1/p)/r$, which is replaced by the bound $\left(1+(r/2^b)^2\right)/r$, so
+% so 
+% \begin{align}
+%    2\sum_{x,y\in[u],x\neq y}&(f_x^2f_y^2)\Pr[i_x=i_y]\nonumber\\
+%                             &=2\sum_{x,y\in[u],x\neq y}(f_x^2f_y^2)(1+(r/2^b)^2)/k\nonumber\\
+%                             &=2(F_2^2-F_4)(1+(r/2^b)^2)/k\nonumber\\
+%                             &\leq 2(1-1/n)F_2^2(1+(r/2^b)^2)/k\label{eq:two-pairs'}
+% \end{align}
+% Adding it all up, we have proved that 
+% \[\Var[Y]\leq F_2^2 n^2/p^4+2(1-1/n)F_2^2(1+(r/2^b)^2)/r+4(1+r/2^b)F_2^2 n/(rp^2).\]
+% We want the argue that we get the same variance bound as we had in 
+% \eqref{eq:Var-b-bit-arb-r} with uniform $b$-bit hash values; namely that
+% \begin{equation}\label{eq:Var-Mersenne-arb-r}
+%    \Var[Y]\leq 2\left(1+(r/2^b)^2\right)F_2^2/r.
+% \end{equation}
+% which follows if 
+% \[ru^3/p^4+4(1+r/2^b)n^2/p^2\leq 2.\]
+% Recall that $2\leq k<u\leq (p+1)/2$. Since $u$ is a power of two,
+% $u\geq 4$. We conclude $n/p\leq u/p\leq 4/7$, $r/p\leq 3/7$, and
+% $p+1\geq 8$. Therefore the left-hand side is bounded by
+% $(3/7)(4/7)^3+4(1+2/8)(4/7)^2<1.8<2$.  This completes the proof of
+% \eqref{eq:Var-Mersenne-arb-r}. The basic conclusion is that both with
+% $r$ is a power of two and when $r$ is arbitrary, we get the same
+% variance bounds with Mersenne primes as we did with uniform $b$-bit
+% strings. The only difference is the small error in expectation from
+% \eqref{eq:E-Mersenne-arb-r}. Relative to the correct value $F_2$, the
+% relative error in the expectation is by a factor of at most
+% $n/p^2$ which is insignificant when $p$ is large.
 
 
+
+% \paragraph{Mersenne to arbitrary number of bins.} We then know that
+% $\delta = r/(p + 1) \le r/p$ and $\eps = r^2/(p + 1)^2$.
+% We have that
+% \begin{align*}
+%     \Var[X]
+%         &= 2F_2^4/r + F_2^4 (2\eps/r + 4(1 + \delta)n / (rp^2) + n^2/p^4 - 2 /(rn))
+%         \\&= 2(1 + \eps)F_2^4/r + F_2^4(4(1 + \delta)n / (rp^2) + n^2/p^4 - 2 / (rn))
+%         \\&\le 2(1 + r^2/(p + 1)^2) F_2^4/r + F_2^4(4(1 + r/p)n / (rp^2) + n^2/p^4 - 2 / (rn))
+%     .
+% \end{align*}
+% If we can prove that $4(1 + r/p)n / (rp^2) + n^2/p^4 - 2 / (rn) \le 0$ then
+% we have the result. We have that
+% \begin{align*}
+%     4(1 + r/p)n / (rp^2) + n^2/p^4 - 2 / (rn)
+%         &= 4 n/(rp^2) + 4 n /(p^3) + n^2/p^4 - 2/(rn)
+%         \\&\le 4u/(rp^2) + 4u/(p^3) + u^2/p^4 - 2/(ru) .
+% \end{align*}
+% Again we note that $4u/(r p^2) - 2/(ru) = (2u^2 - p^2)/(u p^2 r) \le 0$
+% since $u \le (p + 1)/2$ so it maximized when $r = u/2$. We then get
+% that
+% \begin{align*}
+%    4u/(r p^2) + 4u/(p^3) + u^2/p^4 - 2/(ru)
+%         \le 8/p^2 + 4u/(p^3) + u^2/p^4 - 4/u^2 .
+% \end{align*}
+% We now use that $u/p \le (4/7)^2$ and get that
+% \begin{align*}
+%     8/p^2 + 4u/(p^3) + u^2/p^4 - 4/u^2 .
+%         \le (8 + 4 (4/7) + (4/7)^2 - 4 (7/4)^2)/p^2
+%         \le 0 .
+% \end{align*}
+% This finishes the second part.
