@@ -35,7 +35,7 @@
       \node [draw=none] at (.5+\figb-1,.5+4) {1};
       \node [draw=none] at (.5+\figb-1,.5+5) {0};
    \end{tikzpicture}
-   \caption{The output of a random polynomial modulo $p=2^b-1$ is uniformly distributed in $[p]$. This means that each bit has the same identical distribution, which is only $1/p$ biased towards 0.}
+   \caption{The output of a random polynomial modulo $p=2^b-1$ is uniformly distributed in $[p]$, so each bit has the same identical distribution, which is only $1/p$ biased towards 0.}
    \label{fig:bits}
 \end{figure}
 
@@ -44,7 +44,7 @@ degree $(k-1)$-polynomial over some prime field
 \cite{wegman81kwise}. Mersenne primes has been used for more than 40
 years by anyone who
 %, for $k>2$,
-wanted an effient implementation
+wanted an efficient implementation
 using standard portable code \cite{carter77universal}.
 
 The speed of hashing is important because it is often an inner-loop
@@ -55,31 +55,27 @@ the stream. A running example in this paper is the classic second
 moment estimation using using 4-universal hashing in count sketches
 \cite{charikar04count-sketch}. The count sketches a linear maps that
 statistically preserve the Euclidean norm. They are very popular in
-machine learning, where they adopted count sketches under the new name
-feature hashing \cite{WDLSA09}.
+machine learning, where they adopted Count Sketches under the name
+Feature Hashing \cite{moody1989fast,weinberger2009feature}.
 
 In this paper, we argue that uniform hash values from a Mersenne prime
 field with prime $p=2^b-1$ are not only fast to compute, but have
 special advantages different from any other prime field.  We believe
 we are the first to notice that such values can largely be treated as
 uniform $b$-bit strings, that is, we can use the tool box of very
-simple and efficient tricks for uniform $b$-bit strings.  From $[2^b]$
-we are missing $p$, the all \texttt1s value, but a careful analysis
-shows that the relative errors we get are in the order of $n/p^2$ or
-less (this is for our example with second moment estimation, but our
-analytic techniques are more general).
+simple and efficient tricks for uniform $b$-bit strings.
+Our analysis provides a much better understanding of the intricacies of these prime fields,
+and justify splitting single hash values into two or more for a significant computational speed-up, what we call the ``Two for one'' trick.
 
-To put our results in perspective, suppose we were hashing $n$ keys
-uniformly into $b$-bit strings.  The probability that there exists one
-hashing to $p=2^b-1$ is at most $n/p$.  This means the total variation between
-the two distributions is $n/p$ and any error probability we might have
-proved assuming uniform $b$-bit hash values is off by at most $n/p$.
-%This may be good if $p/n$ is sufficiently large.
+In a fortunate turn of events, we show that the small bias in our hash values (see \Cref{fig:bits}) can in fact usually be turned into an advantage.
+To see this, suppose we were hashing $n$ keys uniformly into $b$-bit strings.
+The probability that there exists one hashing to $p=2^b-1$ is at most $n/p$.
+This means the total variation between the two distributions is $n/p$ and any error probability we might have proved assuming uniform $b$-bit hash values is off by at most $n/p$.
 \emph{In contrast, our analysis yields errors that differs from the uniform case by $n/p^2$ or less.}
-%This allows good error bounds even as we set $p$ close to $n$, which again means that half the word operations can saved.
+%From $[2^b]$ we are missing $p$, the all \texttt1s value (see \Cref{fig:bits}), but a careful analysis shows that the relative errors we get are in the order of $n/p^2$ or less (this is for our example with second moment estimation, but our analytic techniques are more general).
 Loosely speaking, this means that we for a desired small error can reduce
 the bit-length of the primes to less than half. This saves not only
-space. It typically means that we can speed up the multiplications
+space, it means that we can speed up the multiplications
 with at least a factor 2.
 
 In this paper, we also provide a fast, simple and branch-free algorithm for
@@ -117,7 +113,7 @@ A classic example where constant space hash
 functions are needed is in static two-level hash functions
 \cite{FKS84}.  To store n keys with constant access time, they n
 second level hash tables, each with its own hash function.  Another
-example is small sketches such as the count sketch
+example is small sketches such as the Count Sketch
 \cite{charikar04count-sketch} discussed in this paper. Here we may
 want to store the hash function as part of the sketch, e.g., to query
 the value of a given key. Then the hash value has to be directly
@@ -139,7 +135,7 @@ A classic example where constant space hash functions are needed is in
 static two-level hash functions \cite{FKS84}.  To store n keys with
 constant access time, they n second level hash tables, each with its
 own hash function.  Another example is small sketches such as the
-count sketch \cite{charikar04count-sketch} discussed in this
+Count Sketch \cite{charikar04count-sketch} discussed in this
 paper. Here we may want to store the hash function as part of the
 sketch, e.g., to query the value of a given key.
 
@@ -337,7 +333,7 @@ we get $\Pr[\mu(h(x))=0]=1-1/p$ and $\Pr[\mu(h(x))=1]=1/p$.
 \subsection{Two-for-one hash functions in second moment estimation}
 In this section we discuss how we can get several hash functions for
 the price of one, and apply the idea to second moment estimation using
-count sketches \cite{charikar04count-sketch}.
+Count Sketches \cite{charikar04count-sketch}.
 
 Suppose we had a $k$-universal hash function into $b$-bit strings.
 We note that using standard programming languages such as C, we have
@@ -356,8 +352,7 @@ they were the output of universally computed hash functions.
 We illustrate this idea below in the context of the second moment estimation.
 
 \subsubsection{Second moment estimation}\label{sec:count-sketch}
-We now review the second moment estimation of streams based on count
-sketches \cite{charikar04count-sketch} (which are based on the
+We now review the second moment estimation of streams based on Count Sketches \cite{charikar04count-sketch} (which are based on the
 celebrated second moment AMS-estimator from \cite{alon96frequency})
 
 The basic set-up is as follows.  For keys in $[u]$ and integer values in $\Z$, we are given a stream of key/value $(x_0,\Delta_0),\ldots, (x_{n-1},\Delta_{n-1})\in [u]\times\Z$. The
@@ -394,14 +389,14 @@ As $r$ grows we see that $X$ concentrates around $F_2=\|f\|^2_2$. Here
 $X=\sum_{i\in[r]} C[i]^2=\|C\|^2_2$. Now $C$ is a randomized function
 of $f$, and as $r$ grows, we get $\|C(f)\|^2_2\approx\|f\|^2_2$,
 implying $\|C(f)\|_2\approx\|f\|_2$, that is, the Euclidean norm is
-statistically preserved by the count sketch. However, the count sketch
+statistically preserved by the Count Sketch. However, the Count Sketch
 is also a linear function, so Euclidean distances are statistically
 preserved, that is, for any $f,g\in \Z^u$,
-\[\|f-g\|_2\approx \|C(f-g)\|_2=\|C(f)-C(g)\|_2.\]
+\[\|f-g\|_2\approx \|C(f-g)\|_2=\|C(f)-C(g)\|_2\snorm{.
 Thus, when we want to find close vectors, we can just work with the
-much smaller count sketches. This is crusial to machine learning,
-where they adopted count sketches under the new name feature hashing
-\cite{WDLSA09}.
+much smaller Count Sketches. This is crucial to machine learning,
+where they adopted Count Sketches under the new name feature hashing
+}\cite{WDLSA09}.
 
 In \Cref{sec:b-bit?} we mentioned that the count sketch $C$ can also
 be used to estime any single value $f_x$. To do this, we use
