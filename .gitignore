@@ -2,6 +2,7 @@
 *.swo
 build/*
 profile_dir
+*.tgz
 
 ## Core latex/pdflatex auxiliary files:
 *.aux

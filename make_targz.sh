@@ -1,2 +1,3 @@
-tar -cz build/mersenne.blg mersenne.tex sections > mersenne.tgz
+cp build/mersenne.bbl .
+tar -cz mersenne.bbl mersenne.tex sections > mersenne.tgz
 

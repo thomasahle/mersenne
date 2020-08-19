@@ -1,7 +1,7 @@
 %! TEX root = ../mersenne.tex
 \section{Experiments}\label{sec:experiments}
 We perform experiments on fast implementations of Mersenne hashing (\Cref{alg:Mersenne}) and our Mersenne division algorithm (\Cref{alg:division-generalized}).
-All code is available in our repository\\\href{https://github.com/thomasahle/mersenne/}{github.com/thomasahle/mersenne}.
+All code is available in our repository\\\href{https://github.com/thomasahle/mersenne/}{github.com/thomasahle/mersenne} and compiled with \texttt{gcc -O3}.
 
 We tested \Cref{alg:Mersenne} against hashing over the finite field $GF(2^{64})$.
 The later is implemented, following Lemire~\cite{lemire2014strongly}, using the ``Carry-less multiplication' instruction, CLMUL, supported by AMD and Intel processors~\cite{GUERON2010549}.\footnote{
