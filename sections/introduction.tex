@@ -82,7 +82,7 @@ the bit-length of the primes to less than half. This saves not only
 space. It typically means that we can speed up the multiplications
 with at least a factor 2.
 
-In this paper, we also provide a new fast branch-free code for
+In this paper, we also provide a fast, simple and branch-free algorithm for
 division and modulus with Mersenne primes. Contrasting our analytic
 work, this code generalizes to so-called Pseudo-Mersenne
 primes~\cite{van2014encyclopedia} of the form $p=2^b-c$ for small
@@ -844,19 +844,17 @@ This algorithm, given in Algorithm \ref{alg:cch} modifies Crandall's algorithm~\
             \State $r\gets r-t$
             \State $q\gets q+1$
          \EndWhile
-         \State\textbf{return} $q$
+         %\State\textbf{return} $q$
       %\EndProcedure
    \end{algorithmic}
 \end{algorithm}
 The authors state that for $2n+\ell$ bit input, Algorithm \ref{alg:cch}
 requires at most $s$ iterations of the first loop, if $c < 2^{((s-1)n-\ell)/s}$.
 This corresponds roughly to the requirement $x < 2^b (2^b/c)^s$, similar to ours.
-
+%
 Unfortunately the algorithm ends up doing double work, by computing the quotient and remainder concurrently.
 The algorithm also suffers from the extra while loop for ``cleaning up'' the computations after the main loop.
-
-
-
+%
 Chung and Hasan also has an earlier, simpler algorithm from 2003~\cite{chung2003more},
 but it appears to give the wrong result for many simple cases.
 This appears to be because of a lack of the ``clean up'' while loop at the end of Algorithm \ref{alg:cch}.
