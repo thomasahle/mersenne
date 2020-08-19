@@ -3,8 +3,8 @@
 We perform experiments on fast implementations of Mersenne hashing (\Cref{alg:Mersenne}) and our Mersenne division algorithm (\Cref{alg:division-generalized}).
 All code is available in our repository\\\href{https://github.com/thomasahle/mersenne/}{github.com/thomasahle/mersenne}.
 
-We tested \Cref{alg:Mersenne} against hashing over the finite field $GF(2^64)$.
-We have implemented hashing over the finite field $GF(2^64)$ by using the CLMUL instruction which is supported by AMD and Intel~\cite[].
+We tested \Cref{alg:Mersenne} against hashing over the finite field $GF(2^{64})$.
+We have implemented hashing over the finite field $GF(2^{64})$ by using the CLMUL instruction which is supported by AMD and Intel~\cite{GUERON2010549}.
 The CLMUL instruction calculates the carry-less multiplication between two number.
 More precisely, given two $b$-bit numbers $\alpha = \sum_{i = 0}^{b - 1} \alpha_i 2^i$ and $\beta = \sum_{i = 0}^{b - 1} \beta_i 2^i$
 the CLMUL instructions calculates $\gamma = \sum_{i = 0}^{2b - 2} \gamma_i 2^i$, where $\gamma_i = \bigoplus_{j = 0}^{j} \alpha_i \beta_{j - i}$.
@@ -12,12 +12,18 @@ If we view $\alpha$ and $\beta$ as elements in $GF(2)[x]$ then the CLMUL instruc
 We can then calculate multiplication in a finite field, $GF(2^b)$, efficiently by noting that for any irreducible polynomial $p(x) \in GF(2)[x]$
 of degree $b$ then $GF(2^b)$ is isomorphic to $GF(2)[x] / p(x)$. If we choose $p(x)$ such that the degree of $p(x) - 2^{b}$ is at
 most $b/2$ then modulus $p(x)$ can be calculated using two CLMUL instructions.
+For $GF(2^{64})$ we use the polynomial $p(x) = x^{64} + x^4 + x^3 + x + 1$.
+
+We hash $64$-bit keys and test the speed of $k$-universal hashing for $k \in \{2, 4, 8\}$.
+We use the Mersenne prime $p = 2^89 - 1$ and we have to implement multiplication between
+$89$-bit and $64$-bit numbers. This is implemented by two multiplications between to $64$-bit
+numbers with $128$-bit output.
 
 \begin{table}[H]
    \centering
    \begin{tabular}{c c}
       \begin{tabular}{r | r r}
-         $k$ & Mersenne       & $Gf(2^64)$ \\
+         $k$ & Mersenne       & $Gf(2^{64})$ \\
          \hline
          2 & 23.6 & \textbf{15.1} \\
          4 & \textbf{65.7} & \textbf{65.7} \\
@@ -27,7 +33,7 @@ most $b/2$ then modulus $p(x)$ can be calculated using two CLMUL instructions.
       &
       \hspace{.5em}
       \begin{tabular}{r | r r}
-         $k$ & Mersenne       & $Gf(2^64)$ \\
+         $k$ & Mersenne       & $Gf(2^{64})$ \\
          \hline
          $2$ & 19.0           & \textbf{16.7} \\
          $4$ & \textbf{68.7}  & 68.8 \\
@@ -42,11 +48,11 @@ most $b/2$ then modulus $p(x)$ can be calculated using two CLMUL instructions.
    \label{tab:hashing-experiments}
 \end{table}
 
-The results in \Cref{tab:hashing-experiments} show that our methods outperform Carryless Multiplication for larger $k$, while being slower for $k=2$.
+The results in \Cref{tab:hashing-experiments} show that our methods outperform carry-less Multiplication for larger $k$, while being slower for $k=2$.
 We note though that the multiply-shift scheme~\cite{dietzfel96universal} is better yet in that regime.
 For $k=4$, which we use for Count Sketch, the results are a tossup.
-However, we note that our methods are more portable than Carryless, and we keep the two-for-one advantages described in the article.
-
+However, we note that our methods are more portable than carry-less, and we keep the two-for-one advantages described in the article.
+For $k = 8$, using a Mersenne prime is significantly faster.
 \vspace{.5em} % Soft section break
 
 We tested \Cref{alg:division-generalized} against the state of the art modified Crandall's algorithm by Chung and Hasan (\Cref{alg:cch}), as well as the built in truncated division algorithm in the GNU MultiPrecision Library, GMP~\cite{granlund2010gnu}.
