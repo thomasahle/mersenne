@@ -12,7 +12,6 @@ void crandall(mpz_t x, mp_bitcnt_t b, mpz_t q, mpz_t r,
   mpz_set(q, q0);
   mpz_set(r, r0);
   while (mpz_sgn(q0) == 1) {
-     //printf("%d\n", mpz_sgn(q0));
      mpz_set(t, q0); // t = q0 * c
      mpz_tdiv_q_2exp(q0, t, b);
      mpz_tdiv_r_2exp(r0, t, b);
@@ -20,13 +19,11 @@ void crandall(mpz_t x, mp_bitcnt_t b, mpz_t q, mpz_t r,
      mpz_add(r, r, r0);
   }
   while (mpz_cmp(r, p) != -1) {
-     //printf("%d\n", mpz_cmp(r, t));
      mpz_sub(r, r, p);
      mpz_add_ui(q, q, 1);
   }
 }
 
-// mp_bitcnt_t is always an unsigned long
 void our_method(mpz_t x, mp_bitcnt_t b, int m, mpz_t z) {
    // Note, this function will replace x with x+1
   mpz_add_ui(x, x, 1); // x = x + 1
@@ -35,7 +32,6 @@ void our_method(mpz_t x, mp_bitcnt_t b, int m, mpz_t z) {
      mpz_add(z, z, x); // z = z + x
      mpz_tdiv_q_2exp(z, z, b); // z = z >> b
   }
-//  mpz_sub_ui(x, x, 1); // x = x - 1
 }
 
 

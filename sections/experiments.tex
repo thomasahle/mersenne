@@ -2,7 +2,7 @@
 \section{Experiments}
 We perform experiments on fast implementations of Mersenne hashing (\Cref{alg:Mersenne}) and our Mersenne division algorithm (\Cref{alg:division-generalized}).
 
-
+We tested \Cref{alg:division-generalized} against the state of the art modified Crandall's algorithm by Chung and Hasan (CCH, \Cref{alg:cch}), as well as the built in truncated division algorithm in Gnu MultiPrecision Library, GMP~\cite{granlund2010gnu}.
 
 \begin{table}[H]
    \centering
@@ -36,4 +36,9 @@ We perform experiments on fast implementations of Mersenne hashing (\Cref{alg:Me
          On the left on Intel(R) Core(TM) i7-8850H @ 2.60GHz.
       On the right on Intel(R) Core(TM) i7-86650U @ 1.9GHz.
    }
+   \label{tab:division-experiments}
 \end{table}
+
+The results in \Cref{tab:division-experiments} show that our method always outperforms the modified Crandall's algorithm, which itself outperforms GMP's division at larger bit-lengths.
+At shorter bit-lengths it is mostly a toss-up between our method and GMP's.
+We note that our code for this experiment is implemented entirely in GMP, which includes some overhead that could perhaps be avoided in an implementation closer to the metal.
