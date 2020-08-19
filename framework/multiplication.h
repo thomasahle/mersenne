@@ -25,103 +25,75 @@ using namespace std;
  * Calculate the product between two numbers in the finite field
  * GF(2^64)
  **/
-const __m128i C = _mm_set_epi64x(0, 1UL + (1UL<<1) + (1UL<<3) + (1UL<<4));
-inline const uint64_t gf64_mult(const uint64_t a, const uint64_t b) {
+const __m128i P64 = _mm_set_epi64x(0, 1UL + (1UL<<1) + (1UL<<3) + (1UL<<4));
+static inline const uint64_t gf64_mult(const uint64_t a, const uint64_t b) {
     __m128i a_128 = _mm_set_epi64x(0, a);
     __m128i b_128 = _mm_set_epi64x(0, b);
 
     __m128i c_128 = _mm_clmulepi64_si128(a_128, b_128, 0);
 
     __m128i q1 = _mm_srli_si128(c_128, 8);
-    __m128i q2 = _mm_clmulepi64_si128(q1, C, 0);
+    __m128i q2 = _mm_clmulepi64_si128(q1, P64, 0);
     __m128i q3 = _mm_srli_si128(q2, 8);
-    __m128i q4 = _mm_clmulepi64_si128(q3, C, 0);
+    __m128i q4 = _mm_clmulepi64_si128(q3, P64, 0);
 
     return _mm_cvtsi128_si64(_mm_xor_si128(c_128, _mm_xor_si128(q2, q4)));
-
-    // uint64_t res[2];
-    // memcpy(res, &c_128, sizeof(res));
-
-    // a_67 x^67 = a_67 x^3 +     
-
-    // // Calculate the result modulo x^64 + x^4 + x^3 + x + 1
-    // res[1] ^= (res[1] >> 60) ^ (res[1] >> 61) ^ (res[1] >> 63);
-    // return res[0] ^ (res[1]) ^ (res[1] << 1) ^ (res[1] << 3) ^ (res[1] << 4);
 }
 
-inline const uint64_t gf64_mult2(const uint64_t a, const uint64_t b) {
-    __m128i a_128 = _mm_set_epi64x(0, a);
-    __m128i b_128 = _mm_set_epi64x(0, b);
-
-    __m128i c_128 = _mm_clmulepi64_si128(a_128, b_128, 0);
-
-    // __m128i q1 = _mm_srli_si128(c_128, 64);
-    // __m128i q2 = _mm_clmulepi64_si128(q1, C, 0);
-    // __m128i q3 = _mm_srli_si128(q2, 64);
-    // __m128i q4 = _mm_clmulepi64_si128(q3, C, 0);
-
-    // return _mm_cvtsi128_si64(_mm_xor_si128(c_128, _mm_xor_si128(q2, q4)));
-
-    uint64_t res[2];
-    memcpy(res, &c_128, sizeof(res));
-
-
-    // Calculate the result modulo x^64 + x^4 + x^3 + x + 1
-    res[1] ^= (res[1] >> 60) ^ (res[1] >> 61) ^ (res[1] >> 63);
-    return res[0] ^ (res[1]) ^ (res[1] << 1) ^ (res[1] << 3) ^ (res[1] << 4);
-}
 
 
 // /**
 //  * Calculate the product between two numbers in the finite field
 //  * GF(2^32)
 //  **/
-// inline const uint32_t gf64_multiplication(const uint32_t a, const uint32_t b) {
-//     __m128i a_128 = _mm_setr_epi32(a, 0, 0, 0);
-//     __m128i b_128 = _mm_setr_epi32(b, 0, 0, 0);
+const __m128i P32 = _mm_set_epi64x(0, 1UL + (1UL<<2) + (1UL<<6) + (1UL<<7) + (1UL<<32));
+static inline const uint64_t gf32_mult(const uint64_t a, const uint64_t b) {
+    __m128i a_128 = _mm_set_epi64x(0, a);
+    __m128i b_128 = _mm_set_epi64x(0, b);
 
-//     __m128i c_128 = _mm_clmulepi64_si128(a_128, b_128, 0);
-//     uint32_t res[4];
-//     memcpy(res, &c_128, sizeof(res));
+    __m128i c_128 = _mm_clmulepi64_si128(a_128, b_128, 0);
 
-//     // Calculate the result modulo x^32 + x^22 + x^2 + x^1 + 1
-//     res[1] ^= (res[1] >> 10) ^ (res[1] >> 30) ^ (res[1] >> 31);
-//     return res[0] ^ (res[1]) ^ (res[1] << 1) ^ (res[1] << 2) ^ (res[1] << 22);
-// }
+    __m128i q1 = _mm_srli_epi64(c_128, 32);
+    __m128i q2 = _mm_clmulepi64_si128(q1, P32, 0);
+    __m128i q3 = _mm_srli_epi64(q2, 32);
+    __m128i q4 = _mm_clmulepi64_si128(q3, P32, 0);
+
+    return _mm_cvtsi128_si64(_mm_xor_si128(c_128, q4));
+}
 
 /**
  * Takes three integers a, b, x and calculates approximately 
  * (ax + b) mod p where p = 2^89 - 1. It assumes that a, b <= 2p.
  * It will return a number, y, that satisfies 0 <= y < 2p.
  **/
-static inline const __uint128_t fast_large_mult_mod(const __uint128_t a, const __uint128_t b, const uint64_t x) {
-    __uint128_t fst_a = a >> 64;
-    __uint128_t scd_a = (uint64_t)a;
+// static inline const __uint128_t fast_large_mult_mod(const __uint128_t a, const __uint128_t b, const uint64_t x) {
+//     __uint128_t fst_a = a >> 64;
+//     __uint128_t scd_a = (uint64_t)a;
 
-    __uint128_t fst_b = b >> 64;    
-    __uint128_t scd_b = (uint64_t)b;
+//     __uint128_t fst_b = b >> 64;    
+//     __uint128_t scd_b = (uint64_t)b;
 
-    __uint128_t c = scd_a * x + scd_b;
-    __uint128_t d = fst_a * x + fst_b + (c >> 64);
+//     __uint128_t c = scd_a * x + scd_b;
+//     __uint128_t d = fst_a * x + fst_b + (c >> 64);
 
-    return ((d & (((__uint128_t) 1 << 25) - 1)) << 64) + (__uint128_t)(uint64_t)c
-        + (d >> 25);
-}
-// static inline __uint128_t fast_large_mult_mod(__uint128_t a, __uint128_t b, uint64_t x) {
-//     // uint64_t fst_a = (uint64_t)(a >> 64);
-//     // uint64_t scd_a = (uint64_t)a;
-
-//     // uint64_t fst_b = (uint64_t)(b >> 64);    
-//     // uint64_t scd_b = (uint64_t)b;
-//     __uint128_t mul_low = (__uint128_t)(uint64_t)a * (__uint128_t)x;
-//     __uint128_t mul_high = (__uint128_t)(uint64_t)(a >> 64) * (__uint128_t)x;
-
-
-//     __uint128_t c = mul_low + (__uint128_t)(uint64_t)b;
-//     __uint128_t d = mul_high + (b >> 64) + (c >> 64);
-
-//     return ((d & (((uint64_t)1 << 25) - 1)) << 64) + (uint64_t)c + (d >> 25);
+//     return ((d & (((__uint128_t) 1 << 25) - 1)) << 64) + (__uint128_t)(uint64_t)c
+//         + (d >> 25);
 // }
+static inline __uint128_t fast_large_mult_mod(__uint128_t a, __uint128_t b, uint64_t x) {
+    // uint64_t fst_a = (uint64_t)(a >> 64);
+    // uint64_t scd_a = (uint64_t)a;
+
+    // uint64_t fst_b = (uint64_t)(b >> 64);    
+    // uint64_t scd_b = (uint64_t)b;
+    __uint128_t mul_low = (__uint128_t)(uint64_t)a * (__uint128_t)x;
+    __uint128_t mul_high = (__uint128_t)(uint64_t)(a >> 64) * (__uint128_t)x;
+
+
+    __uint128_t c = mul_low + (__uint128_t)(uint64_t)b;
+    __uint128_t d = mul_high + (b >> 64) + (c >> 64);
+
+    return ((d & (((uint64_t)1 << 25) - 1)) << 64) + (uint64_t)c + (d >> 25);
+}
 
 /**
  * Takes three integers a, b, x and calculates (ax + b) mod p where p = 2^89 - 1.
