@@ -25,7 +25,7 @@ using namespace std;
  * Calculate the product between two numbers in the finite field
  * GF(2^64)
  **/
-const __m128i P64 = _mm_set_epi64x(0, 1UL + (1UL<<1) + (1UL<<3) + (1UL<<4));
+const __m128i P64 = _mm_set_epi64x(0, (uint64_t)1 + ((uint64_t)1<<1) + ((uint64_t)1<<3) + ((uint64_t)1<<4));
 static inline const uint64_t gf64_mult(const uint64_t a, const uint64_t b) {
     __m128i a_128 = _mm_set_epi64x(0, a);
     __m128i b_128 = _mm_set_epi64x(0, b);
@@ -46,7 +46,7 @@ static inline const uint64_t gf64_mult(const uint64_t a, const uint64_t b) {
 //  * Calculate the product between two numbers in the finite field
 //  * GF(2^32)
 //  **/
-const __m128i P32 = _mm_set_epi64x(0, 1UL + (1UL<<2) + (1UL<<6) + (1UL<<7) + (1UL<<32));
+const __m128i P32 = _mm_set_epi64x(0, (uint64_t)1 + ((uint64_t)1<<2) + ((uint64_t)1<<6) + ((uint64_t)1<<7) + ((uint64_t)1<<32));
 static inline const uint64_t gf32_mult(const uint64_t a, const uint64_t b) {
     __m128i a_128 = _mm_set_epi64x(0, a);
     __m128i b_128 = _mm_set_epi64x(0, b);

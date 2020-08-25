@@ -52,8 +52,6 @@ uint64_t test_speed_function64(uint32_t nr_trials, uint32_t nr_times, vector<uin
 }
 
 void test_speed64(uint32_t nr_trials, uint32_t nr_times) {
-    ofstream output("dist/speed.out");
-
     polytwo_64 rng;
     rng.init();
 
@@ -62,22 +60,25 @@ void test_speed64(uint32_t nr_trials, uint32_t nr_times) {
         numbers.push_back(rng(i));
     }
 
-    output << endl << "64-bit keys to 64-bit output:" << endl;
-    output << "PolyTwo: " << test_speed_function64<polytwo_64>(nr_trials, nr_times, numbers) << endl;
-    output << "CarrylessTwo: " << test_speed_function64<carrylesstwo_64>(nr_trials, nr_times, numbers) << endl;
-    output << "PolyTwo_exact: " << test_speed_function64<polytwo_64_exact>(nr_trials, nr_times, numbers) << endl;
+    cout << "64-bit keys to 64-bit output:" << endl;
+    cout << "PolyTwo: ";
+    test_speed_function64<polytwo_64>(nr_trials, nr_times, numbers);
+    cout << "CarrylessTwo: ";
+    test_speed_function64<carrylesstwo_64>(nr_trials, nr_times, numbers);
+    cout << "MultShift: ";
+    test_speed_function64<multishift_64>(nr_trials, nr_times, numbers);
     cout << endl;
 
-    output << "PolyFour: " << test_speed_function64<polyfour_64>(nr_trials, nr_times, numbers) << endl;
-    output << "CarrylessFour: " << test_speed_function64<carrylessfour_64>(nr_trials, nr_times, numbers) << endl;
-    output << "PolyFour_exact: " << test_speed_function64<polyfour_64_exact>(nr_trials, nr_times, numbers) << endl;
+    cout << "PolyFour: ";
+    test_speed_function64<polyfour_64>(nr_trials, nr_times, numbers);
+    cout << "CarrylessFour: ";
+    test_speed_function64<carrylessfour_64>(nr_trials, nr_times, numbers);
     cout << endl;
 
-    output << "PolyEight: " << test_speed_function64<polyeight_64>(nr_trials, nr_times, numbers) << endl;
-    output << "CarrylessEight: " << test_speed_function64<carrylesseight_64>(nr_trials, nr_times, numbers) << endl;
-    output << "PolyEight_exact: " << test_speed_function64<polyeight_64_exact>(nr_trials, nr_times, numbers) << endl;
-
-    output.close();
+    cout << "PolyEight: ";
+    test_speed_function64<polyeight_64>(nr_trials, nr_times, numbers);
+    cout << "CarrylessEight: ";
+    test_speed_function64<carrylesseight_64>(nr_trials, nr_times, numbers);
 }
 
 template<typename T>
@@ -116,8 +117,6 @@ uint64_t test_speed_function32(uint32_t nr_trials, uint32_t nr_times, vector<uin
 }
 
 void test_speed32(uint32_t nr_trials, uint32_t nr_times) {
-    ofstream output("dist/speed.out");
-
     polytwo_32 rng;
     rng.init();
 
@@ -126,30 +125,36 @@ void test_speed32(uint32_t nr_trials, uint32_t nr_times) {
         numbers.push_back(rng(i));
     }
 
-    output << endl << "64-bit keys to 64-bit output:" << endl;
-    output << "PolyTwo: " << test_speed_function32<polytwo_32>(nr_trials, nr_times, numbers) << endl;
-    output << "CarrylessTwo: " << test_speed_function32<carrylesstwo_32>(nr_trials, nr_times, numbers) << endl;
-    // output << "PolyTwo_exact: " << test_speed_function<polytwo_64_exact>(nr_trials, nr_times, numbers) << endl;
+    cout << "32-bit keys to 32-bit output:" << endl;
+    cout << "PolyTwo: ";
+    test_speed_function32<polytwo_32>(nr_trials, nr_times, numbers);
+    cout << "CarrylessTwo: ";
+    test_speed_function32<carrylesstwo_32>(nr_trials, nr_times, numbers);
+    cout << "MultShift: ";
+    test_speed_function32<multishift_32>(nr_trials, nr_times, numbers);
     cout << endl;
 
-    output << "PolyFour: " << test_speed_function32<polyfour_32>(nr_trials, nr_times, numbers) << endl;
-    output << "CarrylessFour: " << test_speed_function32<carrylessfour_32>(nr_trials, nr_times, numbers) << endl;
-    // output << "PolyFour_exact: " << test_speed_function<polyfour_64_exact>(nr_trials, nr_times, numbers) << endl;
+    cout << "PolyFour: ";
+    test_speed_function32<polyfour_32>(nr_trials, nr_times, numbers);
+    cout << "CarrylessFour: ";
+    test_speed_function32<carrylessfour_32>(nr_trials, nr_times, numbers);
     cout << endl;
 
-    output << "PolyEight: " << test_speed_function32<polyeight_32>(nr_trials, nr_times, numbers) << endl;
-    output << "CarrylessEight: " << test_speed_function32<carrylesseight_32>(nr_trials, nr_times, numbers) << endl;
-    // output << "PolyEight_exact: " << test_speed_function<polyeight_64_exact>(nr_trials, nr_times, numbers) << endl;
-
-    output.close();
+    cout << "PolyEight: ";
+    test_speed_function32<polyeight_32>(nr_trials, nr_times, numbers);
+    cout << "CarrylessEight: ";
+    test_speed_function32<carrylesseight_32>(nr_trials, nr_times, numbers);
 }
 
 
 int main() {
     init_randomness();
 
-
+    // cout << "32 bits:" << endl;
     test_speed32(1e7, 50);
+    cout << endl << endl;
+    // cout << endl << "64 bits:" << endl;
+    test_speed64(1e7, 50);
 
 #ifdef DEBUG
     cout << "Random bytes used: " << usedBytes << endl;

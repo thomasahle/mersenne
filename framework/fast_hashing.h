@@ -23,6 +23,71 @@
 
 using namespace std;
 
+class multishift_64 {
+#ifdef DEBUG
+    bool hasInit;
+#endif
+    // using uint_large_t = typename conditional<sixtyfour, __uint128_t, uint64_t>::type;
+    // using uint_t = typename conditional<sixtyfour, uint64_t, uint32_t>::type;
+
+    __uint128_t m_a, m_b;
+
+public:
+    uint64_t operator()(uint64_t x);
+    void init();
+};
+
+
+void multishift_64::init() {
+#ifdef SEEDED_RANDOM
+    m_a = getRandomUInt128();
+    m_b = getRandomUInt128();
+#endif
+#ifdef DEBUG
+    hasInit=true;
+#endif
+}
+
+uint64_t multishift_64::operator()(uint64_t x) {
+#ifdef DEBUG
+    assert(hasInit);
+#endif
+    return (m_a * (__uint128_t)x + m_b) >> 64;
+}
+
+class multishift_32 {
+#ifdef DEBUG
+    bool hasInit;
+#endif
+    // using uint_large_t = typename conditional<sixtyfour, __uint128_t, uint64_t>::type;
+    // using uint_t = typename conditional<sixtyfour, uint64_t, uint32_t>::type;
+
+    uint32_t m_a, m_b;
+
+public:
+    uint32_t operator()(uint32_t x);
+    void init();
+};
+
+
+void multishift_32::init() {
+#ifdef SEEDED_RANDOM
+    m_a = getRandomUInt64();
+    m_b = getRandomUInt64();
+#endif
+#ifdef DEBUG
+    hasInit=true;
+#endif
+}
+
+uint32_t multishift_32::operator()(uint32_t x) {
+#ifdef DEBUG
+    assert(hasInit);
+#endif
+    return (m_a * (uint64_t)x + m_b) >> 32;
+}
+
+
 /* ***************************************************
  * 2-wise independent hashing using polyhash.
  * ***************************************************/
@@ -341,7 +406,7 @@ void polytwo_32::init() {
 }
 
 uint64_t polytwo_32::operator()(uint32_t x) {
-    __uint128_t h = (__uint128_t)m_a * (uint64_t)x + m_b;
+    __uint128_t h = (__uint128_t)m_a * x + m_b;
     h = (h & m_p) + (h >> 61);
     if (h >= m_p) h -= m_p;
 
@@ -374,11 +439,11 @@ void polyfour_32::init() {
 uint64_t polyfour_32::operator()(uint32_t x) {
     uint64_t y = x;
     __uint128_t h = (__uint128_t)m_a * y + m_b;
-    h = (uint64_t)(h & m_p + (h >> 61));
+    h = (h & m_p) + (h >> 61);
     h = (__uint128_t)h * y + m_c;
-    h = (uint64_t)(h & m_p + (h >> 61));
+    h = (h & m_p) + (h >> 61);
     h = (__uint128_t)h * y + m_d;
-    h = (uint64_t)(h & m_p + (h >> 61));
+    h = (h & m_p) + (h >> 61);
     if (h >= m_p) h -= m_p;
 
     return (uint64_t)h;
