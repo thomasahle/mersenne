@@ -3,6 +3,10 @@ Before running code, remember to make a dist/ folder.
 Compiling on Mac:
 (clang|gcc) carryless.cpp -std=c++11 -march=native -lc++ -O3
 
+Compiling on Linux:
+clang++ carryless.cpp -std=c++11 -march=native -O3
+(Note that gcc and g++ have a tendency to mess up the optimization here.)
+
 Running div-test.c:
 gcc div-test.c -lgmp -Ofast
 ./a.out 2> /dev/null | python3 subnop.py

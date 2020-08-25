@@ -18,7 +18,12 @@ for line in sys.stdin:
         b, nop, *xs = map(int, ns)
         xs = [x - nop for x in xs]
         print(b, '&', end=' ')
-        print(' & '.join(map(str, xs)), end=r'\\'+'\n')
+        best = min(range(len(xs)), key=lambda i: xs[i])
+        xs[best] = f'\\textbf{{{xs[best]}}}'
+        print(' & '.join(map(str, xs)), end=r'\\'+'\n', flush=True)
+    elif line.startswith('NOP, '):
+        print('$b$ & Crandall & \\Cref{alg:division-generalized} & GMP\\\\', flush=True)
+        print('\\hline\\\\')
     else:
         print(line, end='')
 

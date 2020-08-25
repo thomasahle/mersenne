@@ -106,13 +106,10 @@ int main2(){
      rep_inner, rep_outer);
 
   printf("Running Crandall\n");
-  mpz_t q0;
+  mpz_t q0, r0, t, p;
   mpz_init(q0);
-  mpz_t r0;
   mpz_init(r0);
-  mpz_t t;
   mpz_init(t);
-  mpz_t p;
   mpz_init_set_ui(p, 1);
   mpz_mul_2exp(p, p, b);
   mpz_sub_ui(p, p, 1);
@@ -134,16 +131,15 @@ int main2(){
 
 int main(){
    // For making tables
-  mpz_t x;
-
-  mpz_t r;
-  mpz_t q;
-
-  mpz_t x0;
+  mpz_t x, r, q, x0;
+  mpz_init(r);
+  mpz_init(q);
+  mpz_init(x0);
+  mpz_init(x);
 
   gmp_randstate_t state;
   gmp_randinit_default(state);
-
+  gmp_randseed_ui(state, time(NULL));
 
   int rep = 1e7;
 
@@ -151,11 +147,9 @@ int main(){
   printf("NOP, Crand, Us, Gnu\n");
 
   for (mp_bitcnt_t b = 32; b <= 1024; b *= 2) {
-     mpz_init2(r, 4*b);
-     mpz_init2(q, 4*b);
-     mpz_init2(x0, 4*b);
-     mpz_init2(x, 4*b);
-     mpz_urandomb(x0, state, 2*b);
+     //mpz_urandomb(x0, state, 2*b);
+     mpz_set_ui(x0, 1); // Set x0 to 2^(2b) - reps, rather than random
+     mpz_mul_2exp(x0, x0, 2*b-25); // Should subtract at least log2(rep)
      int m = 2;
      printf("b = %d, ", b);
 
@@ -163,18 +157,17 @@ int main(){
      clock_t start, diff;
      int msec, sum, sqs, stdv;
 
+     // Time NOP
      timeit_table(
         mpz_add_ui(q, q, 1),
         rep);
 
-     mpz_t q0;
-     mpz_init2(q0, 4*b);
-     mpz_t r0;
-     mpz_init2(r0, 4*b);
-     mpz_t t;
-     mpz_init2(t, 4*b);
-     mpz_t p;
-     mpz_init2(p, 2*b);
+     // Time Crandall. The method has some temp vars we init here.
+     mpz_t q0, r0, t, p;
+     mpz_init(q0);
+     mpz_init(r0);
+     mpz_init(t);
+     mpz_init(p);
      mpz_set_ui(p, 1);
      mpz_mul_2exp(p, p, b);
      mpz_sub_ui(p, p, 1);
@@ -191,13 +184,5 @@ int main(){
         rep);
 
      printf("\n");
-     mpz_clear(r);
-     mpz_clear(q);
-     mpz_clear(q0);
-     mpz_clear(r0);
-     mpz_clear(t);
-     mpz_clear(p);
-     mpz_clear(x);
-     mpz_clear(x0);
    }
 }
