@@ -12,9 +12,20 @@ typedef __uint128_t u128;
 #ifndef K
    #define K 2
 #endif
-//static const int L = 1+K*(K-1)/2;
+static const int L = 1+K*(K-1)/2;
 // With 32 bits we only need half the L. (Rounded up)
-static const int L = (1+K*(K-1)/2+1)/2;
+//static const int L = (1+K*(K-1)/2+1)/2;
+
+// Runs of inner hashing loop
+#ifndef REPS_I
+   #define REPS_I 1e7
+#endif
+
+// Runs of outer hashing loop (measures variance of inner loops)
+#ifndef REPS_O
+   #define REPS_O 1e2
+#endif
+
 
 
 static //__attribute__((always_inline))
@@ -118,7 +129,7 @@ u64 hash4(u64 cs[K][L], u64 x) {
 
 
 
-#define timeit(F, REPS_I, REPS_O) {\
+#define timeit(F) {\
   u64 sum = 0;\
   u64 sqs = 0;\
   u64 s = 0;\
@@ -146,31 +157,11 @@ static void test() {
    for (int i = 0; i < K; i++)
       for (int j = 0; j < L; j++)
          cs[i][j] = (i+1)*(j+1);
-   printf("Test value: %lld\n", hash(cs, 100));
+   fprintf(stderr, "Test value: %lld\n", hash(cs, 100));
    //for (int i = 0; i < L; i++)
       //printf("%lld\n", temp[i]);
 }
-int main() {
-   test();
-
-   srand(time(0));
-
-   u64 cs[K][L];
-   for (int i = 0; i < K; i++)
-      for (int j = 0; j < L; j++)
-         cs[i][j] = rand();
-   //const u64 cs[K][L] = {{123, 345}, {34, 234}};
-
-   const int ri = 1e7;
-   const int ro = 1e3;
-
-   u64 x0 = rand();
-   u64 x = x0;
-   printf("NOP: ");
-   timeit(x|1, ri, ro); // NOP
-   x = x0;
-   printf("%d-Multiply-shift: ", K);
-   timeit(hash(cs, x), ri, ro);
+/*static void test2() {
    x = x0;
    timeit(hash2(cs, x), ri, ro);
    x = x0;
@@ -180,4 +171,23 @@ int main() {
    timeit(hash3(c1, c2, x), ri, ro);
    x = x0;
    timeit(hash4(cs, x), ri, ro);
+}
+*/
+int main() {
+   srand(time(0));
+
+   u64 cs[K][L];
+   for (int i = 0; i < K; i++)
+      for (int j = 0; j < L; j++)
+         cs[i][j] = rand();
+
+   u64 x0 = rand();
+   u64 x = x0;
+   #ifdef NOP
+      printf("NOP:\t");
+      timeit(x|1); // NOP
+      x = x0;
+   #endif
+   printf("%d-Multiply-shift:\t", K);
+   timeit(hash(cs, x));
 }

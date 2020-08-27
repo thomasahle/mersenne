@@ -13,9 +13,18 @@ typedef unsigned int u32;
 #ifndef K
    #define K 2
 #endif
-// static const int L = 1+K*(K-1)/2;
 // With 32 bits we only need half the L. (Rounded up)
 static const int L = (1 + K*(K-1)/2 + 1)/2;
+
+// Runs of inner hashing loop
+#ifndef REPS_I
+   #define REPS_I 1e7
+#endif
+
+// Runs of outer hashing loop (measures variance of inner loops)
+#ifndef REPS_O
+   #define REPS_O 1e2
+#endif
 
 
 static //__attribute__((always_inline))
@@ -67,7 +76,7 @@ u64 hash(u64 cs[K][L], u32 x) {
 }
 
 
-#define timeit(F, REPS_I, REPS_O) {\
+#define timeit(F) {\
   u64 sum = 0;\
   u64 sqs = 0;\
   u64 s = 0;\
@@ -100,14 +109,13 @@ int main() {
          cs[i][j] = rand();
    //const u64 cs[K][L] = {{123, 345}, {34, 234}};
 
-   const int ri = 1e7;
-   const int ro = 1e3;
-
    u32 x0 = rand();
    u32 x = x0;
-   printf("NOP: ");
-   timeit(x|1, ri, ro); // NOP
-   x = x0;
-   printf("%d-Multiply-shift: ", K);
-   timeit(hash(cs, x), ri, ro);
+   #ifdef NOP
+      printf("NOP:\t");
+      timeit(x|1); // NOP
+      x = x0;
+   #endif
+   printf("%d-Multiply-shift:\t", K);
+   timeit(hash(cs, x));
 }
