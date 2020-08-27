@@ -1,11 +1,14 @@
-= The Power of Hashing with Mersenne Primes =
+# The Power of Hashing with Mersenne Primes
+In this paper we show how hashing with Mersenne primes can be made very fast, using a new intermediate representation for modular multiplication.
+We further show that the resulting hash values have many useful properties not found with other polynomial hash functions.
 
 ![Table of speeds](https://raw.githubusercontent.com/thomasahle/mersenne/master/table.png)
 
-Table: Milliseconds for 107 k-universal hashing operations. The standard deviation is less than ±1ms. The three CPUs tested are a) Intel Core i7-8850H; b) Intel Core i7-86650U; c) Intel Xeon E5-2690.
+Table: Milliseconds for 10^7 k-universal hashing operations.
+The standard deviation is less than ±1ms.
+The three CPUs tested are a) Intel Core i7-8850H; b) Intel Core i7-86650U; c) Intel Xeon E5-2690.
 
-
-==Running the code==
+## Running the code
 
 To run the carryless.cpp experiemnts, you need to run
 
