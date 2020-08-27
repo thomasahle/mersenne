@@ -1,4 +1,4 @@
-Before running code, remember to make a dist/ folder.
+![Table of speeds](https://raw.githubusercontent.com/thomasahle/mersenne/master/table.png)
 
 Compiling on Mac:
 (clang|gcc) carryless.cpp -std=c++11 -march=native -lc++ -O3
