@@ -67,6 +67,8 @@ void test_speed64(uint32_t nr_trials, uint32_t nr_times) {
     test_speed_function64<carrylesstwo_64>(nr_trials, nr_times, numbers);
     cout << "MultShift: ";
     test_speed_function64<multishift_64>(nr_trials, nr_times, numbers);
+    cout << "MultShift_a: ";
+    test_speed_function64<multishift_64_alt>(nr_trials, nr_times, numbers);
     cout << endl;
 
     cout << "PolyFour: ";

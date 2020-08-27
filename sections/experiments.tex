@@ -24,28 +24,52 @@ Since the intermediate values of our calculations take up to $64 + 89$ bits, all
 \begin{table}[H]
    \centering
    \begin{tabular}{c c}
-      \begin{tabular}{r | r r}
-         $k$ & \Cref{alg:Mersenne}       & $GF(2^{64})$-Hashing \\
+      % 64 BITS
+      % a is Thomas
+      % b is Jakob
+      % c is Server
+      \begin{tabular}{r c | r r r}
+         $k$ & CPU &  MS & Mersenne       & $GF(2^{64})$ \\
          \hline
-         2 & 23.6 & \textbf{15.1} \\
-         4 & \textbf{65.7} & \textbf{65.7} \\
-         8 & \textbf{178.4} & 242.4 \\
+           & a & \textbf{6.4} & 23.6 & 15.1 \\
+         2 & b & ? & 19.0           & \textbf{16.7} \\
+           & c & 7.2 & 28.3 & \textbf{16.6} \\
+         \hline
+           & a & 99.3 & \textbf{65.7} & \textbf{65.7} \\
+         4 & b &   ? &\textbf{68.7}  & 68.8 \\
+           & c & 117.4 & 85.2 & \textbf{67.5}\\
+         \hline
+             & a & 1615.8 & \textbf{178.4} & 242.4 \\
+         8 & b &  ? &\textbf{187.4} & 246.8 \\
+           & c & 1949.9 & 228.1 & \textbf{224.1} \\
       \end{tabular}
       \hspace{.5em}
       &
       \hspace{.5em}
-      \begin{tabular}{r | r r}
-         $k$ & \Cref{alg:Mersenne}       & $GF(2^{64})$-Hashing \\
+      % 32 BITS
+      \begin{tabular}{r c | r r r}
+         $k$ & CPU & MS & \Cref{alg:Mersenne}       & $GF(2^{32})$ \\
          \hline
-         $2$ & 19.0           & \textbf{16.7} \\
-         $4$ & \textbf{68.7}  & 68.8 \\
-         $8$ & \textbf{187.4} & 246.8
+             & a & \textbf{4.4} & 13.6 & 13.0 \\
+         2 & b & ? & 14.2           & \textbf{13.0} \\
+           & c & \textbf{3.2} & 16.5 & 18.4 \\
+         \hline
+           & a & 57.6 & \textbf{31.6} & 60.3 \\
+         4 & a & ? & \textbf{34.3}  & 58.8 \\
+           & c & 61.2 & \textbf{41.9} & 74.5 \\
+         \hline
+           & a & 650.7 & \textbf{88.0} & 218.7 \\
+         8 & b & ? & \textbf{88.0} & 212.0 \\
+           & c & 750.8 & \textbf{127.8} & 253.2 \\
       \end{tabular}
    \end{tabular}
    \caption{Milliseconds for $10^7$ $k$-universal hashing operations on 64bit keys with $p=2^{89}-1$.
       The standard deviation is less than $\pm1$ms.
-         On the left, Intel Core i7-8850H.
-         On the right, Intel Core i7-86650U.
+      The CPUs are
+         a) Intel Core i7-8850H; % Thomas
+         b) Intel Core i7-86650U; % Jakob
+         c) Intel Xeon E5-2690 % Preciouss
+
    }
    \label{tab:hashing-experiments}
 \end{table}
@@ -56,23 +80,9 @@ This allows us to do multiplications without splitting into multiple words, at t
 \begin{table}[H]
    \centering
    \begin{tabular}{c c}
-      \begin{tabular}{r | r r}
-         $k$ & \Cref{alg:Mersenne}       & $GF(2^{32})$-Hashing \\
-         \hline
-         2& 13.6 & \textbf{13.0} \\
-         4& \textbf{31.6} & 60.3 \\
-         8&\textbf{88.0} & 218.7
-      \end{tabular}
       \hspace{.5em}
       &
       \hspace{.5em}
-      \begin{tabular}{r | r r}
-         $k$ & \Cref{alg:Mersenne}       & $GF(2^{32})$-Hashing \\
-         \hline
-         $2$ & 14.2           & \textbf{13.0} \\
-         $4$ & \textbf{34.3}  & 58.8 \\
-         $8$ & \textbf{88.0} & 212.0
-      \end{tabular}
    \end{tabular}
    \caption{Milliseconds for $10^7$ $k$-universal hashing operations on 64bit keys with $p=2^{61}-1$.
       The standard deviation is less than $\pm1$ms.
@@ -108,20 +118,32 @@ We tested \Cref{alg:division-generalized} against the state of the art modified 
       &
       \hspace{.5em}
       \begin{tabular}{ r | r r r }
-         $b$ & Crandall & \Cref{alg:division-generalized} & GMP \\
+         $b$ & Crandall & \Cref{alg:division-generalized} & GMP\\
          \hline
-         32 & 438 & 172 & \textbf{125}\\
-         64 & 422 & 172 & \textbf{141}\\
-         128 & 578 &      \textbf{188} & 235\\
-         256 & 454 &      \textbf{219} & 469\\
-         512 & 703 &      \textbf{297} & 938\\
-         1024 & 875 &     \textbf{391} & 2172
+         32 & 497 & 149 & \textbf{120}\\
+         64 & 513 & 198 & \textbf{191}\\
+         128 & 538 & \textbf{207} & 293\\
+         256 & 571 & \textbf{222} & 603\\
+         512 & 656 & \textbf{294} & 1167\\
+         1024 & 786 & \textbf{372} & 2633\\
       \end{tabular}
+      % Experiments on Intel Core i7-86650U.
+      % Very similar to the other ones.
+      % \begin{tabular}{ r | r r r }
+      %    $b$ & Crandall & \Cref{alg:division-generalized} & GMP \\
+      %    \hline
+      %    32 & 438 & 172 & \textbf{125}\\
+      %    64 & 422 & 172 & \textbf{141}\\
+      %    128 & 578 &      \textbf{188} & 235\\
+      %    256 & 454 &      \textbf{219} & 469\\
+      %    512 & 703 &      \textbf{297} & 938\\
+      %    1024 & 875 &     \textbf{391} & 2172
+      % \end{tabular}
    \end{tabular}
    \caption{Milliseconds for $10^7$ divisions of $2b$-bit numbers with $p=2^b-1$.
       The standard deviation is less than $\pm10$ms.
          On the left, Intel Core i7-8850H.
-         On the right, Intel Core i7-86650U.
+         On the right, Intel Xeon E5-2690 v4.
    }
    \label{tab:division-experiments}
 \end{table}

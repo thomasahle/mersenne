@@ -23,9 +23,12 @@
 
 using namespace std;
 
+
+
+
 class multishift_64 {
-#ifdef DEBUG
-    bool hasInit;
+#ifdef debug
+    bool hasinit;
 #endif
     // using uint_large_t = typename conditional<sixtyfour, __uint128_t, uint64_t>::type;
     // using uint_t = typename conditional<sixtyfour, uint64_t, uint32_t>::type;
@@ -39,12 +42,12 @@ public:
 
 
 void multishift_64::init() {
-#ifdef SEEDED_RANDOM
-    m_a = getRandomUInt128();
-    m_b = getRandomUInt128();
+#ifdef seeded_random
+    m_a = getrandomuint128();
+    m_b = getrandomuint128();
 #endif
-#ifdef DEBUG
-    hasInit=true;
+#ifdef debug
+    hasinit=true;
 #endif
 }
 
@@ -54,6 +57,37 @@ uint64_t multishift_64::operator()(uint64_t x) {
 #endif
     return (m_a * (__uint128_t)x + m_b) >> 64;
 }
+
+
+class multishift_64_alt {
+    __uint64_t c00, c01, c10, c11;
+public:
+    uint64_t operator()(uint64_t x);
+    void init();
+};
+void multishift_64_alt::init() {
+#ifdef seeded_random
+    c00 = getrandomuint64();
+    c01 = getrandomuint64();
+    c10 = getrandomuint64();
+    c11 = getrandomuint64();
+#endif
+}
+
+
+uint64_t multishift_64_alt::operator()(uint64_t x) {
+   __uint128_t low = (__uint128_t) x * c00 + c10;
+   uint64_t xc2_hi = x * c01 + c11 + (low >> 64);
+   return xc2_hi;
+}
+
+
+
+
+
+
+
+
 
 class multishift_32 {
 #ifdef DEBUG

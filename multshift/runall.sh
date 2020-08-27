@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-for compiler in "gcc" "clang"
+for compiler in "clang" "gcc"
 do
     for MA in "" "-DMA"
     do

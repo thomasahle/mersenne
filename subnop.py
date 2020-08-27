@@ -23,7 +23,7 @@ for line in sys.stdin:
         print(' & '.join(map(str, xs)), end=r'\\'+'\n', flush=True)
     elif line.startswith('NOP, '):
         print('$b$ & Crandall & \\Cref{alg:division-generalized} & GMP\\\\', flush=True)
-        print('\\hline\\\\')
+        print('\\hline')
     else:
         print(line, end='')
 
