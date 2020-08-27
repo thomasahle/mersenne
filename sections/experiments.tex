@@ -20,6 +20,9 @@ Since the intermediate values of our calculations take up to $64 + 89$ bits, all
 %We use the Mersenne prime $p = 2^{89} - 1$ and we have to implement multiplication between
 %$89$-bit and $64$-bit numbers. This is implemented by two multiplications between to $64$-bit
 %numbers with $128$-bit output.
+We perform the same experiment with $p=2^{61}-1$.
+This allows us to do multiplications without splitting into multiple words, at the cost of a slightly shorter key range.
+
 
 \begin{table}[H]
    \centering
@@ -29,7 +32,7 @@ Since the intermediate values of our calculations take up to $64 + 89$ bits, all
       % b is Jakob
       % c is Server
       \begin{tabular}{r c | r r r}
-          &  &  Mult- & Mersenne       & Carryless \\
+          &  &  Mult- & Mersenne       & Carry-less \\
           $k$   & CPU & Shift & $p=2^{89}-1$ & GF($2^{64}$) \\
          \hline
            & a & \textbf{6.4} & 23.6 & 15.1 \\
@@ -49,7 +52,7 @@ Since the intermediate values of our calculations take up to $64 + 89$ bits, all
       %\hspace{.1em}
       % 32 BITS
       \begin{tabular}{r c | r r r}
-          &  &  Mult- & Mersenne       & Carryless \\
+          &  &  Mult- & Mersenne       & Carry-less \\
           $k$   & CPU & Shift & $p=2^{61}-1$ & GF($2^{32}$) \\
          \hline
              & a & \textbf{4.4} & 13.6 & 13.0 \\
@@ -65,36 +68,19 @@ Since the intermediate values of our calculations take up to $64 + 89$ bits, all
            & c & 750.8 & \textbf{127.8} & 253.2 \\
       \end{tabular}
    \end{tabular}
-   \caption{Milliseconds for $10^7$ $k$-universal hashing operations on 64bit keys with $p=2^{89}-1$.
+   \caption{Milliseconds for $10^7$ $k$-universal hashing operations.
       The standard deviation is less than $\pm1$ms.
-      The CPUs are
+      The three CPUs tested are
          a) Intel Core i7-8850H; % Thomas
          b) Intel Core i7-86650U; % Jakob
          c) Intel Xeon E5-2690 % Preciouss
+         .
    }
    \label{tab:hashing-experiments}
 \end{table}
 
-We perform the same experiment with $p=2^{61}-1$.
-This allows us to do multiplications without splitting into multiple words, at the cost of a slightly shorter key range.
-
-\begin{table}[H]
-   \centering
-   \begin{tabular}{c c}
-      \hspace{.5em}
-      &
-      \hspace{.5em}
-   \end{tabular}
-   \caption{Milliseconds for $10^7$ $k$-universal hashing operations on 64bit keys with $p=2^{61}-1$.
-      The standard deviation is less than $\pm1$ms.
-         On the left, Intel Core i7-8850H.
-         On the right, Intel Core i7-86650U.
-   }
-   \label{tab:hashing-experiments2}
-\end{table}
-
 The results in \Cref{tab:hashing-experiments} and \Cref{tab:hashing-experiments2} show that our methods outperform carry-less Multiplication for larger $k$, while being slower for $k=2$.
-We note though that the multiply-shift scheme~\cite{dietzfel96universal} is better yet in that regime.
+For $k=2$ the multiply-shift scheme~\cite{dietzfel96universal} is better yet, so in carry-less multiplication is nearly completely dominated.
 For $k=4$, which we use for Count Sketch, the results are a toss-up for $p=2^{89}-1$, but the Mersenne primes are much faster for $p=2^{61}-1$.
 We also note that our methods are more portable than carry-less, and we keep the two-for-one advantages described in the article.
 %For $k = 8$, using a Mersenne prime is significantly faster.
