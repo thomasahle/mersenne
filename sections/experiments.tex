@@ -21,34 +21,6 @@ Since the intermediate values of our calculations take up to $64 + 89$ bits, all
 %$89$-bit and $64$-bit numbers. This is implemented by two multiplications between to $64$-bit
 %numbers with $128$-bit output.
 
-2-Multiply-shift:       Mean time taken 5.0 milliseconds +/- 7.288
-4-Multiply-shift:       Mean time taken 69.62 milliseconds +/- 7.716
-8-Multiply-shift:       Mean time taken 1020.312 milliseconds +/- 35.473
-64 Bit
-2-Multiply-shift:       Mean time taken 11.875 milliseconds +/- 6.673
-4-Multiply-shift:       Mean time taken 226.93 milliseconds +/- 12.983
-8-Multiply-shift:       Mean time taken 4272.31 milliseconds +/- 161.89
-With clang
-32 Bit
-NOP:    Mean time taken 2.500 milliseconds +/- 5.728
-2-Multiply-shift:       Mean time taken 3.437 milliseconds +/- 6.472
-4-Multiply-shift:       Mean time taken 62.187 milliseconds +/- 3.119
-8-Multiply-shift:       Mean time taken 635.625 milliseconds +/- 21.972
-64 Bit
-2-Multiply-shift:       Mean time taken 7.656 milliseconds +/- 7.811
-4-Multiply-shift:       Mean time taken 278.125 milliseconds +/- 8.838
-8-Multiply-shift:       Mean time taken 1642.31 milliseconds +/- 47.969
-With clang -DMA
-32 Bit
-NOP:    Mean time taken 2.500 milliseconds +/- 5.728
-2-Multiply-shift:       Mean time taken 3.281 milliseconds +/- 6.364
-4-Multiply-shift:       Mean time taken 54.62 milliseconds +/- 7.790
-8-Multiply-shift:       Mean time taken 685.468 milliseconds +/- 25.84
-64 Bit
-2-Multiply-shift:       Mean time taken 9.218 milliseconds +/- 7.685
-4-Multiply-shift:       Mean time taken 157.656 milliseconds +/- 28.989
-8-Multiply-shift:       Mean time taken 2370.781 milliseconds +/- 76.836
-
 \begin{table}[H]
    \centering
    \begin{tabular}{c c}
@@ -87,7 +59,7 @@ NOP:    Mean time taken 2.500 milliseconds +/- 5.728
            & c & 61.2 & \textbf{41.9} & 74.5 \\
          \hline
            & a & 650.7 & \textbf{88.0} & 218.7 \\
-         8 & b & 635.6 & \textbf{88.0} & 212.0 \\
+         8 & b & 635.6   & \textbf{88.0} & 212.0 \\
            & c & 750.8 & \textbf{127.8} & 253.2 \\
       \end{tabular}
    \end{tabular}
