@@ -21,6 +21,34 @@ Since the intermediate values of our calculations take up to $64 + 89$ bits, all
 %$89$-bit and $64$-bit numbers. This is implemented by two multiplications between to $64$-bit
 %numbers with $128$-bit output.
 
+2-Multiply-shift:       Mean time taken 5.0 milliseconds +/- 7.288
+4-Multiply-shift:       Mean time taken 69.62 milliseconds +/- 7.716
+8-Multiply-shift:       Mean time taken 1020.312 milliseconds +/- 35.473
+64 Bit
+2-Multiply-shift:       Mean time taken 11.875 milliseconds +/- 6.673
+4-Multiply-shift:       Mean time taken 226.93 milliseconds +/- 12.983
+8-Multiply-shift:       Mean time taken 4272.31 milliseconds +/- 161.89
+With clang
+32 Bit
+NOP:    Mean time taken 2.500 milliseconds +/- 5.728
+2-Multiply-shift:       Mean time taken 3.437 milliseconds +/- 6.472
+4-Multiply-shift:       Mean time taken 62.187 milliseconds +/- 3.119
+8-Multiply-shift:       Mean time taken 635.625 milliseconds +/- 21.972
+64 Bit
+2-Multiply-shift:       Mean time taken 7.656 milliseconds +/- 7.811
+4-Multiply-shift:       Mean time taken 278.125 milliseconds +/- 8.838
+8-Multiply-shift:       Mean time taken 1642.31 milliseconds +/- 47.969
+With clang -DMA
+32 Bit
+NOP:    Mean time taken 2.500 milliseconds +/- 5.728
+2-Multiply-shift:       Mean time taken 3.281 milliseconds +/- 6.364
+4-Multiply-shift:       Mean time taken 54.62 milliseconds +/- 7.790
+8-Multiply-shift:       Mean time taken 685.468 milliseconds +/- 25.84
+64 Bit
+2-Multiply-shift:       Mean time taken 9.218 milliseconds +/- 7.685
+4-Multiply-shift:       Mean time taken 157.656 milliseconds +/- 28.989
+8-Multiply-shift:       Mean time taken 2370.781 milliseconds +/- 76.836
+
 \begin{table}[H]
    \centering
    \begin{tabular}{c c}
@@ -32,15 +60,15 @@ Since the intermediate values of our calculations take up to $64 + 89$ bits, all
          $k$ & CPU &  MS & Mersenne       & $GF(2^{64})$ \\
          \hline
            & a & \textbf{6.4} & 23.6 & 15.1 \\
-         2 & b & ? & 19.0           & \textbf{16.7} \\
-           & c & 7.2 & 28.3 & \textbf{16.6} \\
+         2 & b & \textbf{7.7} & 19.0 & 16.7 \\
+           & c & \textbf{7.2} & 28.3 & 16.6 \\
          \hline
            & a & 99.3 & \textbf{65.7} & \textbf{65.7} \\
-         4 & b &   ? &\textbf{68.7}  & 68.8 \\
+         4 & b & 157.7 &\textbf{68.7}  & 68.8 \\
            & c & 117.4 & 85.2 & \textbf{67.5}\\
          \hline
              & a & 1615.8 & \textbf{178.4} & 242.4 \\
-         8 & b &  ? &\textbf{187.4} & 246.8 \\
+         8 & b &  1642.3 & \textbf{187.4} & 246.8 \\
            & c & 1949.9 & 228.1 & \textbf{224.1} \\
       \end{tabular}
       \hspace{.5em}
@@ -51,15 +79,15 @@ Since the intermediate values of our calculations take up to $64 + 89$ bits, all
          $k$ & CPU & MS & \Cref{alg:Mersenne}       & $GF(2^{32})$ \\
          \hline
              & a & \textbf{4.4} & 13.6 & 13.0 \\
-         2 & b & ? & 14.2           & \textbf{13.0} \\
+         2 & b & \textbf{3.3} & 14.2 & 13.0 \\
            & c & \textbf{3.2} & 16.5 & 18.4 \\
          \hline
            & a & 57.6 & \textbf{31.6} & 60.3 \\
-         4 & a & ? & \textbf{34.3}  & 58.8 \\
+         4 & a & 54.6 & \textbf{34.3}  & 58.8 \\
            & c & 61.2 & \textbf{41.9} & 74.5 \\
          \hline
            & a & 650.7 & \textbf{88.0} & 218.7 \\
-         8 & b & ? & \textbf{88.0} & 212.0 \\
+         8 & b & 635.6 & \textbf{88.0} & 212.0 \\
            & c & 750.8 & \textbf{127.8} & 253.2 \\
       \end{tabular}
    \end{tabular}
@@ -69,7 +97,6 @@ Since the intermediate values of our calculations take up to $64 + 89$ bits, all
          a) Intel Core i7-8850H; % Thomas
          b) Intel Core i7-86650U; % Jakob
          c) Intel Xeon E5-2690 % Preciouss
-
    }
    \label{tab:hashing-experiments}
 \end{table}
