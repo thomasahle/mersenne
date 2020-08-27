@@ -29,7 +29,8 @@ Since the intermediate values of our calculations take up to $64 + 89$ bits, all
       % b is Jakob
       % c is Server
       \begin{tabular}{r c | r r r}
-         $k$ & CPU &  MS & Mersenne       & $GF(2^{64})$ \\
+          &  &  Mult- & Mersenne       & Carryless \\
+          $k$   & CPU & Shift & $p=2^{89}-1$ & GF($2^{64}$) \\
          \hline
            & a & \textbf{6.4} & 23.6 & 15.1 \\
          2 & b & \textbf{7.7} & 19.0 & 16.7 \\
@@ -43,12 +44,13 @@ Since the intermediate values of our calculations take up to $64 + 89$ bits, all
          8 & b &  1642.3 & \textbf{187.4} & 246.8 \\
            & c & 1949.9 & 228.1 & \textbf{224.1} \\
       \end{tabular}
-      \hspace{.5em}
+      %\hspace{.1em}
       &
-      \hspace{.5em}
+      %\hspace{.1em}
       % 32 BITS
       \begin{tabular}{r c | r r r}
-         $k$ & CPU & MS & \Cref{alg:Mersenne}       & $GF(2^{32})$ \\
+          &  &  Mult- & Mersenne       & Carryless \\
+          $k$   & CPU & Shift & $p=2^{61}-1$ & GF($2^{32}$) \\
          \hline
              & a & \textbf{4.4} & 13.6 & 13.0 \\
          2 & b & \textbf{3.3} & 14.2 & 13.0 \\
