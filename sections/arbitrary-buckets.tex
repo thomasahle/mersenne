@@ -1,13 +1,13 @@
 
 %! TEX root = ../mersenne.tex
-\section{Algorithms and analysis with arbitrary number of buckets}\label{sec:arbitrary-buckets}
+\section{Algorithms and analysis with an arbitrary number of buckets}\label{sec:arbitrary-buckets}
 We now consider the case where we want to hash into
 a number of buckets. We will analyse the collision probability
-with most uniform maps introduced in Section \ref{sec:most-uniform},
+with the most uniform maps introduced in Section \ref{sec:most-uniform},
 and later we will show how it can be used in connection with the
 two-for-one hashing from Section \ref{sec:two-for-one}.
 
-\subsection{Two-for-one hashing from uniform bits to arbitrary number of buckets}
+\subsection{Two-for-one hashing from uniform bits to an arbitrary number of buckets}
 We have a hash function $h:U\to Q$, but we want hash values in $R$, so
 we need a map $\mu:Q\to R$, and then use $\mu\circ h$ as
 our hash function from $U$ to $R$. We normally assume that the hash values 
@@ -44,7 +44,7 @@ Note that the above calculation generalizes the one for \eqref{eq:coll} which
 had $a=1$. We will think of $(r/(2q))^2$ as the general relative rounding
 cost when we do not have any information about how $r$ divides $q$.
 
-\subsection{Two-for-one hashing from uniform bits to arbitrary number of buckets}
+\subsection{Two-for-one hashing from uniform bits to an arbitrary number of buckets}
 We will now briefly discuss how we get the two-for-one hash
 functions in count sketches with an arbitrary number $r$ of buckets based
 on a single $4$-universal hash function $h:[u]\to [2^b]$.  We want to
@@ -86,7 +86,7 @@ Now \Cref{lem:count-classic} give us $\E[X] = F_2$ and
       \le 2 F_2^2\left(1 + (r/2^b)^2 \right)/r .
 \end{equation}
 
-\subsection{Two-for-one hashing from Mersenne primes to arbitrary number of buckets}
+\subsection{Two-for-one hashing from Mersenne primes to an arbitrary number of buckets}
 We will now show how to get the two-for-one hash functions in count
 sketches with an arbitrary number $r$ of buckets based on a single
 $4$-universal hash function $h:[u]\to [2^b-1]$.  Again we want to

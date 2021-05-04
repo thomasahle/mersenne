@@ -37,8 +37,8 @@ We formalize this into the following property:
     \end{align}
 \end{property}
 
-The case where we use a Mersenne prime for our hash function we have that $h$ is uniform in $[2^b - 1]$ and not in $[2^b]$, hence \Cref{prop:independence} is not satisfied.
-Instead we have \cref{eq:E-0} which is almost as good, and will replace \Cref{prop:independence} in the analysis for count sketch.
+In the case where we use a Mersenne prime for our hash function we have that $h$ is uniform in $[2^b - 1]$ and not in $[2^b]$, hence \Cref{prop:independence} is not satisfied.
+Instead, we have \cref{eq:E-0} which is almost as good, and will replace \Cref{prop:independence} in the analysis for count sketch.
 We formalize this as follows:
 \begin{property}[Sign Near Cancellation]\label{prop:near-independence}
     Given $k, p$ and $\delta$,
@@ -135,7 +135,7 @@ is a Mersenne prime.
 We now only have \nameref{prop:near-independence}.
 We will show that this does
 not change the expectation and variance too much. Similarly, to the
-analysis of the classical case we will analyse a slightly more general
+analysis of the classical case, we will analyse a slightly more general
 problem, which will be useful in \Cref{sec:arbitrary-buckets}.
 \begin{lemma}\label{lem:count-mersenne}
    If we have \nameref{prop:near-independence} with $
@@ -160,7 +160,7 @@ problem, which will be useful in \Cref{sec:arbitrary-buckets}.
             \\&= \E[f_x f_y [i_x = t] \mid i_x = t]/p
             \\&= f_x f_y / p^2 \; .
     \end{split}\end{equation}
-    From this we can calculate $\E[X]$.
+    From this, we can calculate $\E[X]$.
     \begin{align*}
         \E[X]
             = F_2 + \sum_{x \neq y} \E[s_x s_y f_x f_y [i_x = i_y]]
@@ -169,7 +169,7 @@ problem, which will be useful in \Cref{sec:arbitrary-buckets}.
     Now we note that $0 \le F_1^2 \le n F_2$ by Cauchy-Schwarz, hence we get that
     $| \E[X] - F_2 | \le (n - 1)/p^2$.
 
-    Same method is applied to the analysis of the variance, which is
+    The same method is applied to the analysis of the variance, which is
     \[
         \Var[X]
             = \Var[Y]
@@ -260,11 +260,11 @@ We are now ready to prove \Cref{thm:h-and-s-p}.
         Algorithm \ref{alg:h-and-s}. Using this $i$ and $s$ 
         in the Count Sketch Algorithm \ref{alg:count-sketch}, the second moment 
         estimate $X=\sum_{i\in[k]} C_i^2$ satisfies:
-        \begin{align*}
-           \E[X] &= F_2+(F_1^2-F_2)/p^2, \tag{\ref{eq:E-F2-p}}\\
-           | \E[X] - F_2 | &\le F_2 (n - 1)/p^2, \tag{\ref{eq:E-F2-p-com}}\\
-           \Var[X]&< 2F_2^2/r.\tag{\ref{eq:V-F2-p}}
-        \end{align*}
+        \begin{align}
+           \E[X] &= F_2+(F_1^2-F_2)/p^2, \label{eq:E-F2-p}\\
+           | \E[X] - F_2 | &\le F_2 (n - 1)/p^2, \label{eq:E-F2-p-com}\\
+           \Var[X]&< 2F_2^2/r.\label{eq:V-F2-p}
+        \end{align}
     \end{theorem}
     \addtocounter{lemma}{-1}
 \endgroup
