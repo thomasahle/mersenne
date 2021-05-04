@@ -2,41 +2,41 @@
 \section{Introduction}
 
 \begin{figure}
-   \centering
-   \begin{tikzpicture}[darkstyle/.style={circle,draw,fill=gray!40,minimum size=20}]
-      \newcommand*{\figb}{8}
-      % The red box
-      \draw[pattern=north west lines, pattern color=red] (0,0) rectangle (\figb,1);
-      % Horizontal lines
-      \foreach \y in {0,...,6}
-         \draw (0, \y) -- (\figb, \y);
-      % Vertical lines
-      \foreach \x in {0,...,\figb}
-         \draw (\x, 0) -- (\x, 6);
-      % Most of the numbers
-      \pgfmathsetmacro{\figbthree}{\figb - 3}
-      \pgfmathsetmacro{\figbtwo}{\figb - 2}
-      \pgfmathsetmacro{\figbone}{\figb - 1}
-      \foreach \y in {0,...,2}
-         \foreach \x in {0,...,\figbthree}
-            \node [draw=none] at (.5+\x,.5+\y) {1};
-      \foreach \x in {\figbthree,...,\figbone}
-         \node [draw=none] at (.5+\x,.5+3) {.};
-      \foreach \y in {4,...,5}
-         \foreach \x in {0,...,\figbtwo}
-            \node [draw=none] at (.5+\x,.5+\y) {0};
-      % The rest of the numbers
-      \node [draw=none] at (.5+\figb-1,.5+0) {1};
-      \node [draw=none] at (.5+\figb-2,.5+0) {1};
-      \node [draw=none] at (.5+\figb-1,.5+1) {0};
-      \node [draw=none] at (.5+\figb-2,.5+1) {1};
-      \node [draw=none] at (.5+\figb-1,.5+2) {1};
-      \node [draw=none] at (.5+\figb-2,.5+2) {0};
-      \node [draw=none] at (.5+\figb-1,.5+4) {1};
-      \node [draw=none] at (.5+\figb-1,.5+5) {0};
-   \end{tikzpicture}
-   \caption{The output of a random polynomial modulo $p=2^b-1$ is uniformly distributed in $[p]$, so each bit has the same distribution, which is only $1/p$ biased towards 0.}
-   \label{fig:bits}
+	\centering
+	\begin{tikzpicture}[darkstyle/.style={circle,draw,fill=gray!40,minimum size=20}]
+		\newcommand*{\figb}{8}
+		% The red box
+		\draw[pattern=north west lines, pattern color=red] (0,0) rectangle (\figb,1);
+		% Horizontal lines
+		\foreach \y in {0,...,6}
+		\draw (0, \y) -- (\figb, \y);
+		% Vertical lines
+		\foreach \x in {0,...,\figb}
+		\draw (\x, 0) -- (\x, 6);
+		% Most of the numbers
+		\pgfmathsetmacro{\figbthree}{\figb - 3}
+		\pgfmathsetmacro{\figbtwo}{\figb - 2}
+		\pgfmathsetmacro{\figbone}{\figb - 1}
+		\foreach \y in {0,...,2}
+		\foreach \x in {0,...,\figbthree}
+		\node [draw=none] at (.5+\x,.5+\y) {1};
+		\foreach \x in {\figbthree,...,\figbone}
+		\node [draw=none] at (.5+\x,.5+3) {.};
+		\foreach \y in {4,...,5}
+		\foreach \x in {0,...,\figbtwo}
+		\node [draw=none] at (.5+\x,.5+\y) {0};
+		% The rest of the numbers
+		\node [draw=none] at (.5+\figb-1,.5+0) {1};
+		\node [draw=none] at (.5+\figb-2,.5+0) {1};
+		\node [draw=none] at (.5+\figb-1,.5+1) {0};
+		\node [draw=none] at (.5+\figb-2,.5+1) {1};
+		\node [draw=none] at (.5+\figb-1,.5+2) {1};
+		\node [draw=none] at (.5+\figb-2,.5+2) {0};
+		\node [draw=none] at (.5+\figb-1,.5+4) {1};
+		\node [draw=none] at (.5+\figb-1,.5+5) {0};
+	\end{tikzpicture}
+	\caption{The output of a random polynomial modulo $p=2^b-1$ is uniformly distributed in $[p]$, so each bit has the same distribution, which is only $1/p$ biased towards 0.}
+	\label{fig:bits}
 \end{figure}
 
 The classic way to implement $k$-universal hashing is to use a random degree $(k-1)$-polynomial over a finite field \cite{wegman81kwise}.
@@ -72,11 +72,12 @@ with a factor of 2.
 Finally we provide a fast, simple and branch-free algorithm for division and modulus with Mersenne primes.
 Contrasting our analytic work, this code generalizes to so-called Pseudo-Mersenne primes~\cite{van2014encyclopedia} of the form $p=2^b-c$ for small $c$.
 Our new code is simpler and faster than the classical algorithm of Crandall~\cite{crandall1992method}.
-%
-%We provide experiments of both algorithms in \Cref{sec:experiments}.
 
-\subsection{Hashing uniformly into \texorpdfstring{$b$}{b} bits?}\label{sec:b-bit?}
-A main point in this paper is that having hash values uniform in $[2^b-1]$
+We provide experiments of both algorithms in \Cref{sec:experiments}.
+For the rest of the introduction we will give a more detailed review of the new results.
+
+\subsection{Hashing uniformly into b bits}\label{sec:b-bit?}
+A main point in this paper is that having hash values uniform in $[2^b-1]=\{0,\dots,2^b-2\}$
 is almost as good as having uniform $b$-bit strings, but of course,
 it would be even better if we just had uniform $b$-bit strings.
 
@@ -111,32 +112,27 @@ hash values from Mersenne prime fields that are much easier to generate.
 
 \subsection{Polynomial hashing using Mersenne primes}
 
-The $k$-universal hashing with a polynomial uses $O(k)$ space and $O(k)$ time
-to compute the hash value of a key. Siegel \cite{Siegel04} has proved that if we want $k$-universal hashing in time $t<k$, then we need to use space $u^{1/t}$.
-Such tabulation based methods are useful in many contexts (see survey \cite{Thorup17}, but not if we need small space.
+Before discussing the special properties of Mersenne primes in algorithm analysis, we show how they are classically used to do fast field computations, and propose a new simple algorithm for further speed-ups in the hashing case.
 
-
-\subsubsection{Preliminaries: Implementation of a Hash Function}
-The classic definition of $k$-universal hashing
+The definition of $k$-universal hashing
 goes back to Carter and Wegman~\cite{wegman81kwise}.
 \begin{definition}
-   A random hash function $h:U\to R$ is $k$-universal if for $k$
-   distinct keys $x_0,\ldots,x_{k-1}\in U$, the $k$-tuple
-   $(h(x_0),\ldots,h(x_{k-1}))$ is uniform in $R^k$.
+	A random hash function $h:U\to R$ is $k$-universal if for $k$
+	distinct keys $x_0,\ldots,x_{k-1}\in U$, the $k$-tuple
+	$(h(x_0),\ldots,h(x_{k-1}))$ is uniform in $R^k$.
 \end{definition}
 \noindent
-Note that the definition also implies the values 
+Note that the definition also implies the values
 $h(x_0),\ldots,h(x_{k-1})$ are independent.
 A very similar concept is that of $k$-independence, which has only this requirement but doesn't include that values must be uniform.
 
-The classic example of $k$-universal
-hash function is uniformly random degree-$(k-1)$ polynomial over a prime field
+For $k>2$ the standard $k$-universal hash function is uniformly random degree-$(k-1)$ polynomial over a prime field
 $\Z_p$, that is, we pick a uniformly random vector
 $\vec a=(a_0,\ldots,a_{k-1})\in \Z_p^k$ of $k$ coefficients, and define
 $h_{\vec a}:[p]\to[p]$,
 \footnote{ We use the notation $[s]=\{0,\ldots,s-1\}$.  }
-   by 
-\[h_{\vec a}(x)=\sum_{x\in[k]}a_i x^i \mod p.\]
+by
+\[h_{\vec a}(x)=\sum_{i\in[k]}a_i x^i \mod p.\]
 %
 Given a desired key domain $[u]$ and range $[r]$ for the hash values, we pick
 $p\geq \max\{u,r\}$ and define
@@ -146,70 +142,59 @@ The  hash values of $k$ distinct keys remain independent while staying as close 
 (This will turn out to be very important.)
 
 In terms of speed, the main bottleneck in the above approach is the mod operations.
-If we assume $r=2^\ell$, the $\bmod r$ operation above can be replaced by a binary {\sc and} (\texttt{\&}): $x \bmod r = x \andtt r-1$.
-In the same vein, an old idea by 
-Carter and Wegmen \cite{carter77universal} is to use a
-Mersenne prime for $p=2^b-1$,\footnote{e.g., $p=2^{61}-1$ for hashing 32-bit keys or
+If we assume $r=2^\ell$, the mod $r$ operation above can be replaced by a binary {\sc and} (\texttt{\&}): $x \bmod r = x \andtt r-1$.
+Similarly, Carter and Wegmen \cite{carter77universal} used a
+Mersenne prime $p=2^b-1$,\footnote{e.g., $p=2^{61}-1$ for hashing 32-bit keys or
 $p=2^{89}-1$ for hashing 64-bit keys.}
-to speed up the computation of the (mod $p$) operations.
-The point is that
+to speed up the computation of the (mod $p$) operations:
 \begin{equation}
-   y% \bmod (2^b-1)
-   \equiv y - \floor{y/2^b}(2^b-1)
-   = (y\bmod 2^{b}) + \floor{y/2^b}
-%   \equiv (y \andtt p) + (y \rs b)
-   \pmod {p}.
-   \label{eq:Mersenne}
+	y% \bmod (2^b-1)
+	\equiv y - \floor{y/2^b}(2^b-1)
+	= (y\bmod 2^{b}) + \floor{y/2^b}
+	%   \equiv (y \andtt p) + (y \rs b)
+	\pmod {p}.
+	\label{eq:Mersenne}
 \end{equation}
 Again allowing us to use the very fast bit-wise {\sc and} ($\andtt$) and the right-shift ($\rs$),
 instead of the expensive modulo operation.
 
-
-\vspace{1em}
-
-The above completes our description of how Mersenne primes are
-normally used for fast computation of $k$-universal hash functions.
+Of course, \eqref{eq:Mersenne} only reduces $y$ to an equivalent value mod $p$, not to the smallest one, which is what we usually want.
+For this reason one typically adds a test ``if $y \ge p$ then $y \gets y − p$''.
 We show an implementation in \Cref{alg:Mersenne} below with one further improvement:
 By assuming that $p=2^b-1\geq 2u-1$
 (which is automatically satisfied in the typical case where $u$ is a power
 of two, e.g., $2^{32}$ or $2^{64}$)
-we can get away with only testing the possible off-by-one in \Cref{eq:Mersenne} once, rather than at every loop.
+we can get away with only doing this test once, rather than at every loop.
 Note the proof by loop invariant in the comments.
 
 \begin{algorithm}[H]
-   \caption{
-      For $x\in [u]$, prime $p=2^b-1\geq 2u-1$,
-      and $\vec a=(a_0,\ldots,a_{k-1})\in[p]^k$,
-      computes $y=h_{\vec a}(x)=\sum_{i\in[k]}a_i x^i\mod p$.
-   }\label{alg:Mersenne}
-   \begin{algorithmic}
-      \State $y\gets a_{k-1}$
-      \For{$i=q-2,\ldots,0$}
-      \Comment{Invariant: $\quad y<2p$}
+	\caption{
+	For $x\in [u]$, prime $p=2^b-1\geq 2u-1$,
+	and $\vec a=(a_0,\ldots,a_{k-1})\in[p]^k$,
+	computes $y=h_{\vec a}(x)=\sum_{i\in[k]}a_i x^i\mod p$.
+	}\label{alg:Mersenne}
+	\begin{algorithmic}
+		\State $y\gets a_{k-1}$
+		\For{$i=q-2,\ldots,0$}
+		\Comment{Invariant: $\quad y<2p$}
 
-      \State $y\gets y*x+a_i$
-      \Comment{$\quad y<2p(u-1)+(p-1)<(2u-1)p\leq p^2$}
+		\State $y\gets y*x+a_i$
+		\Comment{$\quad y<2p(u-1)+(p-1)<(2u-1)p\leq p^2$}
 
-      \State $y\gets (y\andtt p)+(y\rs b)$
-      \Comment{$\quad y<p+p^2/2^b<2p$}
-      \EndFor
-      \If{$y\geq p$}
-      \State $y\gets y-p$
-      \Comment{$y<p$}
-      \EndIf
-      %\State \Return $y$
-   \end{algorithmic}
+		\State $y\gets (y\andtt p)+(y\rs b)$
+		\Comment{$\quad y<p+p^2/2^b<2p$}
+		\EndFor
+		\If{$y\geq p$}
+		\State $y\gets y-p$
+		\Comment{$y<p$}
+		\EndIf
+		%\State \Return $y$
+	\end{algorithmic}
 \end{algorithm}
 
 
 In \Cref{subsec:intro-division} we will give one further improvement to \Cref{alg:Mersenne}.
-Mostly the description above is a fairly standard description of state-of-the-art hashing.
-\footnote{We note that $k=2$, we do have the fast multiply-shift scheme of Dietzfelbinger~\cite{dietzfel96universal}, that directly gives 2-universal
-hashing from $b$-bit strings to $\ell$-bit strings, but for $k>2$,
-there is no faster method that can be implemented with portable code
-in a standard programming language like C.}
-
-We stress that while this is a particularly fast implementation of Mersenne prime hashing, the main novelty of the paper will be in the analysis.
+In the next sections we will argue that Mersenne primes are not only fast, but have special properties not found in other finite fields.
 
 %The main point of this paper is our note from before, that the values hashed to $[r]$ are not completely uniform, as they would have been if $p=2^b$ was a prime.
 %It turns out that with a novel analysis, bits from Mersenne primes are actually
@@ -218,16 +203,10 @@ We stress that while this is a particularly fast implementation of Mersenne prim
 %the all \texttt{1}s value $2^b-1$). 
 
 
-\subsubsection{Selecting arbitrary bits for bucketing}\label{sec:power-of-two}
-As a first illustration of the advantage that we get using a Mersenne
-prime $p=2^b-1$, consider the case mentioned above where we want hash
-values in the range $[r]$ where $r=2^\ell$ is a power of two. We will
-often refer to the hash values in $[r]$ as buckets so that we are
-hashing keys to buckets. The point will be that all bits are
-symmetric. Hence we can select any $\ell$ bits for the
-bucketing. As we will discuss in the end, this symmetry fails badly
-with other primes.
-%Avoiding a degenerate case, we assume $r>1$. In particular this implies that $r$ does not divide our prime $p$.
+\subsubsection{Selecting arbitrary bits}\label{sec:power-of-two}
+If we had b uniform bits, we could partition them any way we’d like and get smaller independent
+strings of uniform random bits. The first property of random values modulo Mersenne primes
+we discuss is what happens when the same thing is done on a random value in $[2^b - 1]$ instead.
 
 More formally, let $\mu:[2^b]\to[2^\ell]$ be any map that selects
 $\ell$ distinct bits, that is, for some $0\leq j_1<\cdots<j_{\ell}<b$,
@@ -242,7 +221,7 @@ We assume a $k$-universal hash function $h:[u]\to[p]$, e.g.,
 the one from \Cref{alg:Mersenne}. To get hash values in $[r]$,
 we use $\mu\circ h$. Since $\mu$ is deterministic,
 the hash values of up to $k$ distinct keys remain
-independent with $\mu\circ h$. The issue is that hash values from 
+independent with $\mu\circ h$. The issue is that hash values from
 $\mu\circ h$ are not quite uniform in $[r]$.
 
 Recall that for any key $x$, we have $h(x)$ uniformly distributed in $[2^b-1]$.
@@ -251,18 +230,18 @@ missing $p=2^b-1$. Now $p$ is the all \texttt{1}s, and
 $\mu(p) = r-1$.
 Therefore
 \begin{align}
-   \text{for $i < r-1$,}\quad
-   \Pr[\mu(h(x))=i]
-   &=\lceil p/r\rceil/p
-   =((p+1)/r)/p
-   =(1+1/p)/r
-   \label{eq:coll-ell<r-1}
-   \\
-   \text{and}\quad
-     \Pr[\mu(h(x))=r-1]
-   &=\lfloor p/r\rfloor/p=((p+1-r)/r)/p
-   =(1-(r-1)/p)/r.
-   \label{eq:coll-ell=r-1}
+	\text{for $i < r-1$,}\quad
+	\Pr[\mu(h(x))=i]
+	 & =\lceil p/r\rceil/p
+	=((p+1)/r)/p
+	=(1+1/p)/r
+	\label{eq:coll-ell<r-1}
+	\\
+	\text{and}\quad
+	\Pr[\mu(h(x))=r-1]
+	 & =\lfloor p/r\rfloor/p=((p+1-r)/r)/p
+	=(1-(r-1)/p)/r.
+	\label{eq:coll-ell=r-1}
 \end{align}
 Thus $\Pr[\mu(h(x))=i]\leq (1+1/p)/r$ for all $i\in[r]$. This upper-bound
 only has a relative error of $1/p$ from the uniform $1/r$.
@@ -271,24 +250,24 @@ Combining \eqref{eq:coll-ell<r-1} and \eqref{eq:coll-ell=r-1} with
 pairwise independence, for any distinct keys $x,y\in [u]$, we show that the
 collision probability is bounded
 \begin{align}
-   \Pr[\mu(h(x))=\mu(h(y))]
-      &=(r-1)((1+1/p)/r)^2+((1-(r-1)r/p)/r)^2 \nonumber
-      %\\&= \frac{r +(r^2-r)/p^2}{r^2}
-       \\&=(1+(r-1)/p^2)/r
-      %\\& <(1+r/p^2)/r
-   .\label{eq:coll}
+	\Pr[\mu(h(x))=\mu(h(y))]
+	 & =(r-1)((1+1/p)/r)^2+((1-(r-1)r/p)/r)^2 \nonumber
+	%\\&= \frac{r +(r^2-r)/p^2}{r^2}
+	\\&=(1+(r-1)/p^2)/r
+	%\\& <(1+r/p^2)/r
+	.\label{eq:coll}
 \end{align}
-We note that relative error $r/p^2$ is small as long as $p$ is
-large.
+Thus the relative error $r/p^2$ is small as long as $p$ is large.
 
 %\paragraph{Mersenne Primes are Special}
 \vspace{.5em}
 
-There are many primes of the form $p=2^b-c$ for 
-      If we had used an  arbitrary prime $p=2^b-c$, $c\in [1,2^{b-1})$.
-Recall that with $c=1$, we had our generic upper bound
-$\Pr[\mu(h(x))=i]\leq (1+1/p)/r$ for all $i\in[r]$
-Now suppose $c\neq 1$, and let's see what happens if we select
+We proceed to show that for the many primes of the form $p=2^b-c$ we don't get anything near the small error above.
+
+%Recall that with $c=1$, we had our generic upper bound
+%$\Pr[\mu(h(x))=i]\leq (1+1/p)/r$ for all $i\in[r]$.
+
+Suppose $c\neq 1$, and let's see what happens if we select
 the $\ell$ least respectively most significant bits. If
 we pick the least significant bits with $y\mapsto y\andtt(r-1)$
 then we get a generic upper bound of $(1+c/p)/r$, which is not
@@ -301,8 +280,8 @@ this is the $2^{b-\ell}$ versus $0$ elements --- a huge difference.
 When it comes to the maximal probability of hitting a bucket,
 we get $\Pr[\mu(h(x))=0]=2^{b-\ell}/p$.
 As an extreme case, when $\ell=1$ and $p=2^{b-1}+1$,\footnote{Primes on this form are called Fermat primes.
-   Performance-wise, they work as well as Mersenne primes, but they have none of the properties we use in this paper.
-Besides, 65,537 is conjectured to be the largest such prime.}
+	Performance-wise, they work as well as Mersenne primes, but they have none of the properties we use in this paper.
+	Besides, 65,537 is conjectured to be the largest such prime.}
 we get $\Pr[\mu(h(x))=0]=1-1/p$ and $\Pr[\mu(h(x))=1]=1/p$.
 
 \subsection{Two-for-one hash functions in second moment estimation}
@@ -336,29 +315,29 @@ total value of key $x\in[u]$ is
 We let $n\leq u$ be  the number of non-zero values
 $f_x\neq 0$, $x\in [u]$. Often $n$ is much smaller than $u$.
 We define the $m$th moment $F_m = \sum_{x\in [u]}f_y^m$. The goal here is to
-estimate the second moment $F_2 = \sum_{x\in [u]}f_x^2=\|f\|^2_2$. 
+estimate the second moment $F_2 = \sum_{x\in [u]}f_x^2=\|f\|^2_2$.
 
 \begin{algorithm}[H]
-   \caption{\label{alg:count-sketch} Count Sketch. Uses a
-      vector/array $C$ of $r$ integers and two independent
-      4-universal hash functions $i:[u]\to[r]$ and $s:[u]\to\{-1,1\}$.
-   .}
-   \begin{algorithmic}
-      \Procedure{Initialize}{}
-         \State For $i\in[t]$, set $C[i]\gets 0$.
-      \EndProcedure
-      \Procedure{Process}{$x, \Delta$}
-         \State $C[i(x)]\gets C[i(x)]+s(x) \Delta$. 
-      \EndProcedure
-      \Procedure{Output}{}
-         \State \Return $\sum_{i\in[t]} C[i]^2$.
-      \EndProcedure
-   \end{algorithmic}
+	\caption{\label{alg:count-sketch} Count Sketch. Uses a
+	vector/array $C$ of $r$ integers and two independent
+	4-universal hash functions $i:[u]\to[r]$ and $s:[u]\to\{-1,1\}$.
+	.}
+	\begin{algorithmic}
+		\Procedure{Initialize}{}
+		\State For $i\in[t]$, set $C[i]\gets 0$.
+		\EndProcedure
+		\Procedure{Process}{$x, \Delta$}
+		\State $C[i(x)]\gets C[i(x)]+s(x) \Delta$.
+		\EndProcedure
+		\Procedure{Output}{}
+		\State \Return $\sum_{i\in[t]} C[i]^2$.
+		\EndProcedure
+	\end{algorithmic}
 \end{algorithm}
-The standard analysis \cite{charikar04count-sketch} shows that 
+The standard analysis \cite{charikar04count-sketch} shows that
 \begin{align}
-   \E[X]&= F_2 \label{eq:E-F2}\\
-   \Var[X]&=2(F_2^2 - F_4)/r<2F_2^2/r \label{eq:V-F2}
+	\E[X]   & = F_2 \label{eq:E-F2}                      \\
+	\Var[X] & =2(F_2^2 - F_4)/r<2F_2^2/r \label{eq:V-F2}
 \end{align}
 As $r$ grows we see that $X$ concentrates around $F_2=\|f\|^2_2$. Here
 $X=\sum_{i\in[r]} C[i]^2=\|C\|^2_2$. Now $C$ is a randomized function
@@ -395,7 +374,7 @@ A critical step in the analysis is that if
 $A$ depends on $i(x_0),\ldots,i(x_{j - 1}),s(x_1),\ldots,s(x_{j - 1})$, but
 not on $s(x_0)$, then
 \begin{equation}\label{eq:E-0}
-  \E[s(x_0) A] = 0 .
+	\E[s(x_0) A] = 0 .
 \end{equation}
 This follows because $\E[s(x_0)]=0$ by uniformity of $s(x_0)$ and because $s(x_0)$ is independent of $A$.
 
@@ -409,20 +388,20 @@ significant bit of $h(x)$ for a bit $a(x)\in[2]$, and finally set
 $s(x)=1-2a(x)$. It is then easy to show that if $h$ is $k$-universal
 then $h$ satisfies \cref{eq:E-0}.
 \begin{algorithm}[H]
-   \caption{For key $x\in [u]$, compute $i(x)=i_x\in[2^\ell]$ and
-      $s(x)=s_x\in\{-1,1\}$,\rule{5ex}{0ex}
-   using $h:[u]\to [2^b]$ where $b>\ell$.}
-   \label{alg:h-and-s}
-   \begin{algorithmic}
-      \State $h_x\gets h(x)$
-      \Comment $h_x$ uses $b$ bits
-      \State $i_x\gets h_x \andtt (2^\ell-1)$
-      \Comment $i_x$ gets $\ell$ least significant bits of $h_x$
-      \State $a_x\gets h_x\rs (b-1)$
-      \Comment $a_x$ gets the most significant bit of $h_x$
-      \State $s_x\gets 1-(a_x\ls1)$
-      \Comment $a_x\in[2]$ is converted to a sign $s_x\in\{-1,1\}$
-   \end{algorithmic}
+	\caption{For key $x\in [u]$, compute $i(x)=i_x\in[2^\ell]$ and
+	$s(x)=s_x\in\{-1,1\}$,\rule{5ex}{0ex}
+	using $h:[u]\to [2^b]$ where $b>\ell$.}
+	\label{alg:h-and-s}
+	\begin{algorithmic}
+		\State $h_x\gets h(x)$
+		\Comment $h_x$ uses $b$ bits
+		\State $i_x\gets h_x \andtt (2^\ell-1)$
+		\Comment $i_x$ gets $\ell$ least significant bits of $h_x$
+		\State $a_x\gets h_x\rs (b-1)$
+		\Comment $a_x$ gets the most significant bit of $h_x$
+		\State $s_x\gets 1-(a_x\ls1)$
+		\Comment $a_x\in[2]$ is converted to a sign $s_x\in\{-1,1\}$
+	\end{algorithmic}
 \end{algorithm}
 % \begin{lemma}\label{lem:b-bit-hashing} Suppose $h:[u]\to[2^b]$ is $k$-universal. Let
 %    $i:[u]\to[2^\ell]$ and
@@ -435,7 +414,7 @@ then $h$ satisfies \cref{eq:E-0}.
 %       \E[s(x_1)A]=0
 %    \end{equation}
 % \end{lemma}
-Note that Algorithm \ref{alg:h-and-s} is well defined as long as 
+Note that Algorithm \ref{alg:h-and-s} is well defined as long as
 $h$ returns a $b$-bit integer. However, \cref{eq:E-0} requires
 that $h$ is $k$-universal into $[2^b]$, which in particular implies that
 the hash values are uniform in $[2^b]$.
@@ -487,58 +466,58 @@ $[2^b]$, denoted $h(x_0) \sim \unif[2^b]$, but then we later have to
 subtract the ``fake'' case where $h(x_0)=p=2^b-1$.  Making the
 distribution of $h(x_0)$ explicit, we get
 \begin{equation}\begin{split}
-  \E_{h(x_0) \sim \unif[p]}[B]&=\sum_{y\in[p]}\E[B \mid h(x_0)=y]/p
-                            \\&=\sum_{y\in[2^b]}\E[B \mid h(x_0)=y]/p - \E[B \mid h(x_0)=p]/p
-                            \\ &=\E_{h(x_0) \sim \unif[2^b]}[B](p+1)/p - \E[B \mid h(x_0)=p]/p.\label{eq:play-with-dist}
-\end{split}\end{equation}
+		\E_{h(x_0) \sim \unif[p]}[B]&=\sum_{y\in[p]}\E[B \mid h(x_0)=y]/p
+		\\&=\sum_{y\in[2^b]}\E[B \mid h(x_0)=y]/p - \E[B \mid h(x_0)=p]/p
+		\\ &=\E_{h(x_0) \sim \unif[2^b]}[B](p+1)/p - \E[B \mid h(x_0)=p]/p.\label{eq:play-with-dist}
+	\end{split}\end{equation}
 Let us now apply this idea our situation where $i:[u]\to[2^\ell]$ and
 $s:[u]\to\{-1,1\}$ are constructed from $h$ as described in Algorithm
 \ref{alg:h-and-s}. We will prove
 \begin{lemma}\label{lem:remove-si}  Consider distinct keys $x_0,\ldots,x_{j - 1}$, $j\leq k$ and an expression $B=s(x_0)A$ where $A$
-   depends on $i(x_0),\ldots,i(x_{j - 1})$ and $s(x_1),\ldots,s(x_{j - 1})$ but not
-   $s(x_0)$. Then
-   \begin{equation}\label{eq:remove-si}
-      \E[s(x_0)A]=\E[A\mid i(x_0)=2^\ell-1]/p.
-   \end{equation}
+	depends on $i(x_0),\ldots,i(x_{j - 1})$ and $s(x_1),\ldots,s(x_{j - 1})$ but not
+	$s(x_0)$. Then
+	\begin{equation}\label{eq:remove-si}
+		\E[s(x_0)A]=\E[A\mid i(x_0)=2^\ell-1]/p.
+	\end{equation}
 \end{lemma}
 \begin{proof}
-When $h(x_0) \sim \unif[2^b]$, then $s(x_0)$ is uniform
-in $\{-1,1\}$ and independent of $i(x_0)$. The remaining
-$(i(x_i),s(x_i))$, $i\ge 1$, are independent of $s(x_0)$ because they
-are functions of $h(x_i)$ which is independent of $h(x_0)$, so
-we conclude that 
-\[\E_{h(x) \sim \unif[2^b]}[s(x_0)A]=0\]
-Finally, when $h(x_0)=p$, we get $s(x_0)=-1$ and $i(x_0)=2^\ell-1$, 
-so applying \eqref{eq:play-with-dist}, we conclude
-that 
-\[\E[s(x_0)A] = -\E[s(x_0) A \mid h(x_0) = p]/p = \E[A \mid i(x_0)=2^\ell-1]/p.\]
+	When $h(x_0) \sim \unif[2^b]$, then $s(x_0)$ is uniform
+	in $\{-1,1\}$ and independent of $i(x_0)$. The remaining
+	$(i(x_i),s(x_i))$, $i\ge 1$, are independent of $s(x_0)$ because they
+	are functions of $h(x_i)$ which is independent of $h(x_0)$, so
+	we conclude that
+	\[\E_{h(x) \sim \unif[2^b]}[s(x_0)A]=0\]
+	Finally, when $h(x_0)=p$, we get $s(x_0)=-1$ and $i(x_0)=2^\ell-1$,
+	so applying \eqref{eq:play-with-dist}, we conclude
+	that
+	\[\E[s(x_0)A] = -\E[s(x_0) A \mid h(x_0) = p]/p = \E[A \mid i(x_0)=2^\ell-1]/p.\]
 \end{proof}
 Above \eqref{eq:remove-si} is our replacement for \eqref{eq:E-0}, that is,
 when the hash values from $h$ are uniform in $[2^b-1]$ instead of
 in $[2^b]$, then $\E[s(x_0)B]$ is reduced by $\E[B \mid i(x_0)=2^\ell-1]/p$.
 For large $p$, this is a small additive error. Using this in a careful
-analysis, we will show that our fast second moment estimation 
+analysis, we will show that our fast second moment estimation
 based on Mersenne primes performs almost perfectly:
 
 \begin{theorem}\label{thm:h-and-s-p}
-   Let $r>1$ and $u>r$ be powers of two and let $p=2^b-1>u$ be a
-   Mersenne prime.
-   Suppose we have a 4-universal hash function $h:[u]\to[2^b-1]$, e.g.,
-   generated using Algorithm \ref{alg:Mersenne}. Suppose
-   $i:[u]\to[r]$ and
-   $s:[u]\to\{-1,1\}$ are constructed from $h$ as described in
-   Algorithm \ref{alg:h-and-s}. Using this $i$ and $s$ 
-   in the Count Sketch Algorithm \ref{alg:count-sketch}, the second moment 
-   estimate $X=\sum_{i\in[k]} C_i^2$ satisfies:
-   \begin{align*}
-      \E[X] < (1+n/p^2)\,F_2,
-      \quad
-      |\E[X] - F_2 | \le F_2 (n - 1)/p^2,
-      \quad
-      \Var[X]< 2F_2^2/r.
-   \end{align*}
+	Let $r>1$ and $u>r$ be powers of two and let $p=2^b-1>u$ be a
+	Mersenne prime.
+	Suppose we have a 4-universal hash function $h:[u]\to[2^b-1]$, e.g.,
+	generated using Algorithm \ref{alg:Mersenne}. Suppose
+	$i:[u]\to[r]$ and
+	$s:[u]\to\{-1,1\}$ are constructed from $h$ as described in
+	Algorithm \ref{alg:h-and-s}. Using this $i$ and $s$
+	in the Count Sketch Algorithm \ref{alg:count-sketch}, the second moment
+	estimate $X=\sum_{i\in[k]} C_i^2$ satisfies:
+	\begin{align*}
+		\E[X] < (1+n/p^2)\,F_2,
+		\quad
+		|\E[X] - F_2 | \le F_2 (n - 1)/p^2,
+		\quad
+		\Var[X]< 2F_2^2/r.
+	\end{align*}
 \end{theorem}
-The difference from \eqref{eq:E-F2} and \eqref{eq:V-F2} 
+The difference from \eqref{eq:E-F2} and \eqref{eq:V-F2}
 is negligible when $p$ is large. Theorem \ref{thm:h-and-s-p} will be
 proved in Section \ref{sec:analysis-two-for-one}.
 
@@ -555,63 +534,63 @@ buckets $R$ whose size is not a power of two.  Suppose we have a
 $2$-universal hash function $h:U\to Q$.  We will compose $h$ with a
 map $\mu:Q\to R$, and use $\mu\circ h$ as a hash function from $U$ to
 $R$.  Let $q=|Q|$ and $r=|R|$.  We want the map $\mu$ to be \emph{most
-  uniform} in the sense that for bucket $i\in R$, the number of
+	uniform} in the sense that for bucket $i\in R$, the number of
 elements from $Q$ mapping to $i$ is either $\floor{q/r}$ or
 $\ceil{q/r}$.  Then the uniformity of hash values with $h$ implies for
 any key $x$ and bucket $i\in R$ \[\floor{q/r}/q\leq
-\Pr[\mu(h(x))=i]\leq \ceil{q/r}/q.\] Below we typically have $Q=[q]$
+	\Pr[\mu(h(x))=i]\leq \ceil{q/r}/q.\] Below we typically have $Q=[q]$
 and $R=[r]$.  A standard example of a most uniform map $\mu:[q]\to[r]$
 is $\mu(x)=x\bmod r$ which the one used above when we defined
 $h^r:[u]\to[r]$, but as we mentioned before, the modulo operation is
 quite slow unless $r$ is a power of two.
 
-Another example of a most uniform map $\mu:[q]\to[r]$ 
+Another example of a most uniform map $\mu:[q]\to[r]$
 is $\mu(x)=\floor{xr/q}$,
 which is also quite slow in general, but if $q=2^b$ is a power of two,
-it can be implemented as $\mu(x)=(xr)\rs\,b$ where 
-$\rs$ denotes right-shift. This would be yet another advantage 
+it can be implemented as $\mu(x)=(xr)\rs\,b$ where
+$\rs$ denotes right-shift. This would be yet another advantage
 of having $k$-universal hashing into $[2^b]$.
 
 Now, our interest is the case where $q$ is a Mersenne prime $p=2^b-1$. We want
 an efficient and most uniform map $\mu:[2^b-1]$ into any given $[r]$.
 Our simple solution is to define
 \begin{equation}\label{eq:most-uniform}
-   \mu(x)=\floor{(x+1)r/2^b}=((x+1)r)\rs b.
+	\mu(x)=\floor{(x+1)r/2^b}=((x+1)r)\rs b.
 \end{equation}
-Lemma \ref{lem:most-uniform} (iii) below 
+Lemma \ref{lem:most-uniform} (iii) below
 states that \eqref{eq:most-uniform} indeed
-gives a most uniform map. 
+gives a most uniform map.
 \begin{lemma}\label{lem:most-uniform} Let $r$ and $b$ be positive integers.
-   %, and let $x\in [2^b-1]$.
-   Then
-   \begin{itemize}
-      \item[(i)] $x\mapsto (xr)\rs\,b$ is a most
-         uniform map from $[2^b]$ to $[r]$.
-      \item[(ii)] $x\mapsto (xr)\rs\,b$ is a most
-         uniform map from $[2^b]\setminus\{0\}=\{1,\ldots,2^b-1\}$ to $[r]$.
-      \item[(iii)] $x\mapsto ((x+1)r)\rs \, b$ is a most
-         uniform map from $[2^b-1]$ to $[r]$.
-   \end{itemize}
+	%, and let $x\in [2^b-1]$.
+	Then
+	\begin{itemize}
+		\item[(i)] $x\mapsto (xr)\rs\,b$ is a most
+		      uniform map from $[2^b]$ to $[r]$.
+		\item[(ii)] $x\mapsto (xr)\rs\,b$ is a most
+		      uniform map from $[2^b]\setminus\{0\}=\{1,\ldots,2^b-1\}$ to $[r]$.
+		\item[(iii)] $x\mapsto ((x+1)r)\rs \, b$ is a most
+		      uniform map from $[2^b-1]$ to $[r]$.
+	\end{itemize}
 \end{lemma}
 \begin{proof}
-   Trivially (ii) implies (iii). 
-   The statement (i) is folklore and easy to prove, so we know that every
-   $i\in[r]$ gets hit by $\floor {2^b/r}$ or $\ceil{2^b/r}$ elements from
-   $[2^b]$. It is also clear that $\ceil{2^b/r}$ elements, including $0$,
-   map to $0$. To prove (ii), we remove $0$ from $[2^b]$, 
-   implying that only
-   $\ceil{2^b/r}-1$ elements map to $0$. For all positive integers $q$
-   and $r$, $\ceil{(q+1)/r}-1=\floor{q/r}$, and we use this here with 
-   $q=2^b-1$. It follows that all buckets from $[r]$ gets $\floor{q/r}$
-   or $\floor{q/r}+1$ elements from $Q=\{1,\ldots,q\}$. If $r$ does
-   not divide $q$ then $\floor{q/r}+1=\ceil{q/r}$, as desired. However,
-   if $r$ divides $q$, then $\floor{q/r}=q/r$, and this
-   is the least number of elements from $Q$ hitting any bucket in $[r]$. Then 
-   no bucket from $[r]$ can get hit by more than $q/r=\ceil{q/r}$ 
-   elements from $Q$. This completes the proof of (ii), and hence of (iii).
+	Trivially (ii) implies (iii).
+	The statement (i) is folklore and easy to prove, so we know that every
+	$i\in[r]$ gets hit by $\floor {2^b/r}$ or $\ceil{2^b/r}$ elements from
+	$[2^b]$. It is also clear that $\ceil{2^b/r}$ elements, including $0$,
+	map to $0$. To prove (ii), we remove $0$ from $[2^b]$,
+	implying that only
+	$\ceil{2^b/r}-1$ elements map to $0$. For all positive integers $q$
+	and $r$, $\ceil{(q+1)/r}-1=\floor{q/r}$, and we use this here with
+	$q=2^b-1$. It follows that all buckets from $[r]$ gets $\floor{q/r}$
+	or $\floor{q/r}+1$ elements from $Q=\{1,\ldots,q\}$. If $r$ does
+	not divide $q$ then $\floor{q/r}+1=\ceil{q/r}$, as desired. However,
+	if $r$ divides $q$, then $\floor{q/r}=q/r$, and this
+	is the least number of elements from $Q$ hitting any bucket in $[r]$. Then
+	no bucket from $[r]$ can get hit by more than $q/r=\ceil{q/r}$
+	elements from $Q$. This completes the proof of (ii), and hence of (iii).
 \end{proof}
 We note that our trick does not work when $q=2^b-c$ for $c\geq 2$, that is,
-using $x\mapsto ((x+c)r)\rs  b$, for in this general case, 
+using $x\mapsto ((x+c)r)\rs  b$, for in this general case,
 the number of elements hashing to $0$ is $\ceil {2^b/r}-c$, or $0$ if
 $c\geq \floor {2^b/r}$.
 One may try many other hash functions $(c_1 x r+ c_2 x+ c_3 r + c_4) \rs b$ similarly without any luck.
@@ -639,29 +618,29 @@ final hash value $y\bmod p$. We obtained this using the following
 statements, each of which preserves the value modulo $p$, starting from
 $y<p^2$:
 \begin{algorithmic}
-   \State $y \gets (y\andtt p)+(y\rs b)$
-   \Comment $y<2p$
-   \If{$y\ge p$}
-   \State $y\gets y-p$
-   \Comment  $y<p$
-   \EndIf
+	\State $y \gets (y\andtt p)+(y\rs b)$
+	\Comment $y<2p$
+	\If{$y\ge p$}
+	\State $y\gets y-p$
+	\Comment  $y<p$
+	\EndIf
 \end{algorithmic}
 To avoid the if-statement, in Algorithm \ref{alg:div-simple}, we suggest
 a branch-free code that starting
 from $x<2^{2b}$ computes both $y=x\bmod p$ and $z=\floor{x/p}$ using
-a small number of AC$^0$ instructions. 
+a small number of AC$^0$ instructions.
 \begin{algorithm}[H]
-   \caption{For Mersenne prime $p=2^b-1$ and $x< 2^{2b}$, compute
-   \label{alg:div-simple}
-   $y=x\bmod p$ and $z=\floor{x/p}$}
-   \begin{algorithmic}
-      \State $\rhd$ First we compute $z=\floor{x/p}$
-      \State $x'=x+1$
-      \State $z \gets(( x' \rs b)+x')\rs b$
-      %\State $y \gets x - (z \ls b) + z$.
-      \State $\rhd$ Next we compute $y=x\bmod p$ given $z=\floor{x/p}$
-      \State $y \gets (x + z) \andtt p $
-   \end{algorithmic}
+	\caption{For Mersenne prime $p=2^b-1$ and $x< 2^{2b}$, compute
+		\label{alg:div-simple}
+		$y=x\bmod p$ and $z=\floor{x/p}$}
+	\begin{algorithmic}
+		\State $\rhd$ First we compute $z=\floor{x/p}$
+		\State $x'=x+1$
+		\State $z \gets(( x' \rs b)+x')\rs b$
+		%\State $y \gets x - (z \ls b) + z$.
+		\State $\rhd$ Next we compute $y=x\bmod p$ given $z=\floor{x/p}$
+		\State $y \gets (x + z) \andtt p $
+	\end{algorithmic}
 \end{algorithm}
 In Algorithm \ref{alg:div-simple}, we use
 $z=\floor{x/p}$ to compute $y=x\bmod p$. If we only want the
@@ -671,22 +650,22 @@ Below we will generalize Algorithm \ref{alg:div-simple} to work for
 arbitrary $x$, not only $x<2^{2b}$. Moreover, we will generalize
 to work for different kinds of primes generalizing Mersenne primes:
 \begin{description}
-   \item[Pseudo-Mersenne Primes]
-      are primes of the form $2^b-c$, where is usually required that $c < 2^{\lfloor b/2\rfloor}$~\cite{van2014encyclopedia}.
-      Crandal patented a method for working with Pseudo-Mersenne Primes in 1992~\cite{crandall1992method},
-      why those primes are also sometimes called ``Crandal-primes''.
-      The method was formalized and extended by Jaewook Chung and Anwar Hasan in 2003~\cite{chung2003more}. The method we present is simpler with
-      stronger guarantees and better practical performance.
-      We provide a comparison with the Crandal-Chung-Hansan method in Section 4.
-   \item[Generalized Mersenne Primes]
-      also sometimes known as Solinas primes~\cite{Solinas2011}, are sparse numbers, that is $f(2^b)$ where $f(x)$ is a low-degree polynomial.
-      Examples are the primes in NIST's document ``Recommended Elliptic Curves for Federal Government Use''~\cite{nist}:
-         $p_{192} = 2^{192} - 2^{64} - 1$
-      and
-         $p_{384} = 2^{384}-2^{128}-2^{96}+2^{32}-1$.
-      We simply note that Solinas primes form a special case of
-      Pseudo-Mersenne Primes, where multiplication with $c$
-      can be done using a few shifts and additions.
+	\item[Pseudo-Mersenne Primes]
+	      are primes of the form $2^b-c$, where is usually required that $c < 2^{\lfloor b/2\rfloor}$~\cite{van2014encyclopedia}.
+	      Crandal patented a method for working with Pseudo-Mersenne Primes in 1992~\cite{crandall1992method},
+	      why those primes are also sometimes called ``Crandal-primes''.
+	      The method was formalized and extended by Jaewook Chung and Anwar Hasan in 2003~\cite{chung2003more}. The method we present is simpler with
+	      stronger guarantees and better practical performance.
+	      We provide a comparison with the Crandal-Chung-Hansan method in Section 4.
+	\item[Generalized Mersenne Primes]
+	      also sometimes known as Solinas primes~\cite{Solinas2011}, are sparse numbers, that is $f(2^b)$ where $f(x)$ is a low-degree polynomial.
+	      Examples are the primes in NIST's document ``Recommended Elliptic Curves for Federal Government Use''~\cite{nist}:
+	      $p_{192} = 2^{192} - 2^{64} - 1$
+	      and
+	      $p_{384} = 2^{384}-2^{128}-2^{96}+2^{32}-1$.
+	      We simply note that Solinas primes form a special case of
+	      Pseudo-Mersenne Primes, where multiplication with $c$
+	      can be done using a few shifts and additions.
 \end{description}
 We will now first generalize the division from Algorithm \ref{alg:div-simple} to cover arbitrary $x$ and division with an arbitrary Pseudo-Mersenne primes $p=2^b-c$.
 This is done in Algorithm \ref{alg:division-generalized} below which
@@ -694,46 +673,46 @@ works also if $p=2^b-c$ is not a prime.  The
 simple division in Algorithm \ref{alg:div-simple} corresponds to the case
 where $c=1$ and $m=2$.
 \begin{algorithm}[H]
-  \caption{Given integers $p=2^b-c$ and $m$.
-    For any $x< (2^b/c)^m$, compute $z=\floor{x/p}$}
-   \label{alg:division-generalized}
-   \begin{algorithmic}
-      %\Procedure{Divide}{x, n, c}
-         \State $x' \gets x + c$
-         \State $z \gets x' \rs b$
-         %\For{$i\gets 1$ \textbf{to} $m$}
-         \For{ $m-1$ times}
-            \State $z \gets (z * c + x')\rs b$
-         \EndFor
-         %\EndFor
-         %\State \Return $v$
-      %\EndProcedure
-   \end{algorithmic}
+	\caption{Given integers $p=2^b-c$ and $m$.
+		For any $x< (2^b/c)^m$, compute $z=\floor{x/p}$}
+	\label{alg:division-generalized}
+	\begin{algorithmic}
+		%\Procedure{Divide}{x, n, c}
+		\State $x' \gets x + c$
+		\State $z \gets x' \rs b$
+		%\For{$i\gets 1$ \textbf{to} $m$}
+		\For{ $m-1$ times}
+		\State $z \gets (z * c + x')\rs b$
+		\EndFor
+		%\EndFor
+		%\State \Return $v$
+		%\EndProcedure
+	\end{algorithmic}
 \end{algorithm}
 The proof that Algorithm \ref{alg:division-generalized} correctly computes
- $z=\floor{x/p}$ is provided in Section \ref{sec:division}.
+$z=\floor{x/p}$ is provided in Section \ref{sec:division}.
 Note that $m$ can be computed in advance from $p$, and there is no requirement that it is chosen as small as possible.
 For Mersenne and Solinas primes, the multiplication $z*c$ can be done very fast.
 
 Mathematically the algorithm computes the nested division
 $$
-\bbfloor{\frac{x}{q-c}}
-=
-\bbfloor{\frac{
-   \bfloor{\frac{
-      \floor{\frac{
-         \dots+x+c
-      }{q}}c +x+c
-   }{q}}c +x+c
-}{q}}
-\vspace{-1em} % Move the next line further up
+	\bbfloor{\frac{x}{q-c}}
+	=
+	\bbfloor{\frac{
+			\bfloor{\frac{
+					\floor{\frac{
+							\dots+x+c
+						}{q}}c +x+c
+				}{q}}c +x+c
+		}{q}}
+	\vspace{-1em} % Move the next line further up
 $$
 which is visually similar to the series expansion
 $
-   \frac{x}{q-c}
-   = \frac{x}{q}\sum_{i=0}^\infty (\frac{c}{q})^i
-   %= x\frac{1+\frac{c+\frac{c^2 + \dots}{q}}{q}}{q}
-   = \frac{\frac{\frac{\dots+x}{q}c+x}{q}c+x}{q}.
+	\frac{x}{q-c}
+	= \frac{x}{q}\sum_{i=0}^\infty (\frac{c}{q})^i
+	%= x\frac{1+\frac{c+\frac{c^2 + \dots}{q}}{q}}{q}
+	= \frac{\frac{\frac{\dots+x}{q}c+x}{q}c+x}{q}.
 $
 It is natural to truncate this after $m$ steps for a $(c/q)^m$ approximation.
 The less intuitive part is that we need to add $x+c$ rather than $x$ at each step, to compensate for rounding down the intermediate divisions.
@@ -742,10 +721,10 @@ The less intuitive part is that we need to add $x+c$ rather than $x$ at each ste
 We will now compute the $\bmod$ operation assuming that
 we have already computed $z=\floor{x/p}$. Then
 \begin{align}
-   x \bmod p
-   = x - pz
-   = x - (2^b-c)z
-   = x - (z\ls b) - c*z,
+	x \bmod p
+	= x - pz
+	= x - (2^b-c)z
+	= x - (z\ls b) - c*z,
 \end{align}
 which is only two additions, a shift, and a multiplication with $c$ on top of the division algorithm.
 As $pz = \floor{x/p}p \le x$ there is no danger of overflow.
@@ -754,12 +733,12 @@ that if $x = z (2^b-c) + y$, then
 $$x\bmod p = y=\left(x+c*z \right) \bmod 2^b.$$
 This is the method presented in Algorithm \ref{alg:mod-generalized} and applied with $c=1$ in Algorithm \ref{alg:div-simple}.
 \begin{algorithm}[H]
-   \caption{For integers $p=2^b-c$ and $z=\floor{x/p}$ compute
-      $y=x \bmod p$.}
-   \label{alg:mod-generalized}
-   \begin{algorithmic}
-      \State $y \gets (x + z*c) \andtt (2^b-1)$
-   \end{algorithmic}
+	\caption{For integers $p=2^b-c$ and $z=\floor{x/p}$ compute
+		$y=x \bmod p$.}
+	\label{alg:mod-generalized}
+	\begin{algorithmic}
+		\State $y \gets (x + z*c) \andtt (2^b-1)$
+	\end{algorithmic}
 \end{algorithm}
 
 
@@ -787,12 +766,12 @@ These cases are typically non-trivial to convert to random fields other than $\Z
 The generalized Mersenne primes with $c$ of the other $2^{b(1-\eps)}$ are a good candidate, since the range ...
 Using an idea like \eqref{eq:Mersenne} we can note
 \begin{equation}
-   y \equiv y - \floor{y/2^b}(2^b-c)
-   = (y\bmod 2^{b}) + c\floor{y/2^b}
-   \pmod {2^b-c}.
+	y \equiv y - \floor{y/2^b}(2^b-c)
+	= (y\bmod 2^{b}) + c\floor{y/2^b}
+	\pmod {2^b-c}.
 \end{equation}
 Each application reduces $y$ by a factor $\approx 2^{-\eps b}$.
-So if we multiply two numbers 
+So if we multiply two numbers
 
 \subsubsection{Related Algorithms}
 
@@ -804,20 +783,20 @@ give very specific algorithms \emph{for each} of many well known such primes.
 An example is shown in \Cref{alg:solina}.
 
 \begin{algorithm}[H]
-   \caption{Fast reduction modulo $p_{192} = 2^{192} - 2^{64} - 1$}
-   \label{alg:solina}
-   \begin{algorithmic}
-      \State \textbf{input} $c \gets (c_5, c_4, c_3, c_2, c_1, c_0)$, where each $c_i$ is a 64-bit word, and $0 \le c < p^2_{192}$.
-      \State $s_0 \gets (c_2, c_1, c_0)$
-      \State $s_1 \gets (0, c_3, c_3)$
-      \State $s_2 \gets (c_4, c_4, 0)$
-      \State $s_3 \gets (c_5, c_5, c_5)$
-      \State \textbf{return} $s_0 + s_1 + s_2 + s_3 \mod p_{192}$.
-   \end{algorithmic}
+	\caption{Fast reduction modulo $p_{192} = 2^{192} - 2^{64} - 1$}
+	\label{alg:solina}
+	\begin{algorithmic}
+		\State \textbf{input} $c \gets (c_5, c_4, c_3, c_2, c_1, c_0)$, where each $c_i$ is a 64-bit word, and $0 \le c < p^2_{192}$.
+		\State $s_0 \gets (c_2, c_1, c_0)$
+		\State $s_1 \gets (0, c_3, c_3)$
+		\State $s_2 \gets (c_4, c_4, 0)$
+		\State $s_3 \gets (c_5, c_5, c_5)$
+		\State \textbf{return} $s_0 + s_1 + s_2 + s_3 \mod p_{192}$.
+	\end{algorithmic}
 \end{algorithm}
 
-Division by Mersenne primes is a less common task, but a number of well known division algorithms can be specialized, such as 
- classical trial division, Montgomery's method and Barrett reduction.
+Division by Mersenne primes is a less common task, but a number of well known division algorithms can be specialized, such as
+classical trial division, Montgomery's method and Barrett reduction.
 
 
 %Montgomery method:
@@ -829,35 +808,35 @@ Division by Mersenne primes is a less common task, but a number of well known di
 
 The state of the art appears to be the modified Crandall Algorithm by Chung and Hasan~\cite{chung2006low}.
 This algorithm, given in Algorithm \ref{alg:cch} modifies Crandall's algorithm~\cite{crandall1992method} from 1992 to compute division as well as modulo for generalized $2^b-c$ Mersenne primes.\footnote{
-   Chung and Hasan also have an earlier, simpler algorithm from 2003~\cite{chung2003more},
-   but it appears to give the wrong result for many simple cases.
-   This appears in part to be because of a lack of the ``clean up'' while-loop at the end of Algorithm \ref{alg:cch}.
+	Chung and Hasan also have an earlier, simpler algorithm from 2003~\cite{chung2003more},
+	but it appears to give the wrong result for many simple cases.
+	This appears in part to be because of a lack of the ``clean up'' while-loop at the end of Algorithm \ref{alg:cch}.
 }
 \begin{algorithm}[H]
-   \caption{Crandall, Chung, Hassan algorithm. For $p=2^b-c$, computes $q, r$ such that $x = qp+r$ and $r<p$.}
-   \label{alg:cch}
-   \begin{algorithmic}
-      %\Procedure{Divide}{x, n, c}
-         \State $q_0 \gets x \rs n$
-         \State $r_0 \gets x \andtt (2^b-1)$
-         \State $q \gets q_0, r\gets r_0$
-         \State $i \gets 0$
-         \While{$q_i>0$}
-            \State $t \gets q_i*c$
-            \State $q_{i+1} \gets t \rs n$
-            \State $r_{i+1} \gets t \andtt (2^b - 1)$
-            \State $q\gets q+q_{i+1}$
-            \State $r\gets r+r_{i+1}$
-            \State $i\gets i+1$
-         \EndWhile
-         \State $t \gets 2^b-c$
-         \While{$r\ge t$}
-            \State $r\gets r-t$
-            \State $q\gets q+1$
-         \EndWhile
-         %\State\textbf{return} $q$
-      %\EndProcedure
-   \end{algorithmic}
+	\caption{Crandall, Chung, Hassan algorithm. For $p=2^b-c$, computes $q, r$ such that $x = qp+r$ and $r<p$.}
+	\label{alg:cch}
+	\begin{algorithmic}
+		%\Procedure{Divide}{x, n, c}
+		\State $q_0 \gets x \rs n$
+		\State $r_0 \gets x \andtt (2^b-1)$
+		\State $q \gets q_0, r\gets r_0$
+		\State $i \gets 0$
+		\While{$q_i>0$}
+		\State $t \gets q_i*c$
+		\State $q_{i+1} \gets t \rs n$
+		\State $r_{i+1} \gets t \andtt (2^b - 1)$
+		\State $q\gets q+q_{i+1}$
+		\State $r\gets r+r_{i+1}$
+		\State $i\gets i+1$
+		\EndWhile
+		\State $t \gets 2^b-c$
+		\While{$r\ge t$}
+		\State $r\gets r-t$
+		\State $q\gets q+1$
+		\EndWhile
+		%\State\textbf{return} $q$
+		%\EndProcedure
+	\end{algorithmic}
 \end{algorithm}
 The authors state that for $2n+\ell$ bit input, Algorithm \ref{alg:cch}
 requires at most $s$ iterations of the first loop, if $c < 2^{((s-1)n-\ell)/s}$.
