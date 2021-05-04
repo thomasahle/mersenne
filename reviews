@@ -1,0 +1,274 @@
+
+
+The authors propose to look at Mersenne primes p = 2^b-1 for efficient calculation of hash functions.
+
+It is known that for 2^b-1 to be prime b itself has to be prime.
+OEIS (https://oeis.org/A000043) lists 47 numbers b=2, 3, 5, 7, 13, 17, 19, 31, 61, 89, 107, 127, 521, 607, 1279, 2203, 2281, 3217, 4253, 4423, 9689, 9941, 11213, ... , 42643801, 43112609
+as the exponents for the first 47 Mersenne primes currently known,
+Wikipedia (https://primes.utm.edu/mersenne/index.html#known) has four more, even larger exponents b, but it is not clear
+if they are the immediate successors. It is an open problem if there are infinitely many Mersenne primes.
+Obviously, however, there are sufficiently many for practical purposes, meaning for
+calculations modulo p with numbers of up to 43 million bits.
+In practice one will probably never get further than a few hundred or maybe a few thousand bits.
+
+A class of hash functions is k-universal if an element h chosen randomly from the class behaves
+fully randomly on arbitrary k keys. 
+A (The) classical construction of k-universal hash functions
+is the set of polynomials of degree up to k-1 over a field. If the field has
+cardinality a power of 2, things are very clean mathematically.
+In particular it is possible to cut hash values into substrings and
+get pieces that are independent when restricted to k keys.
+Or one can select some bits, thus reducing the range while maintaining perfect k-universality.
+These properties are useful for applications. 
+The problem is that implementation of field operations in GF(2^b) is fast only if special hardware is available.
+(And then the code is non-portable.)
+
+So it would be better to use integer arithmetic. For k=2 there is a reasonable solution with range [2^b], but not for k>2.
+So the classical approach for polynomial hash functions is to use arithmetic modulo p for odd prime p.
+There are some downsides:
+(1) For polynomial evaluation one has to do division by p with remainder k times, which is costly.
+Or one uses tables of size p^{1/c} for a constant c, but the cost is extra space, which is also sometimes undesirable.
+(2) Splitting the hash values into pieces does not give results that are fully random, but one gets (slight) dependencies
+and (slight) nonuniformity. This is already a problem if one piece is only one bit, as is necessary in
+the classical implementation of count sketches.
+(3) Simultaneously splitting off a bit and reducing the range to [r] for arbitrary r causes even more problems.
+
+The authors propose to study a solution for this situation, and carry this program out in detail.
+For (1), they say that one should use the field Z_p for p a Mersenne prime.
+It is clear that y \equiv (y mod (p+1)) + (y div (p+1)) (mod p). If p = 2^b-1 is a Mersenne prime,
+then y mod (p+1) is just the last b bits of y, and y div (p+1) are the remaining bits; so division by p with remainder
+reduces to shifts and integer addition and subtraction. This is faster if p is not tiny. (The authors cite Carter and Wegman 1979 for this observation.)
+The paper has an experimental section that demonstrates the advantages of e.g. using p=2^89-1 and p=2^61-1
+over calculation in fields of size 2^64 and 2^32. For k > 4, advantages in execution time appear.
+For (2) and (3) they do detailed analyses of expectation and variance of F_2, the quantity relevant for count sketch,
+with accurate estimates of deviations from the ideal situation.
+Also, they introduce algorithms for calculating modulo ``pseudo-Mersenne'' primes (p = 2^b-c for c>1).
+
+Results:
+1) Algorithm 1 is a parsimonious way to evaluate polynomials modulo p. (Do ``off-by-one test'' only once.)
+2) Algorithm 4 is a version of Algorithm 1 that avoids branching. (No experiments for the speedup effects, though.)
+3) As h(x) is uniform on [p] and leaves out 2^b-1, taking any \ell bits out of h(x) will
+give a distribution on [2^\ell] at most 1/p above uniform. (Point 2^\ell-1 is underweighted.)
+4) Application: One can use degree-3 polynomials modulo a Mersenne prime and split values into a bit (giving a sign)
+and a remaining bitstring (giving a hash value) and run Count Sketch with these values. As an example, second moment estimation is used. The pure analysis of Count Sketch
+needs 4-universal hash values and 4-universal bits, independent. The authors call this ``two-for-one hashing''.
+5) Often one needs range [r], not [p]. The authors show one can use g(x)=((h(x) +1)*r) div 2^b, or shift ((h(x) +1)*r) to the right by b bits
+to obtain a hash function g so that g(x) almost uniformly distributed in [r], only with a deviation 1. This is combined with the problem of splitting off a bit, from 4).
+6) Finally, the authors describe a new, simple, and efficient algorithm for calculating x div (2^b-c) and x mod (2^b-c) for c>1 (Algorithms 5 and 6),
+generalizing Algorithm 4 to ``pseudo-Mersenne'' primes.
+Experiments indicate that this algorithm beats the state-of-the-art algorithm (Crandall, Chung, Hassan) in terms of running time by more than a factor of 2.
+----------- Evaluation and discussion of the merits of the paper -----------
+Methods: The algorithms are quite clear and simple. The method of analysis is careful calculation, partly tedious, e.g. pages 14--17 and 19--20.
+
+Title: Patrascu and Thorup had a paper on ``The power of simple tabulation hashing''. In comparison to those results, the very detailed observations
+in the submission seem much less ``powerful'', and I think a title like ``(How to Organize) Fast Universal Hashing with Mersenne Primes with Simple Algorithms'' would be more adequate.
+
+Strengths: The questions are natural, if one is interested in speeding up the evaluation of hash functions (which one should, if this is done frequently in an application).
+The algorithms are simple and partly cute. The analyses are not as straightforward as one might think, and they are carried out very carefully.
+
+Weaknesses:
+
+A) I find the organization strange. The ``introduction'', which is a spectacular 11 pages long (of a total of 22 pages of text), gives a first round through all the issues and problems,
+without giving the reader clear guidance. It displays all algorithms in full detail (strange for an introduction: page 12),
+and gives parts of the analyses, with Lemmas and partly proofs (pages 6, 8, 9).
+Some of the proofs are postponed to Sections 2--4.
+
+
+B) While the writing is knowledgeable, it is not really well organized, or elegantly written.
+I guess the paper would gain if some of the later detailed calculations, which partly look like repetition of principles already demonstrated, were just left as exercises for the reader.
+
+C) The paper ``Thorup and Zhang, Tabulation-Based 5-Independent Hashing with Applications to Linear Probing and Second Moment Estimation,
+SIAM J. Comput., 41(2), 293–331'' is not cited. In this paper, involving one of the authors, it is shown how to do Second Moment Estimation without an independent extra bit.
+So application 4) may not be that central application, or is it still? Just omitting the reference isn't a good strategy to avoid this question.
+
+
+
+D) The submitted paper is full of clerical errors; the strangest thing I spotted is a repeated paragraph on page 3. Naturally, there are also incomplete sentences and far too many typos.
+Seemingly, there was too little time for proofreading.
+
+Done.
+
+E) The experiments seem a little arbitrary and incomplete, some promising ideas (like division without branching) have not been tested.
+
+Overall assessment: The algorithms are mostly simple, the analyses are not. The authors did not really try to make the latter look elegant.
+While the details are mostly fine (each lemma and proof taken for itself), the overall plan for presenting the material and the organization are substandard.
+It is with not too much enthusiasm that I say this paper may be acceptable for SOSA.
+----------- Comments for the authors -----------
+The main problem is the reorganization of the material into a slim
+intorduction and then the main body of the paper. The authors have to find their own way here.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+Some details I noticed while reading (not complete):
+
+page 2: ``our analysis yields errors that differ from the uniform case'': errors don't differ.
+
+page 3: The paragraph starting with ``a classic example ...'' appears twice. The respective preceding paragraphs seem to
+say the same thing in different words. ``To store n keys'': $n$.
+
+Second paragraph in 1.2: ``u^{1/t}'': Neither U nor u were mentioned before. U appears in Definition 1, u on page 4, without saying that U=[u].
+
+page 4: Formula in line 2: index should be i.
+
+mod$r$: mod $r$
+
+Wegmen: typo.
+
+``the possible off-by-one in Equation (1)'': explain for all readers what this means.
+
+Footnote: ``We note that k=2'': missing ``if''.
+
+page 5: ``we will often refer to the hash values in [r] as buckets'': Normally buckets are sets of keys, namely h^{-1}(j) \cap S.
+
+paragraph before Section 1.3: It is unclear to me what the topic of this paragraph is meant to be.
+It should be reorganized. The first sentence ``There are many primes ...'' is broken. Before ``Now'' the period is missing.
+``while only max{..} lands ..'': grammar. ``this is the 2^{b-\ell} versus 0 elements'': no ``the''.
+
+page 6: Periods after the first sentence in 1.3.1 and in the heading of Algorithm 2.
+
+``As r grows we see that'': We see that by choosing larger and larger r we can make X concentrate more and more ...
+
+``This is crucial to machine learning, where they adopted ... [?]'': Check language and reference.
+
+``In Section 1.1 we mentioned'': didn't find anything of the sort there.
+
+``unbiased estimator X_x = s(x)C[i(x)]'': While this is an unbiased estimator,
+I am afraid that a single such value won't tell you much about f_x.
+To approximate f_x, one has to repeat the scheme several times and take an average, isn't that so?
+
+page 7: ``two-for-one'' sounds like one can split h(x) into two pieces arbitrarily.
+Your result is very special: split into a smaller hash value and a bit.
+
+Above Algorithm 3: ``if h is k-universal'' if h is 4-universal.
+
+pages 8 and 9: Lemma + proof are not the style one expects in an introduction.
+
+page 9: ``most uniform'': I see you mean the superlative, ``as uniform as possible''. Still, I would find ``almost uniform'' easier to read.
+
+In (13), the ``x'' is distracting because it is not a key.
+
+line 8 from bottom: ``gets'': typo.
+
+page 10: line 3: ``We will see in Section 1.3.3.'': This is an earlier section, not a future one.
+
+line 7/8: ``prediction; for . It implies ...'': Sentence broken.
+
+Algorithms 4 and 5: Experiments would be interesting.
+
+page 11/12: Section 1.6: I don't understand the organization of this section and its subsections at all.
+What is applied to an arbitrary number of buckets? To what are the algorithms of 1.6.1 related?
+
+page 13: The beginning of Section 2 is awkward, in its reference (in the past tense) to the unfinished business from Section 1.
+``As before'': where before?
+
+``i \in [r]'' and ``i \in [k]'': which is the correct range?
+
+``As discussed in the introduction'': Since the introduction is so long, this reference is too vague.
+
+page 14: ``classic case'': Probably more ``classical'' (has been around for a long time).
+
+The last paragraph on page 14 is a repetition of what has been discussed at length before.
+
+page 15: ``Same method is applied'': The same method ...
+
+page 17: line 2: period missing.
+
+First sentence of Section 3: ``We now consider the case where we want to hash into a number of buckets.'' Doesn't make sense.
+
+``we will show how it can be used'': how what can be used?
+
+heading of 3.1: I don't see the ``two-for-one'' idea in the text of 3.1.
+
+``probability, Let'': typo.
+
+page 21: ``division and modulo'': quotient and remainder?
+
+n \ge 0: I think n=0 is uninteresting.
+
+``if c \setminus q'': what does this mean?
+
+``(v_i)_{i\in[n]}'': The sequence is for i\in[n+1], the recursion for i\in[n].
+
+page 22: In Table 1 right it does not make sense to mark Algorithm 1 the winner for k=4.
+
+page 23: ``in an implementation closer to the metal'': please avoid wild jargon of this kind.
+
+page 24, reference [Nis99]: This is not a proper reference to a document.
+(Google gave me a document named fips186-2.pdf, which has an appendix 6 with the title given here.)
+Give a direct link. Also consider referencing a version of these recommendations that is not outdated since 2001.
+
+
+%%%%%%%%%% Appendix for authors, not part of the assessment:  %%%%%%%%%%%%%%%%%%%%%%
+
+I suggest looking into the following, as a possible alternative approach with less calculations in the analysis.
+Take a k-universal class for [p] with p = 2^b-c a pseudo-Mersenne prime, like polynomials of degree <k.
+Then define h'(x) = (h(x)+C) bmod 2^b (or the last b bits of h(x)+C) for C random in [2^b]), which adds not much to the evaluation cost.
+Obviously, every single hash value is now uniformly distributed.
+Claim: This is ``pretty close to'' k-universal hashing with range [2^b]. In which sense?
+Take distinct keys x_1,...,x_k and values j_1,...,j_k < 2^b, and let f = |{j_1,...,j_k}| \le k.
+Then there is a certain number alpha \in [c..c*f] of values C for which the equation
+(*) h'(x_s) = (h(x_s)+C) b s=1,...,k,
+does not have a solution h in H.
+(It's unsolvable if (j_s - C) bmod 2^b \ge p for at least one s.)
+It follows that the probability that a random h' satisfies (*) is (1-alpha/2^b)/p^k, between (1-c*k/2^b)/p^k and (1-c/2^b)/p^k.
+One also has to take the relative deviation between 1/p^k and 1/(2^b)^k into account, which is at most (2^b/p)^k - 1 \le ((p+c)/p)^k - 1 < 2ck/p.
+One gets that each tuple (j_1,...,j_k) is attained
+with probability (1/2^b)^k * (1 plusminus O(ck/p)).
+This error estimation carries over to probabilites and all expected values as long as formulas for E(X) and Var(X) are used as in the paper. As long as these quantities are sums over
+events for pairs or 4-tuples of keys, the deviations from the ``pure'' 4-wise independent case is controlled by the error term 1 plusminus O(ck/p).
+
+
+
+----------------------- REVIEW 2 ---------------------
+SUBMISSION: 71
+TITLE: The Power of Hashing with Mersenne Primes
+AUTHORS: Jakob Bæk Tejs Knudsen, Thomas Dybdahl Ahle and Mikkel Thorup
+
+----------- Summary -----------
+This paper presents various results about efficient hashing using a Mersenne prime p = 2^b - 1 as the modulus. Many of the results below are also generalized to pseudo Mersenne primes of the form p = 2^b - c.
+
+1. Computing the value of a polynomial mod p.
+
+The authors give an efficient implementation using only bitwise AND operations, bit-shifts, and one subtraction.
+
+2. Using polynomials mod p for universal hashing, when the desired number of buckets is a power of two.
+
+This paper adopts the view that for p = 2^b - 1, working mod p is just like working with uniform b-bit strings, except that one value (all-ones) is missing.
+
+They show that this slight distortion from uniformity has only a small effect on various statistics that are needed for some common applications of universal hashing.
+
+3. Hashing when the number of buckets is not a power of two.
+
+In this case, the authors define a notion of "most uniform", meaning as close to uniform as possible.
+
+4. Using the polynomial hash functions from (2) in count sketches.
+
+They give an efficient implementation of count sketching using such a hash function, as well as bounds on using this for moment estimation.
+
+5. Efficient division using Mersenne primes
+
+This is a clever way to divide x < p^2 by Mersenne primes p, returning the divisor and remainder. The author even find a way to avoid an if-statement, because of concerns that branch statement slow down code!
+
+6. Experiments.
+----------- Evaluation and discussion of the merits of the paper -----------
+The algorithms in this paper are all simple, elegant, and clever. They are all about improving constant factors: one of them tries to do away with a single branch condition, for instance. The experiments at the end of the paper compare these algorithms to the state of the art and are quite impressive.
+
+The arguments are not especially pretty, but that's fine. A bigger criticism is the writing. The paper seems to not even have been proofread: paragraphs appear twice, sentences are cut off mid-way, and so on.
+
+
+
+----------------------- REVIEW 3 ---------------------
+SUBMISSION: 71
+TITLE: The Power of Hashing with Mersenne Primes
+AUTHORS: Jakob Bæk Tejs Knudsen, Thomas Dybdahl Ahle and Mikkel Thorup
+
+----------- Summary -----------
+-- Finds low-level/concrete running time speed-ups for performing arithmetic modulo (nearly) Mersenne primes
+
+-- Given arithmetic hashing schemes, based on Mersenne primes, exploiting the property that numbers modulo a Mersenne prime are almost uniform bit strings, the paper shows a factor of two speed-up with a new "two for one" hashing trick.
+----------- Evaluation and discussion of the merits of the paper -----------
+The article could have been entitled "all you want to know" (or maybe what you do not want to know) "about hashing with Mersenne primes." Its topics range from the hairy details of how to do the modular arithmetic modulo a (generalized) Mersenne prime all the way to clever tricks when hashing with Mersenne primes is already given. There is no doubt that the paper offers a lot of helpful advices to those who want to work with these hashing schemes. Some of the tricks are elegant, but whether this type of paper with lots of small niceties can pass in this conference I leave it to further judges. It could be that I overlook something and the expectation and variance estimates in theorem 3.3 give something extraordinary or that their division modulo a nearly-Mersenne prime adds a lot to algebraic complexity research. It is my understanding that the ideas should yield no more, but also no less than a factor of 2-3 speed-up, which in practice is already significant. I am not objec!
+ ting to the paper, but I cannot champion it.
+
+
+

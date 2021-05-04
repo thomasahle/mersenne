@@ -306,7 +306,9 @@ so this means that \emph{all} the bits in $h(x_0),\ldots,h(x_{j - 1})$ are
 independent and uniform. We can use this to split our $b$-bit hash
 values into smaller segments, and sometimes use them as if
 they were the output of universally computed hash functions.
+
 We illustrate this idea below in the context of the second moment estimation.
+For this purpose the ``split'' we will be considering is into the first bit and the remaining bits.
 
 \subsubsection{Second moment estimation}\label{sec:count-sketch}
 We now review the second moment estimation of streams based on Count Sketches \cite{charikar04count-sketch} (which are based on the
@@ -354,14 +356,13 @@ preserved, that is, for any $f,g\in \Z^u$,
 Thus, when we want to find close vectors, we can just work with the
 much smaller Count Sketches.
 %This is crucial to machine learning, where they adopted Count Sketches under the new name feature hashing~\cite{WDLSA09}.
-
 The count sketch $C$ can also be used to estimate any single value $f_x$.
 To do this, we use the unbiased estimator $X_x=s(x)C[i(x)]$.
 This is yet another standard use of count sketch \cite{charikar04count-sketch}.
 It requires direct access to both the sketch $C$ and the two hash functions $s$ and $i$.
 To get concentration one takes the median of multiple such estimators.
 
-\subsubsection{Two-for-one hash functions with \texorpdfstring{$b$}{b}-bit hash values}
+\subsubsection{Two-for-one hash functions with b-bit hash values}
 As the count sketch is described above,
 it uses two independent 4-universal hash functions
 $i:[u]\to[r]$ and $s:[u]\to\{-1,1\}$, but 4-universal hash functions
@@ -375,8 +376,8 @@ It suffices that the hash values are uniform and that for any
 given set of $j\leq 4$ distinct keys $x_0,\ldots,x_{j - 1}$, the $2j$ hash
 values $i(x_0),\ldots,i(x_{j - 1}),s(x_0),\ldots,s(x_{j - 1})$ are independent.
 A critical step in the analysis is that if
-$A$ depends on $i(x_0),\ldots,i(x_{j - 1}),s(x_1),\ldots,s(x_{j - 1})$, but
-not on $s(x_0)$, then
+a value $A$ depends on the first $j-1$ values ($A=A(i(x_0),\ldots,i(x_{j - 1}),s(x_1),\ldots,s(x_{j - 1}))$), but doesn't depend
+on $s(x_0)$, then
 \begin{equation}\label{eq:E-0}
 	\E[s(x_0) A] = 0 .
 \end{equation}
@@ -389,7 +390,7 @@ hash function $h:[u]\to[2^b]$ where $b>\ell$. Recall that all the bits in
 $h(x_0),\ldots,h(x_3)$ are independent. We can therefore use the
 $\ell$ least significant bits of $h(x)$ for $i(x)$ and the most
 significant bit of $h(x)$ for a bit $a(x)\in[2]$, and finally set
-$s(x)=1-2a(x)$. It is then easy to show that if $h$ is $k$-universal
+$s(x)=1-2a(x)$. It is then easy to show that if $h$ is $4$-universal
 then $h$ satisfies \cref{eq:E-0}.
 \begin{algorithm}[H]
 	\caption{For key $x\in [u]$, compute $i(x)=i_x\in[2^\ell]$ and
@@ -599,22 +600,22 @@ the number of elements hashing to $0$ is $\ceil {2^b/r}-c$, or $0$ if
 $c\geq \floor {2^b/r}$.
 One may try many other hash functions $(c_1 x r+ c_2 x+ c_3 r + c_4) \rs b$ similarly without any luck.
 Our new uniform map from \eqref{eq:most-uniform} is thus very specific to Mersenne prime fields.
-For general $c\ge 2$ we provide a scheme using two shifts in
-Section \ref{sec:pseudo-arbitrary}.
 
-We will see in Section \ref{sec:two-for-one} that our new uniform map
-works very well in conjunction with the idea of splitting of hash values.
+% TODO: Hvad er det her?
+%For general $c\ge 2$ we provide a scheme using two shifts in
+%Section \ref{sec:pseudo-arbitrary}.
 
 
 
 
 \subsection{Division and Modulo with (Pseudo) Mersenne Primes}\label{subsec:intro-division}
 
-We first a fast branch-free computation of $\bmod\,p$ for
-Mersenne primes $p=2^b-1$. The issue in Algorithm \ref{alg:Mersenne}
-is that the if-statement can be slow because of issues with branch
-prediction; for It implies that different statements are run for
-different keys $x$.
+We now describe a new algorithm for truncated division with Mersenne primes, and more generalized numbers on the form $2^b-c$.
+We show this implies a fast branch-free computation of $\bmod\,p$ for
+Mersenne primes $p=2^b-1$.
+An annoyance in Algorithm \ref{alg:Mersenne}
+is that the if-statement at the end can be slow in case of branch mis-predictions.
+This method solves that issue.
 
 More specifically, in Algorithm \ref{alg:Mersenne}, after the last
 multiplication, we have a number $y<p^2$ and we want to compute the
@@ -749,107 +750,35 @@ This is the method presented in Algorithm \ref{alg:mod-generalized} and applied 
 
 %In the case $x\le 2^{2b}$ and $c=1$, we get the simplified Algorithm \ref{alg:div-simple} described above: $ \left\lfloor\frac{x}{2^n-1}\right\rfloor = (x+1 \rs n)+x+1 \rs n$.
 
-\subsubsection{Applications}\label{sec:general-applications}
+% TODO: These applications need to be written properly.
+% \subsubsection{Applications}\label{sec:general-applications}
+% 
+% \paragraph{To an arbitrary number of buckets}
+% In Subsection~\ref{sec:most-uniform} we discussed how $\floor{\frac{h(x)r}{2^b-1}}$ provides a most uniform map from $[2^b-1]\to[r]$.
+% To avoid the division step, we instead considered the map
+% $\floor{\frac{(h(x)+1)r}{2^b}}$.
+% However, for primes of the form $2^b-c$, $c>1$ this approach doesn't provide a most-uniform map.
+% %
+% Instead, we may use Algorithm \ref{alg:division-generalized} to compute
+% $$\left\lfloor\frac{h(x)r}{2^b-c}\right\rfloor$$
+% directly, getting a perfect most-uniform map.
+% %(Another alternative was to pre-compute $q = \lfloor2^b/p\rfloor$ and take
+% %$\floor{\frac{h(x)rq}{2^b}}$, however that requires larger words to store the product $h(x)rq$.)
+% 
+% \paragraph{Application to Finger Printing}
+% A classical idea by Rabin~\cite{rabin1981fingerprinting} is to use test the equality of two large numbers by comparing their value modulo a random prime.
+% A beautiful example of this is King and Sagert's Algorithm for Maintaining the Transitive Closure.~\cite{DBLP:journals/jcss/KingS02}
+% These cases are typically non-trivial to convert to random fields other than $\Z_p$, and we need a reasonably large set of random primes to choose from.
+% The generalized Mersenne primes with $c$ of the other $2^{b(1-\eps)}$ are a good candidate, since the range ...
+% Using an idea like \eqref{eq:Mersenne} we can note
+% \begin{equation}
+% 	y \equiv y - \floor{y/2^b}(2^b-c)
+% 	= (y\bmod 2^{b}) + c\floor{y/2^b}
+% 	\pmod {2^b-c}.
+% \end{equation}
+% Each application reduces $y$ by a factor $\approx 2^{-\eps b}$.
+% So if we multiply two numbers
 
-\paragraph{To an arbitrary number of buckets}
-In Subsection~\ref{sec:most-uniform} we discussed how $\floor{\frac{h(x)r}{2^b-1}}$ provides a most uniform map from $[2^b-1]\to[r]$.
-To avoid the division step, we instead considered the map
-$\floor{\frac{(h(x)+1)r}{2^b}}$.
-However, for primes of the form $2^b-c$, $c>1$ this approach doesn't provide a most-uniform map.
-%
-Instead, we may use Algorithm \ref{alg:division-generalized} to compute
-$$\left\lfloor\frac{h(x)r}{2^b-c}\right\rfloor$$
-directly, getting a perfect most-uniform map.
-%(Another alternative was to pre-compute $q = \lfloor2^b/p\rfloor$ and take
-%$\floor{\frac{h(x)rq}{2^b}}$, however that requires larger words to store the product $h(x)rq$.)
-
-\paragraph{Application to Finger Printing}
-A classical idea by Rabin~\cite{rabin1981fingerprinting} is to use test the equality of two large numbers by comparing their value modulo a random prime.
-A beautiful example of this is King and Sagert's Algorithm for Maintaining the Transitive Closure.~\cite{DBLP:journals/jcss/KingS02}
-These cases are typically non-trivial to convert to random fields other than $\Z_p$, and we need a reasonably large set of random primes to choose from.
-The generalized Mersenne primes with $c$ of the other $2^{b(1-\eps)}$ are a good candidate, since the range ...
-Using an idea like \eqref{eq:Mersenne} we can note
-\begin{equation}
-	y \equiv y - \floor{y/2^b}(2^b-c)
-	= (y\bmod 2^{b}) + c\floor{y/2^b}
-	\pmod {2^b-c}.
-\end{equation}
-Each application reduces $y$ by a factor $\approx 2^{-\eps b}$.
-So if we multiply two numbers
-
-\subsubsection{Related Algorithms}
-
-Modulus computation by Generalized Mersenne primes is widely used in the Cryptography community.
-For example, four of the recommended primes in NIST's document ``Recommended Elliptic Curves for Federal Government Use''~\cite{nist} are Generalized Mersenne.
-Naturally, much work has been done on making computations with those primes fast.
-Articles like ``Simple Power Analysis on Fast Modular Reduction with Generalized Mersenne Prime for Elliptic Curve Cryptosystems''~\cite{sakai2006simple}
-give very specific algorithms \emph{for each} of many well known such primes.
-An example is shown in \Cref{alg:solina}.
-
-\begin{algorithm}[H]
-	\caption{Fast reduction modulo $p_{192} = 2^{192} - 2^{64} - 1$}
-	\label{alg:solina}
-	\begin{algorithmic}
-		\State \textbf{input} $c \gets (c_5, c_4, c_3, c_2, c_1, c_0)$, where each $c_i$ is a 64-bit word, and $0 \le c < p^2_{192}$.
-		\State $s_0 \gets (c_2, c_1, c_0)$
-		\State $s_1 \gets (0, c_3, c_3)$
-		\State $s_2 \gets (c_4, c_4, 0)$
-		\State $s_3 \gets (c_5, c_5, c_5)$
-		\State \textbf{return} $s_0 + s_1 + s_2 + s_3 \mod p_{192}$.
-	\end{algorithmic}
-\end{algorithm}
-
-Division by Mersenne primes is a less common task, but a number of well known division algorithms can be specialized, such as
-classical trial division, Montgomery's method and Barrett reduction.
-
-
-%Montgomery method:
-%\begin{align}
-%   (aR\mod N)(bR\mod N) \mod N = (abR)R \mod N
-%\end{align}
-%We then need to remove the factor of $R$ by multiplying with its inverse $\mod N$.
-
-
-The state of the art appears to be the modified Crandall Algorithm by Chung and Hasan~\cite{chung2006low}.
-This algorithm, given in Algorithm \ref{alg:cch} modifies Crandall's algorithm~\cite{crandall1992method} from 1992 to compute division as well as modulo for generalized $2^b-c$ Mersenne primes.\footnote{
-	Chung and Hasan also have an earlier, simpler algorithm from 2003~\cite{chung2003more},
-	but it appears to give the wrong result for many simple cases.
-	This appears in part to be because of a lack of the ``clean up'' while-loop at the end of Algorithm \ref{alg:cch}.
-}
-\begin{algorithm}[H]
-	\caption{Crandall, Chung, Hassan algorithm. For $p=2^b-c$, computes $q, r$ such that $x = qp+r$ and $r<p$.}
-	\label{alg:cch}
-	\begin{algorithmic}
-		%\Procedure{Divide}{x, n, c}
-		\State $q_0 \gets x \rs n$
-		\State $r_0 \gets x \andtt (2^b-1)$
-		\State $q \gets q_0, r\gets r_0$
-		\State $i \gets 0$
-		\While{$q_i>0$}
-		\State $t \gets q_i*c$
-		\State $q_{i+1} \gets t \rs n$
-		\State $r_{i+1} \gets t \andtt (2^b - 1)$
-		\State $q\gets q+q_{i+1}$
-		\State $r\gets r+r_{i+1}$
-		\State $i\gets i+1$
-		\EndWhile
-		\State $t \gets 2^b-c$
-		\While{$r\ge t$}
-		\State $r\gets r-t$
-		\State $q\gets q+1$
-		\EndWhile
-		%\State\textbf{return} $q$
-		%\EndProcedure
-	\end{algorithmic}
-\end{algorithm}
-The authors state that for $2n+\ell$ bit input, Algorithm \ref{alg:cch}
-requires at most $s$ iterations of the first loop, if $c < 2^{((s-1)n-\ell)/s}$.
-This corresponds roughly to the requirement $x < 2^b (2^b/c)^s$, similar to ours.
-%
-Unfortunately, the algorithm ends up doing double work, by computing the quotient and remainder concurrently.
-The algorithm also suffers from the extra while loop for ``cleaning up'' the computations after the main loop.
-In practice, our method is 2-3 times faster. See \Cref{sec:experiments} for an empirical comparison.
-%
 
 
 % On the number of Mersenne Primes:
