@@ -101,7 +101,7 @@ constant time from $b$-bit keys to $\ell$-bit hash values. The large
 space can be problematic.
 
 A classic example where constant space hash functions are needed is in static two-level hash functions \cite{FKS84}.
-To store n keys with constant access time, they n second-level hash tables, each with its own hash function.
+To store n keys with constant access time, you use $n$ second-level hash tables, each with its own hash function.
 Another example is small sketches such as the Count Sketch \cite{charikar04count-sketch} discussed in this paper.
 Here we may want to store the hash function as part of the sketch, e.g., to query the value of a given key.
 Then the hash value has to be directly computable from the small representation, ruling out tabulation based methods (see further explanation at the end of \Cref{sec:count-sketch}).
@@ -143,7 +143,7 @@ The  hash values of $k$ distinct keys remain independent while staying as close 
 
 In terms of speed, the main bottleneck in the above approach is the mod operations.
 If we assume $r=2^\ell$, the mod $r$ operation above can be replaced by a binary {\sc and} (\texttt{\&}): $x \bmod r = x \andtt r-1$.
-Similarly, Carter and Wegmen \cite{carter77universal} used a
+Similarly, Carter and Wegman \cite{carter77universal} used a
 Mersenne prime $p=2^b-1$,\footnote{e.g., $p=2^{61}-1$ for hashing 32-bit keys or
 $p=2^{89}-1$ for hashing 64-bit keys.}
 to speed up the computation of the (mod $p$) operations:
@@ -267,6 +267,10 @@ We proceed to show that for the many primes of the form $p=2^b-c$ we don't get a
 %Recall that with $c=1$, we had our generic upper bound
 %$\Pr[\mu(h(x))=i]\leq (1+1/p)/r$ for all $i\in[r]$.
 
+
+% TODO: I've removed the following paragraph, which doesn't really make sense,
+% until Mikkel has a chance to look at it.
+
 Suppose $c\neq 1$, and let's see what happens if we select
 the $\ell$ least respectively most significant bits. If
 we pick the least significant bits with $y\mapsto y\andtt(r-1)$
@@ -275,8 +279,7 @@ too bad for small $c$.
 Now let's pick the most significant bits with $y\mapsto y\rs (b-\ell)$.
 If $c\leq 2^{b-1}-2^{b-\ell}$, then $2^{b-\ell}$ elements from
 $[p]$ map to $0$ while only $\max\{0,2^{b-\ell}-c\}$
-lands in $r-1$. In particular, for $c\in [2^{b-\ell}, 2^{b-1}-2^{b-\ell}]$,
-this is the $2^{b-\ell}$ versus $0$ elements --- a huge difference.
+map to $r-1$ --- a huge difference.
 When it comes to the maximal probability of hitting a bucket,
 we get $\Pr[\mu(h(x))=0]=2^{b-\ell}/p$.
 As an extreme case, when $\ell=1$ and $p=2^{b-1}+1$,\footnote{Primes on this form are called Fermat primes.
@@ -307,9 +310,10 @@ We illustrate this idea below in the context of the second moment estimation.
 
 \subsubsection{Second moment estimation}\label{sec:count-sketch}
 We now review the second moment estimation of streams based on Count Sketches \cite{charikar04count-sketch} (which are based on the
-celebrated second moment AMS-estimator from \cite{alon96frequency})
+celebrated second moment AMS-estimator from \cite{alon96frequency}.)
 
-The basic setup is as follows.  For keys in $[u]$ and integer values in $\Z$, we are given a stream of key/value $(x_0,\Delta_0),\ldots, (x_{n-1},\Delta_{n-1})\in [u]\times\Z$. The
+The basic setup is as follows:
+For keys in $[u]$ and integer values in $\Z$, we are given a stream of key/value $(x_0,\Delta_0),\ldots, (x_{n-1},\Delta_{n-1})\in [u]\times\Z$. The
 total value of key $x\in[u]$ is
 \[f_x=\sum_{i\in[n],x_i=x} \Delta_i.\]
 We let $n\leq u$ be  the number of non-zero values
@@ -321,7 +325,7 @@ estimate the second moment $F_2 = \sum_{x\in [u]}f_x^2=\|f\|^2_2$.
 	\caption{\label{alg:count-sketch} Count Sketch. Uses a
 	vector/array $C$ of $r$ integers and two independent
 	4-universal hash functions $i:[u]\to[r]$ and $s:[u]\to\{-1,1\}$.
-	.}
+	}
 	\begin{algorithmic}
 		\Procedure{Initialize}{}
 		\State For $i\in[t]$, set $C[i]\gets 0$.
@@ -339,7 +343,7 @@ The standard analysis \cite{charikar04count-sketch} shows that
 	\E[X]   & = F_2 \label{eq:E-F2}                      \\
 	\Var[X] & =2(F_2^2 - F_4)/r<2F_2^2/r \label{eq:V-F2}
 \end{align}
-As $r$ grows we see that $X$ concentrates around $F_2=\|f\|^2_2$. Here
+We see that by choosing larger and larger r we can make X concentrate around $F_2=\|f\|^2_2$. Here
 $X=\sum_{i\in[r]} C[i]^2=\|C\|^2_2$. Now $C$ is a randomized function
 of $f$, and as $r$ grows, we get $\|C(f)\|^2_2\approx\|f\|^2_2$,
 implying $\|C(f)\|_2\approx\|f\|_2$, that is, the Euclidean norm is
@@ -348,14 +352,14 @@ is also a linear function, so Euclidean distances are statistically
 preserved, that is, for any $f,g\in \Z^u$,
 \[\|f-g\|_2\approx \|C(f-g)\|_2=\|C(f)-C(g)\|_2.\]
 Thus, when we want to find close vectors, we can just work with the
-much smaller Count Sketches. This is crucial to machine learning,
-where they adopted Count Sketches under the new name feature hashing~\cite{WDLSA09}.
+much smaller Count Sketches.
+%This is crucial to machine learning, where they adopted Count Sketches under the new name feature hashing~\cite{WDLSA09}.
 
-In \Cref{sec:b-bit?} we mentioned that the count sketch $C$ can also
-be used to estimate any single value $f_x$. To do this, we use
-the unbiased estimator $X_x=s(x)C[i(x)]$. This is yet another standard use
-of count sketch \cite{charikar04count-sketch}. It requires
-direct access to both the sketch $C$ and the two hash functions $s$ and $i$.
+The count sketch $C$ can also be used to estimate any single value $f_x$.
+To do this, we use the unbiased estimator $X_x=s(x)C[i(x)]$.
+This is yet another standard use of count sketch \cite{charikar04count-sketch}.
+It requires direct access to both the sketch $C$ and the two hash functions $s$ and $i$.
+To get concentration one takes the median of multiple such estimators.
 
 \subsubsection{Two-for-one hash functions with \texorpdfstring{$b$}{b}-bit hash values}
 As the count sketch is described above,
