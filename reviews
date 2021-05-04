@@ -88,11 +88,13 @@ Seemingly, there was too little time for proofreading.
 
 Done.
 
+
 E) The experiments seem a little arbitrary and incomplete, some promising ideas (like division without branching) have not been tested.
 
 Overall assessment: The algorithms are mostly simple, the analyses are not. The authors did not really try to make the latter look elegant.
 While the details are mostly fine (each lemma and proof taken for itself), the overall plan for presenting the material and the organization are substandard.
 It is with not too much enthusiasm that I say this paper may be acceptable for SOSA.
+
 ----------- Comments for the authors -----------
 The main problem is the reorganization of the material into a slim
 intorduction and then the main body of the paper. The authors have to find their own way here.
@@ -103,69 +105,156 @@ Some details I noticed while reading (not complete):
 
 page 2: ``our analysis yields errors that differ from the uniform case'': errors don't differ.
 
+Done
+
+
 page 3: The paragraph starting with ``a classic example ...'' appears twice. The respective preceding paragraphs seem to
 say the same thing in different words. ``To store n keys'': $n$.
 
 Second paragraph in 1.2: ``u^{1/t}'': Neither U nor u were mentioned before. U appears in Definition 1, u on page 4, without saying that U=[u].
 
+Done.
+
+
 page 4: Formula in line 2: index should be i.
+
+Done
+
 
 mod$r$: mod $r$
 
+Done
+
+
 Wegmen: typo.
+
+Done
+
 
 ``the possible off-by-one in Equation (1)'': explain for all readers what this means.
 
+Done
+
+
 Footnote: ``We note that k=2'': missing ``if''.
 
+Done
+
+
 page 5: ``we will often refer to the hash values in [r] as buckets'': Normally buckets are sets of keys, namely h^{-1}(j) \cap S.
+
+What??
+
 
 paragraph before Section 1.3: It is unclear to me what the topic of this paragraph is meant to be.
 It should be reorganized. The first sentence ``There are many primes ...'' is broken. Before ``Now'' the period is missing.
 ``while only max{..} lands ..'': grammar. ``this is the 2^{b-\ell} versus 0 elements'': no ``the''.
 
+Done?... I think
+
+
+
 page 6: Periods after the first sentence in 1.3.1 and in the heading of Algorithm 2.
+
+Done
+
 
 ``As r grows we see that'': We see that by choosing larger and larger r we can make X concentrate more and more ...
 
+Done
+
+
 ``This is crucial to machine learning, where they adopted ... [?]'': Check language and reference.
 
+Deleted
+
+
 ``In Section 1.1 we mentioned'': didn't find anything of the sort there.
+
+Deleted
+
 
 ``unbiased estimator X_x = s(x)C[i(x)]'': While this is an unbiased estimator,
 I am afraid that a single such value won't tell you much about f_x.
 To approximate f_x, one has to repeat the scheme several times and take an average, isn't that so?
 
+Done
+
+
 page 7: ``two-for-one'' sounds like one can split h(x) into two pieces arbitrarily.
 Your result is very special: split into a smaller hash value and a bit.
 
+Done
+
+
 Above Algorithm 3: ``if h is k-universal'' if h is 4-universal.
+
+Done
+
 
 pages 8 and 9: Lemma + proof are not the style one expects in an introduction.
 
+Don't have time to fix this.
+
+
+
 page 9: ``most uniform'': I see you mean the superlative, ``as uniform as possible''. Still, I would find ``almost uniform'' easier to read.
+
+Skipped.
+
 
 In (13), the ``x'' is distracting because it is not a key.
 
+Skipped
+
+
 line 8 from bottom: ``gets'': typo.
+
+kan ikke finde den.
+
 
 page 10: line 3: ``We will see in Section 1.3.3.'': This is an earlier section, not a future one.
 
+Done
+
+
 line 7/8: ``prediction; for . It implies ...'': Sentence broken.
+
+Done
+
 
 Algorithms 4 and 5: Experiments would be interesting.
 
+No time.
+
+
 page 11/12: Section 1.6: I don't understand the organization of this section and its subsections at all.
-What is applied to an arbitrary number of buckets? To what are the algorithms of 1.6.1 related?
+What is applied to an arbitrary number of buckets? To what are the 
+algorithms of 1.6.1 related?
+
+Deleted
+
 
 page 13: The beginning of Section 2 is awkward, in its reference (in the past tense) to the unfinished business from Section 1.
 ``As before'': where before?
 
+Done
+
+
 ``i \in [r]'' and ``i \in [k]'': which is the correct range?
+
+Done
+
 
 ``As discussed in the introduction'': Since the introduction is so long, this reference is too vague.
 
+Skipped
+
+
 page 14: ``classic case'': Probably more ``classical'' (has been around for a long time).
+
+Done
+
 
 The last paragraph on page 14 is a repetition of what has been discussed at length before.
 
@@ -269,6 +358,5 @@ AUTHORS: Jakob Bæk Tejs Knudsen, Thomas Dybdahl Ahle and Mikkel Thorup
 ----------- Evaluation and discussion of the merits of the paper -----------
 The article could have been entitled "all you want to know" (or maybe what you do not want to know) "about hashing with Mersenne primes." Its topics range from the hairy details of how to do the modular arithmetic modulo a (generalized) Mersenne prime all the way to clever tricks when hashing with Mersenne primes is already given. There is no doubt that the paper offers a lot of helpful advices to those who want to work with these hashing schemes. Some of the tricks are elegant, but whether this type of paper with lots of small niceties can pass in this conference I leave it to further judges. It could be that I overlook something and the expectation and variance estimates in theorem 3.3 give something extraordinary or that their division modulo a nearly-Mersenne prime adds a lot to algebraic complexity research. It is my understanding that the ideas should yield no more, but also no less than a factor of 2-3 speed-up, which in practice is already significant. I am not objec!
  ting to the paper, but I cannot champion it.
-
 
 
