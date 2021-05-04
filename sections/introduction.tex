@@ -159,7 +159,7 @@ Again allowing us to use the very fast bit-wise {\sc and} ($\andtt$) and the rig
 instead of the expensive modulo operation.
 
 Of course, \eqref{eq:Mersenne} only reduces $y$ to an equivalent value mod $p$, not to the smallest one, which is what we usually want.
-For this reason one typically adds a test ``if $y \ge p$ then $y \gets y − p$''.
+For this reason one typically adds a test ``if $y \ge p$ then $y \gets y - p$''.
 We show an implementation in \Cref{alg:Mersenne} below with one further improvement:
 By assuming that $p=2^b-1\geq 2u-1$
 (which is automatically satisfied in the typical case where $u$ is a power

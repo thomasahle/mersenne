@@ -79,7 +79,7 @@ This allows us to do multiplications without splitting into multiple words, at t
    \label{tab:hashing-experiments}
 \end{table}
 
-The results in \Cref{tab:hashing-experiments} and \Cref{tab:hashing-experiments2} show that our methods outperform carry-less Multiplication for larger $k$, while being slower for $k=2$.
+The results in \Cref{tab:hashing-experiments} show that our methods outperform carry-less Multiplication for larger $k$, while being slower for $k=2$.
 For $k=2$ the multiply-shift scheme~\cite{dietzfel96universal} is better yet, so in carry-less multiplication is nearly completely dominated.
 For $k=4$, which we use for Count Sketch, the results are a toss-up for $p=2^{89}-1$, but the Mersenne primes are much faster for $p=2^{61}-1$.
 We also note that our methods are more portable than carry-less, and we keep the two-for-one advantages described in the article.
