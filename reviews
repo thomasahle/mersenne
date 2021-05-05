@@ -263,31 +263,69 @@ Done
 
 page 15: ``Same method is applied'': The same method ...
 
+Done
+
+
 page 17: line 2: period missing.
+
+Done
+
 
 First sentence of Section 3: ``We now consider the case where we want to hash into a number of buckets.'' Doesn't make sense.
 
+Done
+
+
 ``we will show how it can be used'': how what can be used?
+
+Done
+
 
 heading of 3.1: I don't see the ``two-for-one'' idea in the text of 3.1.
 
+Done
+
+
 ``probability, Let'': typo.
+
+Done
+
 
 page 21: ``division and modulo'': quotient and remainder?
 
+Done
+
+
 n \ge 0: I think n=0 is uninteresting.
+
+Done
+
 
 ``if c \setminus q'': what does this mean?
 
+Done
+
+
 ``(v_i)_{i\in[n]}'': The sequence is for i\in[n+1], the recursion for i\in[n].
+
+Done
+
 
 page 22: In Table 1 right it does not make sense to mark Algorithm 1 the winner for k=4.
 
+Done
+
+
 page 23: ``in an implementation closer to the metal'': please avoid wild jargon of this kind.
+
+Skipped
+
 
 page 24, reference [Nis99]: This is not a proper reference to a document.
 (Google gave me a document named fips186-2.pdf, which has an appendix 6 with the title given here.)
 Give a direct link. Also consider referencing a version of these recommendations that is not outdated since 2001.
+
+Done
 
 
 %%%%%%%%%% Appendix for authors, not part of the assessment:  %%%%%%%%%%%%%%%%%%%%%%
