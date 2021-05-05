@@ -1,0 +1,19 @@
+indentPreamble: 1
+defaultIndent: '   '
+preserveBlankLines: 1
+condenseMultipleBlankLinesInto: 0
+maxNumberOfBackUps: 9
+modifyLineBreaks:
+    oneSentencePerLine:
+        manipulateSentences: 1
+        sentencesEndWith:
+            basicFullStop: 0
+            betterFullStop: 1
+    items:
+        ItemStartsOnOwnLine: 1
+    environments:
+        BeginStartsOnOwnLine: 1
+        BodyStartsOnOwnLine: 1
+        EndStartsOnOwnLine: 1
+        EndFinishesWithLineBreak: 1
+

@@ -116,14 +116,17 @@ This will come in useful in \Cref{sec:arbitrary-buckets} where we will consider 
 \end{proof}
 %Something something finish this part\todo{Write this properly}
 %This completes the proof of \eqref{eq:V-F2}.
-In the above analysis, we
-did not need $s$ and $i$ to be completely independent. All we needed
-was that for any $j\leq 4$ distinct keys $x_0,\ldots,x_{j - 1}$, the hash
-values $s(x_0),\ldots,s(x_{j - 1})$ and $i(x_0),\ldots,i(x_{j - 1})$ are all
-independent and uniform in the desired domain. This was why we could
-use a single 4-universal hash function $h:[u]\to[2^b]$ with
-$b>\ell$, and use it to construct $s:[u]\to\{-1, 1\}$ and
-$i:[u]\to[2^\ell]$ as described in Algorithm \ref{alg:h-and-s}.
+
+% This may be been sufficiently described in the introduction.
+% In the above analysis, we
+% did not need $s$ and $i$ to be completely independent. All we needed
+% was that for any $j\leq 4$ distinct keys $x_0,\ldots,x_{j - 1}$, the hash
+% values $s(x_0),\ldots,s(x_{j - 1})$ and $i(x_0),\ldots,i(x_{j - 1})$ are all
+% independent and uniform in the desired domain. This was why we could
+% use a single 4-universal hash function $h:[u]\to[2^b]$ with
+% $b>\ell$, and use it to construct $s:[u]\to\{-1, 1\}$ and
+% $i:[u]\to[2^\ell]$ as described in Algorithm \ref{alg:h-and-s}.
+
 % This was removed from the introduction
 %(c.f. Lemma \ref{lem:b-bit-hashing}).
 
@@ -272,7 +275,7 @@ We are now ready to prove \Cref{thm:h-and-s-p}.
 From \Cref{eq:remove-si} and \Cref{eq:coll-ell=r-1} we have
 \nameref{prop:near-independence} with $
     \Pr[i_x = 2^b - 1] \le (1 - (r - 1)/p)/r$
-   and \Cref{eq:coll} $(1 + (r - 1)/p^2)/r$-low collision probability
+   and \Cref{eq:coll} $(1 + (r - 1)/p^2)/r$-low collision probability.
 % that \Cref{prop:near-independence} is satisfied with $t = r - 1$
 % and $\delta = -(r - 1)/p$, and \Cref{eq:coll} implies that
 % \Cref{prop:collision} is satisfied with $\eps = (r - 1)/p^2$.
