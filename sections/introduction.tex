@@ -560,20 +560,20 @@ Now, our interest is the case where $q$ is a Mersenne prime $p=2^b-1$. We want
 an efficient and most uniform map $\mu:[2^b-1]$ into any given $[r]$.
 Our simple solution is to define
 \begin{equation}\label{eq:most-uniform}
-	\mu(x)=\floor{(x+1)r/2^b}=((x+1)r)\rs b.
+	\mu(v)=\floor{(v+1)r/2^b}=((v+1)r)\rs b.
 \end{equation}
 Lemma \ref{lem:most-uniform} (iii) below
 states that \eqref{eq:most-uniform} indeed
 gives a most uniform map.
 \begin{lemma}\label{lem:most-uniform} Let $r$ and $b$ be positive integers.
-	%, and let $x\in [2^b-1]$.
+	%, and let $v\in [2^b-1]$.
 	Then
 	\begin{itemize}
-		\item[(i)] $x\mapsto (xr)\rs\,b$ is a most
+		\item[(i)] $v\mapsto (vr)\rs\,b$ is a most
 		      uniform map from $[2^b]$ to $[r]$.
-		\item[(ii)] $x\mapsto (xr)\rs\,b$ is a most
+		\item[(ii)] $v\mapsto (vr)\rs\,b$ is a most
 		      uniform map from $[2^b]\setminus\{0\}=\{1,\ldots,2^b-1\}$ to $[r]$.
-		\item[(iii)] $x\mapsto ((x+1)r)\rs \, b$ is a most
+		\item[(iii)] $v\mapsto ((v+1)r)\rs \, b$ is a most
 		      uniform map from $[2^b-1]$ to $[r]$.
 	\end{itemize}
 \end{lemma}
@@ -595,10 +595,10 @@ gives a most uniform map.
 	elements from $Q$. This completes the proof of (ii), and hence of (iii).
 \end{proof}
 We note that our trick does not work when $q=2^b-c$ for $c\geq 2$, that is,
-using $x\mapsto ((x+c)r)\rs  b$, for in this general case,
+using $v\mapsto ((v+c)r)\rs  b$, for in this general case,
 the number of elements hashing to $0$ is $\ceil {2^b/r}-c$, or $0$ if
 $c\geq \floor {2^b/r}$.
-One may try many other hash functions $(c_1 x r+ c_2 x+ c_3 r + c_4) \rs b$ similarly without any luck.
+One may try many other hash functions $(c_1 v r+ c_2 v+ c_3 r + c_4) \rs b$ similarly without any luck.
 Our new uniform map from \eqref{eq:most-uniform} is thus very specific to Mersenne prime fields.
 
 % TODO: Hvad er det her?
@@ -632,27 +632,27 @@ $y<p^2$:
 \end{algorithmic}
 To avoid the if-statement, in Algorithm \ref{alg:div-simple}, we suggest
 a branch-free code that starting
-from $x<2^{2b}$ computes both $y=x\bmod p$ and $z=\floor{x/p}$ using
+from $v<2^{2b}$ computes both $y=v\bmod p$ and $z=\floor{v/p}$ using
 a small number of AC$^0$ instructions.
 \begin{algorithm}[H]
-	\caption{For Mersenne prime $p=2^b-1$ and $x< 2^{2b}$, compute
+	\caption{For Mersenne prime $p=2^b-1$ and $v< 2^{2b}$, compute
 		\label{alg:div-simple}
-		$y=x\bmod p$ and $z=\floor{x/p}$}
+		$y=v\bmod p$ and $z=\floor{v/p}$}
 	\begin{algorithmic}
-		\State $\rhd$ First we compute $z=\floor{x/p}$
-		\State $x'=x+1$
-		\State $z \gets(( x' \rs b)+x')\rs b$
-		%\State $y \gets x - (z \ls b) + z$.
-		\State $\rhd$ Next we compute $y=x\bmod p$ given $z=\floor{x/p}$
-		\State $y \gets (x + z) \andtt p $
+		\State $\rhd$ First we compute $z=\floor{v/p}$
+		\State $v'=v+1$
+		\State $z \gets(( v' \rs b)+v')\rs b$
+		%\State $y \gets v - (z \ls b) + z$.
+		\State $\rhd$ Next we compute $y=v\bmod p$ given $z=\floor{v/p}$
+		\State $y \gets (v + z) \andtt p $
 	\end{algorithmic}
 \end{algorithm}
 In Algorithm \ref{alg:div-simple}, we use
-$z=\floor{x/p}$ to compute $y=x\bmod p$. If we only want the
-division $z=\floor{x/p}$, then we can skip the last statement.
+$z=\floor{v/p}$ to compute $y=v\bmod p$. If we only want the
+division $z=\floor{v/p}$, then we can skip the last statement.
 
 Below we will generalize Algorithm \ref{alg:div-simple} to work for
-arbitrary $x$, not only $x<2^{2b}$. Moreover, we will generalize
+arbitrary $v$, not only $v<2^{2b}$. Moreover, we will generalize
 to work for different kinds of primes generalizing Mersenne primes:
 \begin{description}
 	\item[Pseudo-Mersenne Primes]
@@ -672,22 +672,22 @@ to work for different kinds of primes generalizing Mersenne primes:
 	      Pseudo-Mersenne Primes, where multiplication with $c$
 	      can be done using a few shifts and additions.
 \end{description}
-We will now first generalize the division from Algorithm \ref{alg:div-simple} to cover arbitrary $x$ and division with an arbitrary Pseudo-Mersenne primes $p=2^b-c$.
+We will now first generalize the division from Algorithm \ref{alg:div-simple} to cover arbitrary $v$ and division with an arbitrary Pseudo-Mersenne primes $p=2^b-c$.
 This is done in Algorithm \ref{alg:division-generalized} below which
 works also if $p=2^b-c$ is not a prime.  The
 simple division in Algorithm \ref{alg:div-simple} corresponds to the case
 where $c=1$ and $m=2$.
 \begin{algorithm}[H]
 	\caption{Given integers $p=2^b-c$ and $m$.
-		For any $x< (2^b/c)^m$, compute $z=\floor{x/p}$}
+		For any $v< (2^b/c)^m$, compute $z=\floor{v/p}$}
 	\label{alg:division-generalized}
 	\begin{algorithmic}
-		%\Procedure{Divide}{x, n, c}
-		\State $x' \gets x + c$
-		\State $z \gets x' \rs b$
+		%\Procedure{Divide}{v, n, c}
+		\State $v' \gets v + c$
+		\State $z \gets v' \rs b$
 		%\For{$i\gets 1$ \textbf{to} $m$}
 		\For{ $m-1$ times}
-		\State $z \gets (z * c + x')\rs b$
+		\State $z \gets (z * c + v')\rs b$
 		\EndFor
 		%\EndFor
 		%\State \Return $v$
@@ -695,54 +695,54 @@ where $c=1$ and $m=2$.
 	\end{algorithmic}
 \end{algorithm}
 The proof that Algorithm \ref{alg:division-generalized} correctly computes
-$z=\floor{x/p}$ is provided in Section \ref{sec:division}.
+$z=\floor{v/p}$ is provided in Section \ref{sec:division}.
 Note that $m$ can be computed in advance from $p$, and there is no requirement that it is chosen as small as possible.
 For Mersenne and Solinas primes, the multiplication $z*c$ can be done very fast.
 
 Mathematically the algorithm computes the nested division
 $$
-	\bbfloor{\frac{x}{q-c}}
+	\bbfloor{\frac{v}{q-c}}
 	=
 	\bbfloor{\frac{
 			\bfloor{\frac{
 					\floor{\frac{
-							\dots+x+c
-						}{q}}c +x+c
-				}{q}}c +x+c
+							\dots+v+c
+						}{q}}c +v+c
+				}{q}}c +v+c
 		}{q}}
 	\vspace{-1em} % Move the next line further up
 $$
 which is visually similar to the series expansion
 $
-	\frac{x}{q-c}
-	= \frac{x}{q}\sum_{i=0}^\infty (\frac{c}{q})^i
-	%= x\frac{1+\frac{c+\frac{c^2 + \dots}{q}}{q}}{q}
-	= \frac{\frac{\frac{\dots+x}{q}c+x}{q}c+x}{q}.
+	\frac{v}{q-c}
+	= \frac{v}{q}\sum_{i=0}^\infty (\frac{c}{q})^i
+	%= v\frac{1+\frac{c+\frac{c^2 + \dots}{q}}{q}}{q}
+	= \frac{\frac{\frac{\dots+v}{q}c+v}{q}c+v}{q}.
 $
 It is natural to truncate this after $m$ steps for a $(c/q)^m$ approximation.
-The less intuitive part is that we need to add $x+c$ rather than $x$ at each step, to compensate for rounding down the intermediate divisions.
+The less intuitive part is that we need to add $v+c$ rather than $v$ at each step, to compensate for rounding down the intermediate divisions.
 
 \paragraph{Computing mod}
 We will now compute the $\bmod$ operation assuming that
-we have already computed $z=\floor{x/p}$. Then
+we have already computed $z=\floor{v/p}$. Then
 \begin{align}
-	x \bmod p
-	= x - pz
-	= x - (2^b-c)z
-	= x - (z\ls b) - c*z,
+	v \bmod p
+	= v - pz
+	= v - (2^b-c)z
+	= v - (z\ls b) - c*z,
 \end{align}
 which is only two additions, a shift, and a multiplication with $c$ on top of the division algorithm.
-As $pz = \floor{x/p}p \le x$ there is no danger of overflow.
+As $pz = \floor{v/p}p \le v$ there is no danger of overflow.
 We can save one operation by noting
-that if $x = z (2^b-c) + y$, then
-$$x\bmod p = y=\left(x+c*z \right) \bmod 2^b.$$
+that if $v = z (2^b-c) + y$, then
+$$v\bmod p = y=\left(v+c*z \right) \bmod 2^b.$$
 This is the method presented in Algorithm \ref{alg:mod-generalized} and applied with $c=1$ in Algorithm \ref{alg:div-simple}.
 \begin{algorithm}[H]
-	\caption{For integers $p=2^b-c$ and $z=\floor{x/p}$ compute
-		$y=x \bmod p$.}
+	\caption{For integers $p=2^b-c$ and $z=\floor{v/p}$ compute
+		$y=v \bmod p$.}
 	\label{alg:mod-generalized}
 	\begin{algorithmic}
-		\State $y \gets (x + z*c) \andtt (2^b-1)$
+		\State $y \gets (v + z*c) \andtt (2^b-1)$
 	\end{algorithmic}
 \end{algorithm}
 
