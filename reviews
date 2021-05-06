@@ -63,6 +63,9 @@ Methods: The algorithms are quite clear and simple. The method of analysis is ca
 Title: Patrascu and Thorup had a paper on ``The power of simple tabulation hashing''. In comparison to those results, the very detailed observations
 in the submission seem much less ``powerful'', and I think a title like ``(How to Organize) Fast Universal Hashing with Mersenne Primes with Simple Algorithms'' would be more adequate.
 
+Not as catchy though...
+
+
 Strengths: The questions are natural, if one is interested in speeding up the evaluation of hash functions (which one should, if this is done frequently in an application).
 The algorithms are simple and partly cute. The analyses are not as straightforward as one might think, and they are carried out very carefully.
 
@@ -81,7 +84,7 @@ C) The paper ``Thorup and Zhang, Tabulation-Based 5-Independent Hashing with App
 SIAM J. Comput., 41(2), 293–331'' is not cited. In this paper, involving one of the authors, it is shown how to do Second Moment Estimation without an independent extra bit.
 So application 4) may not be that central application, or is it still? Just omitting the reference isn't a good strategy to avoid this question.
 
-TODO
+Done.
 
 
 D) The submitted paper is full of clerical errors; the strangest thing I spotted is a repeated paragraph on page 3. Naturally, there are also incomplete sentences and far too many typos.
@@ -347,6 +350,8 @@ One gets that each tuple (j_1,...,j_k) is attained
 with probability (1/2^b)^k * (1 plusminus O(ck/p)).
 This error estimation carries over to probabilites and all expected values as long as formulas for E(X) and Var(X) are used as in the paper. As long as these quantities are sums over
 events for pairs or 4-tuples of keys, the deviations from the ``pure'' 4-wise independent case is controlled by the error term 1 plusminus O(ck/p).
+
+Done
 
 
 

@@ -272,7 +272,7 @@ That bit is $0$ with probability $1-1/p$ and 1 only with probability $p$ -- virt
 We might try to fix this by xoring the output with a random number from $[2^b]$ (or add $C\in[2^b]$ and take mod $2^b$), but that will only make the bits uniform, not actually dependent on the key.
 Thus if we hash two keys, $x_1$ and $x_2$, mod $2^{b-1}+1$ and take the top bit from each one, \emph{they will nearly always be the same, independent of whether $x_1=x_2$}.
 
-More realistically,
+More generally,
 say we pick the $\ell$ most significant bits
 and $c\leq 2^{b-1}-2^{b-\ell}$, then $2^{b-\ell}$ elements from
 $[p]$ map to $0$ while only $\max\{0,2^{b-\ell}-c\}$
@@ -302,6 +302,8 @@ they were the output of universally computed hash functions.
 
 We illustrate this idea below in the context of the second moment estimation.
 For this purpose the ``split'' we will be considering is into the first bit and the remaining bits.
+\footnote{Note there are other ways to construct this sketch, which only use one hash function, such as~\cite{thorup12kwise}.
+The following should thus not be taken as ``the only way'' to achieve this result, but as an example of how the ``intuitive approach'' turns out to work when hashing with Mersenne primes.}
 
 \subsubsection{Second moment estimation}\label{sec:count-sketch}
 We now review the second moment estimation of streams based on Count Sketches \cite{charikar04count-sketch} (which are based on the
@@ -744,33 +746,27 @@ This is the method presented in Algorithm \ref{alg:mod-generalized} and applied 
 %In the case $x\le 2^{2b}$ and $c=1$, we get the simplified Algorithm \ref{alg:div-simple} described above: $ \left\lfloor\frac{x}{2^n-1}\right\rfloor = (x+1 \rs n)+x+1 \rs n$.
 
 % TODO: These applications need to be written properly.
-% \subsubsection{Applications}\label{sec:general-applications}
-% 
-% \paragraph{To an arbitrary number of buckets}
-% In Subsection~\ref{sec:most-uniform} we discussed how $\floor{\frac{h(x)r}{2^b-1}}$ provides a most uniform map from $[2^b-1]\to[r]$.
-% To avoid the division step, we instead considered the map
-% $\floor{\frac{(h(x)+1)r}{2^b}}$.
-% However, for primes of the form $2^b-c$, $c>1$ this approach doesn't provide a most-uniform map.
-% %
-% Instead, we may use Algorithm \ref{alg:division-generalized} to compute
-% $$\left\lfloor\frac{h(x)r}{2^b-c}\right\rfloor$$
-% directly, getting a perfect most-uniform map.
-% %(Another alternative was to pre-compute $q = \lfloor2^b/p\rfloor$ and take
-% %$\floor{\frac{h(x)rq}{2^b}}$, however that requires larger words to store the product $h(x)rq$.)
-% 
-% \paragraph{Application to Finger Printing}
-% A classical idea by Rabin~\cite{rabin1981fingerprinting} is to use test the equality of two large numbers by comparing their value modulo a random prime.
-% A beautiful example of this is King and Sagert's Algorithm for Maintaining the Transitive Closure.~\cite{DBLP:journals/jcss/KingS02}
-% These cases are typically non-trivial to convert to random fields other than $\Z_p$, and we need a reasonably large set of random primes to choose from.
-% The generalized Mersenne primes with $c$ of the other $2^{b(1-\eps)}$ are a good candidate, since the range ...
-% Using an idea like \eqref{eq:Mersenne} we can note
-% \begin{equation}
-% 	y \equiv y - \floor{y/2^b}(2^b-c)
-% 	= (y\bmod 2^{b}) + c\floor{y/2^b}
-% 	\pmod {2^b-c}.
-% \end{equation}
-% Each application reduces $y$ by a factor $\approx 2^{-\eps b}$.
-% So if we multiply two numbers
+ \paragraph{Applications to an arbitrary number of buckets}
+ In Subsection~\ref{sec:most-uniform} we discussed how $\floor{\frac{h(x)r}{2^b-1}}$ provides a most uniform map from $[2^b-1]\to[r]$.
+ To avoid the division step, we instead considered the map
+ $\floor{\frac{(h(x)+1)r}{2^b}}$.
+ However, for primes of the form $2^b-c$, $c>1$ this approach doesn't provide a most-uniform map.
+ %
+ Instead, we may use Algorithm \ref{alg:division-generalized} to compute
+ $$\left\lfloor\frac{h(x)r}{2^b-c}\right\rfloor$$
+ directly, getting a perfect most-uniform map.
+ %(Another alternative was to pre-compute $q = \lfloor2^b/p\rfloor$ and take
+ %$\floor{\frac{h(x)rq}{2^b}}$, however that requires larger words to store the product $h(x)rq$.)
+ 
+ \paragraph{Application to Finger Printing}
+ A classical idea by Rabin~\cite{rabin1981fingerprinting} is to test the equality of two large numbers by comparing their value modulo some random primes (or random irreducible polynomials in a Gallois Field.)
+ A beautiful example of this is King and Sagert's Algorithm for Maintaining the Transitive Closure.~\cite{DBLP:journals/jcss/KingS02}
+ For such applications
+ %These cases are typically non-trivial to convert to random fields other than $\Z_p$, and 
+ we need a reasonably large set of random primes to choose from.
+ The generalized Mersenne primes with $c$ up to $2^{b(1-\eps)}$ are a good candidate set, which from the prime number theorem we expect to contain $\approx 2^{b(1-\eps)}/b$ primes.
+ Each application of \cref{alg:division-generalized} reduces $y$ by a factor $2^{-\eps b}$,
+ so computing the quotient and remainder takes just $m=1/\eps$ steps.
 
 
 
