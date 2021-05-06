@@ -270,14 +270,14 @@ we pick just the one most significant bit
 and $c=2^{b-1}-1$ (so $p=2^{b-1}+1$, a Fermat prime).
 That bit is $0$ with probability $1-1/p$ and 1 only with probability $p$ -- virtually a constant.
 We might try to fix this by xoring the output with a random number from $[2^b]$ (or add $C\in[2^b]$ and take mod $2^b$), but that will only make the bits uniform, not actually dependent on the key.
-Thus if we hash two keys, $x_1$ and $x_2$, mod $2^{b-1}+1$ and take the top bit from each one, they will nearly always be the same, independent of whether $x_1=x_2$.
+Thus if we hash two keys, $x_1$ and $x_2$, mod $2^{b-1}+1$ and take the top bit from each one, \emph{they will nearly always be the same, independent of whether $x_1=x_2$}.
 
 More realistically,
 say we pick the $\ell$ most significant bits
 and $c\leq 2^{b-1}-2^{b-\ell}$, then $2^{b-\ell}$ elements from
 $[p]$ map to $0$ while only $\max\{0,2^{b-\ell}-c\}$
 map to the all \texttt{1}s.
-More concretely, take $\ell=b/2$ and $c=2^{b/2}\approx\sqrt{p}$ (typical for generalized Mersenne primes) then the top $\ell$ bits hit the all \texttt{1}s with 0 probability, while the all \texttt{0}s is twice as common as the remaining values.
+More concretely, take $\ell=b/2$ and $c=2^{b/2}\approx\sqrt{p}$ (typical for generalized Mersenne primes) \emph{then the top $\ell$ bits hit the all \texttt{1}s with 0 probability}, while the all \texttt{0}s is twice as common as the remaining values.
 
 
 \subsection{Two-for-one hash functions in second moment estimation}
