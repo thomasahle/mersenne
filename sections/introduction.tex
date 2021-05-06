@@ -243,8 +243,8 @@ Therefore
 	=(1-(r-1)/p)/r.
 	\label{eq:coll-ell=r-1}
 \end{align}
-Thus $\Pr[\mu(h(x))=i]\leq (1+1/p)/r$ for all $i\in[r]$. This upper-bound
-only has a relative error of $1/p$ from the uniform $1/r$.
+Thus $\Pr[\mu(h(x))=i]\leq (1+1/p)/r$ for all $i\in[r]$.
+This upper-bound only has a relative error of $1/p$ from the uniform $1/r$.
 
 Combining \eqref{eq:coll-ell<r-1} and \eqref{eq:coll-ell=r-1} with
 pairwise independence, for any distinct keys $x,y\in [u]$, we show that the
@@ -259,33 +259,26 @@ collision probability is bounded
 \end{align}
 Thus the relative error $r/p^2$ is small as long as $p$ is large.
 
-%\paragraph{Mersenne Primes are Special}
-\vspace{.5em}
+\paragraph{The problem with non-Mersenne Primes}
 
-We proceed to show that for the many primes of the form $p=2^b-c$ we don't get anything near the small error above.
+Suppose $c\neq 1$ and we want to select arbitrary bits like in the arguments above.
+If we pick the least significant bits we get a generic upper bound of $(1+c/p)/r$, which is not too bad for small $c$.
+Here there is no conceptual difference to our Mersenne results.
 
-%Recall that with $c=1$, we had our generic upper bound
-%$\Pr[\mu(h(x))=i]\leq (1+1/p)/r$ for all $i\in[r]$.
+However take the opposite extreme where
+we pick just the one most significant bit
+and $c=2^{b-1}-1$ (so $p=2^{b-1}+1$, a Fermat prime).
+That bit is $0$ with probability $1-1/p$ and 1 only with probability $p$ -- virtually a constant.
+We might try to fix this by xoring the output with a random number from $[2^b]$ (or add $C\in[2^b]$ and take mod $2^b$), but that will only make the bits uniform, not actually dependent on the key.
+Thus if we hash two keys, $x_1$ and $x_2$, mod $2^{b-1}+1$ and take the top bit from each one, they will nearly always be the same, independent of whether $x_1=x_2$.
 
-
-% TODO: I've removed the following paragraph, which doesn't really make sense,
-% until Mikkel has a chance to look at it.
-
-Suppose $c\neq 1$, and let's see what happens if we select
-the $\ell$ least respectively most significant bits. If
-we pick the least significant bits with $y\mapsto y\andtt(r-1)$
-then we get a generic upper bound of $(1+c/p)/r$, which is not
-too bad for small $c$.
-Now let's pick the most significant bits with $y\mapsto y\rs (b-\ell)$.
-If $c\leq 2^{b-1}-2^{b-\ell}$, then $2^{b-\ell}$ elements from
+More realistically,
+say we pick the $\ell$ most significant bits
+and $c\leq 2^{b-1}-2^{b-\ell}$, then $2^{b-\ell}$ elements from
 $[p]$ map to $0$ while only $\max\{0,2^{b-\ell}-c\}$
-map to $r-1$ --- a huge difference.
-When it comes to the maximal probability of hitting a bucket,
-we get $\Pr[\mu(h(x))=0]=2^{b-\ell}/p$.
-As an extreme case, when $\ell=1$ and $p=2^{b-1}+1$,\footnote{Primes on this form are called Fermat primes.
-	Performance-wise, they work as well as Mersenne primes, but they have none of the properties we use in this paper.
-	Besides, 65,537 is conjectured to be the largest such prime.}
-we get $\Pr[\mu(h(x))=0]=1-1/p$ and $\Pr[\mu(h(x))=1]=1/p$.
+map to the all \texttt{1}s.
+More concretely, take $\ell=b/2$ and $c=2^{b/2}\approx\sqrt{p}$ (typical for generalized Mersenne primes) then the top $\ell$ bits hit the all \texttt{1}s with 0 probability, while the all \texttt{0}s is twice as common as the remaining values.
+
 
 \subsection{Two-for-one hash functions in second moment estimation}
 In this section, we discuss how we can get several hash functions for

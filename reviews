@@ -81,6 +81,7 @@ C) The paper ``Thorup and Zhang, Tabulation-Based 5-Independent Hashing with App
 SIAM J. Comput., 41(2), 293–331'' is not cited. In this paper, involving one of the authors, it is shown how to do Second Moment Estimation without an independent extra bit.
 So application 4) may not be that central application, or is it still? Just omitting the reference isn't a good strategy to avoid this question.
 
+TODO
 
 
 D) The submitted paper is full of clerical errors; the strangest thing I spotted is a repeated paragraph on page 3. Naturally, there are also incomplete sentences and far too many typos.
